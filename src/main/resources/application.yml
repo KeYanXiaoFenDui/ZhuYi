@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    database: MYSQL
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:mysql://localhost:3306/model
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+  devtools:
+    restart:
+      enabled: true
+management:
+  security:
+    enabled: false
+
+mybatis:
+    configuration:
+      map-underscore-to-camel-case: true
+
+
