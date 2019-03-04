@@ -4,220 +4,124 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Stage implements Serializable {
-    private int id;//主键Id
+    private int id;//唯一标识
     private Date createTime;//创建时间
     private int status;//状态(1有效,,,0无效)
     private String name;//场景名称
     private int country;//国家标识
     private int province;//省级标识
     private int city;//市级标识
-    private String address;//具体地址
-    private int film_type_id;//影视类型ID
-    private int stage_main_type_id;//场景一级类型ID
-    private int stage_sub_type_id;//场景二级类型ID
-    private int film_style_id;//影视风格ID
-    private int stage_area;//场景面积（1：0-100㎡；2：100-300㎡:3：300-500㎡；4：500-1000㎡:5：1000㎡以上）
-    private int work_time;//可拍摄时间（1：工作日；2：周末；3：不限）
-    private String parking;//停车位
-    private int voltage;//电压（1：:220V；2:380V）
-    private String other_note;//其他配套
-    private String stage_desc;//场景描述
-    private String pic_url;//图片链接
-    private String video_url;//视频链接
-    private String file_url;//文件链接
-    private int response_info_id;//反馈信息ID
-    private int process_status;//流程状态（1：）
-    private int user_id;//所属用户的ID
+    private String address;//详细地址
+    private int filmTypeId;//影视类型ID
+    private int stageMainTypeId;//场景一级类型ID
+    private int stageSubTypeId;//场景二级类型ID
+    private int filmStyleId;//影视风格ID
+    private int stageArea;//场景面积（1：0-100㎡；2：100-300㎡:3：300-500㎡；4：500-1000㎡:5：1000㎡以上）
+    private int workTime;//可拍摄时间（1：工作日；2：周末；3：不限）
+    private int parking;//停车位
+    private int voltage;//电压
+    private String otherNote;//其他配套
+    private String stageDesc;//场景描述
+    private String picUrl;//图片链接
+    private String videoUrl;//视频链接
+    private String fileUrl;//文件链接
+    private int responseInfoId;//反馈信息id
+    private int processStatus;//流程状态
+    private int userId;//发布者ID
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(int id) { this.id = id; }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
+    public Date getCreateTime() { return createTime; }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+    public void setCreateTime(Date createTime) { this.createTime = createTime; }
 
-    public int getStatus() {
-        return status;
-    }
+    public int getStatus() { return status; }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
+    public void setStatus(int status) { this.status = status; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public int getCountry() {
-        return country;
-    }
+    public int getCountry() { return country; }
 
-    public void setCountry(int country) {
-        this.country = country;
-    }
+    public void setCountry(int country) { this.country = country; }
 
-    public int getProvince() {
-        return province;
-    }
+    public int getProvince() { return province; }
 
-    public void setProvince(int province) {
-        this.province = province;
-    }
+    public void setProvince(int province) { this.province = province; }
 
-    public int getCity() {
-        return city;
-    }
+    public int getCity() { return city; }
 
-    public void setCity(int city) {
-        this.city = city;
-    }
+    public void setCity(int city) { this.city = city; }
 
-    public String getAddress() {
-        return address;
-    }
+    public String getAddress() { return address; }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+    public void setAddress(String address) { this.address = address; }
 
-    public int getFilm_type_id() {
-        return film_type_id;
-    }
+    public int getFilmTypeId() { return filmTypeId; }
 
-    public void setFilm_type_id(int film_type_id) {
-        this.film_type_id = film_type_id;
-    }
+    public void setFilmTypeId(int filmTypeId) { this.filmTypeId = filmTypeId; }
 
-    public int getStage_main_type_id() {
-        return stage_main_type_id;
-    }
+    public int getStageMainTypeId() { return stageMainTypeId; }
 
-    public void setStage_main_type_id(int stage_main_type_id) {
-        this.stage_main_type_id = stage_main_type_id;
-    }
+    public void setStageMainTypeId(int stageMainTypeId) { this.stageMainTypeId = stageMainTypeId; }
 
-    public int getStage_sub_type_id() {
-        return stage_sub_type_id;
-    }
+    public int getStageSubTypeId() { return stageSubTypeId; }
 
-    public void setStage_sub_type_id(int stage_sub_type_id) {
-        this.stage_sub_type_id = stage_sub_type_id;
-    }
+    public void setStageSubTypeId(int stageSubTypeId) { this.stageSubTypeId = stageSubTypeId; }
 
-    public int getFilm_style_id() {
-        return film_style_id;
-    }
+    public int getFilmStyleId() { return filmStyleId; }
 
-    public void setFilm_style_id(int film_style_id) {
-        this.film_style_id = film_style_id;
-    }
+    public void setFilmStyleId(int filmStyleId) { this.filmStyleId = filmStyleId; }
 
-    public int getStage_area() {
-        return stage_area;
-    }
+    public int getStageArea() { return stageArea; }
 
-    public void setStage_area(int stage_area) {
-        this.stage_area = stage_area;
-    }
+    public void setStageArea(int stageArea) { this.stageArea = stageArea; }
 
-    public int getWork_time() {
-        return work_time;
-    }
+    public int getWorkTime() { return workTime; }
 
-    public void setWork_time(int work_time) {
-        this.work_time = work_time;
-    }
+    public void setWorkTime(int workTime) { this.workTime = workTime; }
 
-    public String getParking() {
-        return parking;
-    }
+    public int getParking() { return parking; }
 
-    public void setParking(String parking) {
-        this.parking = parking;
-    }
+    public void setParking(int parking) { this.parking = parking; }
 
-    public int getVoltage() {
-        return voltage;
-    }
+    public int getVoltage() { return voltage; }
 
-    public void setVoltage(int voltage) {
-        this.voltage = voltage;
-    }
+    public void setVoltage(int voltage) { this.voltage = voltage; }
 
-    public String getOther_note() {
-        return other_note;
-    }
+    public String getOtherNote() { return otherNote; }
 
-    public void setOther_note(String other_note) {
-        this.other_note = other_note;
-    }
+    public void setOtherNote(String otherNote) { this.otherNote = otherNote; }
 
-    public String getStage_desc() {
-        return stage_desc;
-    }
+    public String getStageDesc() { return stageDesc; }
 
-    public void setStage_desc(String stage_desc) {
-        this.stage_desc = stage_desc;
-    }
+    public void setStageDesc(String stageDesc) { this.stageDesc = stageDesc; }
 
-    public String getPic_url() {
-        return pic_url;
-    }
+    public String getPicUrl() { return picUrl; }
 
-    public void setPic_url(String pic_url) {
-        this.pic_url = pic_url;
-    }
+    public void setPicUrl(String picUrl) { this.picUrl = picUrl; }
 
-    public String getVideo_url() {
-        return video_url;
-    }
+    public String getVideoUrl() { return videoUrl; }
 
-    public void setVideo_url(String video_url) {
-        this.video_url = video_url;
-    }
+    public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
 
-    public String getFile_url() {
-        return file_url;
-    }
+    public String getFileUrl() { return fileUrl; }
 
-    public void setFile_url(String file_url) {
-        this.file_url = file_url;
-    }
+    public void setFileUrl(String fileUrl) { this.fileUrl = fileUrl; }
 
-    public int getResponse_info_id() {
-        return response_info_id;
-    }
+    public int getResponseInfoId() { return responseInfoId; }
 
-    public void setResponse_info_id(int response_info_id) {
-        this.response_info_id = response_info_id;
-    }
+    public void setResponseInfoId(int responseInfoId) { this.responseInfoId = responseInfoId; }
 
-    public int getUser_id() {
-        return user_id;
-    }
+    public int getProcessStatus() { return processStatus; }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
+    public void setProcessStatus(int processStatus) { this.processStatus = processStatus; }
 
-    public int getProcess_status() {
-        return process_status;
-    }
+    public int getUserId() { return userId; }
 
-    public void setProcess_status(int process_status) {
-        this.process_status = process_status;
-    }
+    public void setUserId(int userId) { this.userId = userId; }
 }

@@ -30,7 +30,7 @@ public class ShangXianUtil {
 
     public static void main(String[] args){
 
-//        factory("D:/桌面文件/ssss.txt","D:/桌面文件/test");
+        factory("D:/桌面文件/ssss.txt","D:/桌面文件/test");
 //        String str = "a;sdj{213f}},{sdjlk};ald;;125{sd11}";
 //        String regEx = "\\{.*?\\}";
 //        String regEx2 = "<([^>]*)>";
