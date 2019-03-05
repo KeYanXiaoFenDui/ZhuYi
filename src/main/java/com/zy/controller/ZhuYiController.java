@@ -196,5 +196,23 @@ public class ZhuYiController {
         }
         return CommonUtil.ToResultHashMap(status,message,data);
     }
-
+    /**
+     *操作日志查询
+     *管理后台查询操作记录接口
+     */
+    @RequestMapping(value = "/getOperateLogList")
+    public HashMap<String,Object> getOperateLogList(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        String nameOrMenu = CommonUtil.getStr(request.getParameter("nameOrMenu"),"");
+        //起始时间	格式(yyyy-MM-dd)
+        String startTime = CommonUtil.getStr(request.getParameter("startTime"),"");
+        //截止时间	格式(yyyy-MM-dd)
+        String endTime = CommonUtil.getStr(request.getParameter("endTime"),"");
+        List resultList = new ArrayList();
+        PageBean<Map> list = new PageBean<Map>(resultList);
+        return CommonUtil.ToResultHashMap(status,message,list);
+    }
 }
