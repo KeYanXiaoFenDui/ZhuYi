@@ -1,0 +1,12 @@
+运行项目后输入下面链接,进入接口管理界面
+http://localhost:8080/swagger-ui.html
+
+swagger2 教程链接： https://www.cnblogs.com/fengli9998/p/7522973.html
+
+@Api("swaggerDemoController相关的api")
+
+@ApiOperation(value=“方法名”, notes=“方法名介绍")
+
+@ApiImplicitParam(name = “id”, value = “主键ID", paramType = "path", required = true, dataType = "Integer")
+
+@ApiParam(name = “id” ,value=“主键ID")
