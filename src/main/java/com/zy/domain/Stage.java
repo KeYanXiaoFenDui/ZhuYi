@@ -28,7 +28,10 @@ public class Stage implements Serializable {
     private int responseInfoId;//反馈信息id
     private int processStatus;//流程状态
     private int userId;//发布者ID
-
+    private String nameEn;//场景名称（英文）
+    private String addressEn;//详细地址（英文）
+    private String otherNoteEn;//其他配套（英文）
+    private String stageDescEn;//场景描述（英文）
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }
@@ -124,4 +127,36 @@ public class Stage implements Serializable {
     public int getUserId() { return userId; }
 
     public void setUserId(int userId) { this.userId = userId; }
+
+    public String getNameEn() {
+        return nameEn;
+    }
+
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
+    }
+
+    public String getAddressEn() {
+        return addressEn;
+    }
+
+    public void setAddressEn(String addressEn) {
+        this.addressEn = addressEn;
+    }
+
+    public String getOtherNoteEn() {
+        return otherNoteEn;
+    }
+
+    public void setOtherNoteEn(String otherNoteEn) {
+        this.otherNoteEn = otherNoteEn;
+    }
+
+    public String getStageDescEn() {
+        return stageDescEn;
+    }
+
+    public void setStageDescEn(String stageDescEn) {
+        this.stageDescEn = stageDescEn;
+    }
 }

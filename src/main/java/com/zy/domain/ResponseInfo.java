@@ -11,6 +11,8 @@ public class ResponseInfo implements Serializable {
     private String type;//反馈类型（1场景，2需求）
     private int objectId;//所属需求/场景ID
     private int userId;//所属用户ID
+    private int processStatus;//流程状态(1:待审核；2：已通过；3：已驳回)
+    private int language;//语种（1：中文；2：英文）
 
     public int getId() { return id; }
 
@@ -40,4 +42,19 @@ public class ResponseInfo implements Serializable {
 
     public void setUserId(int userId) { this.userId = userId; }
 
+    public int getProcessStatus() {
+        return processStatus;
+    }
+
+    public void setProcessStatus(int processStatus) {
+        this.processStatus = processStatus;
+    }
+
+    public int getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(int language) {
+        this.language = language;
+    }
 }

@@ -11,7 +11,8 @@ public class Category implements Serializable {
     private int order;//权重
     private int level;//分类级别
     private int parentId;//所属父类ID（当分类级别为1时，该列值为空）
-    private int type;//分类种类（1：影视剧类型；2：场景风格；3：场景类型）
+    private int type;//分类种类（1：影视剧类型；2：场景风格；3：场景类型）CategoryType
+    private String nameEn;//类型名称（英文）
 
     public int getId() { return id; }
 
@@ -44,4 +45,12 @@ public class Category implements Serializable {
     public int getType() { return type; }
 
     public void setType(int type) { this.type = type; }
+
+    public String getNameEn() {
+        return nameEn;
+    }
+
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
+    }
 }

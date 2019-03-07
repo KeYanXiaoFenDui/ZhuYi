@@ -2,13 +2,15 @@ package com.zy.controller;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.zy.domain.Category;
 import com.zy.domain.Menu;
+import com.zy.enums.CategoryType;
+import com.zy.service.ICategoryService;
 import com.zy.service.IMenuService;
 import com.zy.util.CommonUtil;
-//import com.zy.util.PageBean;
 import com.zy.util.PageBean;
 import com.zy.util.constant.MessageConstant;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -25,6 +27,8 @@ public class ZhuYiController {
 
     @Autowired
     private IMenuService menuService;
+    @Autowired
+    private ICategoryService categoryService;
 
     /**
      *新增菜单数据
@@ -85,28 +89,8 @@ public class ZhuYiController {
         String account = CommonUtil.getStr(request.getParameter("account"),"");
         String name = CommonUtil.getStr(request.getParameter("name"),"");
         List resultList = new ArrayList();
-        PageInfo<Map> list = new PageInfo<Map>(resultList);
-        return CommonUtil.ToResultHashMap(status,message,data);
-    }
-    /**
-     *管理员列表查询
-     *管理后台查询管理员列表
-     */
-    @RequestMapping(value = "/getMenuList")
-    public HashMap<String,Object> getMenuList(HttpServletRequest request) {
-        int status = MessageConstant.ERROR_CODE;
-        String message = MessageConstant.ERROR_INFO_DEMO;
-        HashMap<String,Object> data = new HashMap<>();
-        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
-        String account = CommonUtil.getStr(request.getParameter("account"),"");
-        String name = CommonUtil.getStr(request.getParameter("name"),"");
-        List<Map> resultList = new ArrayList<Map>();
-        resultList = menuService.getMenuList();
-        for (Map m : resultList){
-            System.out.println(m);
-        }
         PageBean<Map> list = new PageBean<Map>(resultList);
-        return CommonUtil.ToResultHashMap(status,message,list);
+        return CommonUtil.ToResultHashMap(status,message,data);
     }
     /**
      *新增&编辑管理员
@@ -160,7 +144,7 @@ public class ZhuYiController {
         //管理员身份标题	模糊查询管理员身份数据
         String title = CommonUtil.getStr(request.getParameter("title"),"");
         List resultList = new ArrayList();
-        PageInfo<Map> list = new PageInfo<Map>(resultList);
+        PageBean<Map> list = new PageBean<Map>(resultList);
         return CommonUtil.ToResultHashMap(status,message,data);
     }
     /**
@@ -235,7 +219,95 @@ public class ZhuYiController {
         //截止时间	格式(yyyy-MM-dd)
         String endTime = CommonUtil.getStr(request.getParameter("endTime"),"");
         List resultList = new ArrayList();
-        PageInfo<Map> list = new PageInfo<Map>(resultList);
+        PageBean<Map> list = new PageBean<Map>(resultList);
+        return CommonUtil.ToResultHashMap(status,message,list);
+    }
+
+    /**
+     * 影视剧类型列表
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/getFilmTypeList")
+    public HashMap<String,Object> getFilmTypeList(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        String name = CommonUtil.getStr(request.getParameter("name"),"");
+        List resultList = new ArrayList();
+        if(StringUtils.isNotBlank(name)) {
+            resultList = categoryService.findByNameLike(name, CategoryType.FILM_TYPE,1);
+        }else{
+            resultList = categoryService.findByLevelAndType(1,CategoryType.FILM_TYPE);
+        }
+        PageBean<Map> list = new PageBean<Map>(resultList);
+        return CommonUtil.ToResultHashMap(status,message,list);
+    }
+
+    /**
+     * 场景风格列表
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/getStageStyleList")
+    public HashMap<String,Object> getStageStyleList(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        String name = CommonUtil.getStr(request.getParameter("name"),"");
+        List resultList = new ArrayList();
+        if(StringUtils.isNotBlank(name)) {
+            resultList = categoryService.findByNameLike(name, CategoryType.STAGE_STYLE,1);
+        }else{
+            resultList = categoryService.findByLevelAndType(1,CategoryType.STAGE_STYLE);
+        }
+        PageBean<Map> list = new PageBean<Map>(resultList);
+        return CommonUtil.ToResultHashMap(status,message,list);
+    }
+
+    /**
+     * 场景一级类型列表
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/getStageTypeList")
+    public HashMap<String,Object> getStageTypeList(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        String name = CommonUtil.getStr(request.getParameter("name"),"");
+        List resultList = new ArrayList();
+        if(StringUtils.isNotBlank(name)) {
+            resultList = categoryService.findByNameLike(name, CategoryType.STAGE_TYPE,1);
+        }else{
+            resultList = categoryService.findByLevelAndType(1,CategoryType.STAGE_TYPE);
+        }
+        PageBean<Map> list = new PageBean<Map>(resultList);
+        return CommonUtil.ToResultHashMap(status,message,list);
+    }
+
+    /**
+     * 场景二级级类型列表
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/getSubStageTypeList")
+    public HashMap<String,Object> getSubStageTypeList(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        String name = CommonUtil.getStr(request.getParameter("name"),"");
+        List resultList = new ArrayList();
+        if(StringUtils.isNotBlank(name)) {
+            resultList = categoryService.findByNameLike(name, CategoryType.STAGE_TYPE,2);
+        }else{
+            resultList = categoryService.findByLevelAndType(2,CategoryType.STAGE_TYPE);
+        }
+        PageBean<Map> list = new PageBean<Map>(resultList);
         return CommonUtil.ToResultHashMap(status,message,list);
     }
 }
