@@ -2,6 +2,7 @@ package com.zy.mapper;
 
 import com.github.pagehelper.Page;
 import com.zy.domain.Category;
+import com.zy.mapper.sqlProvide.CategorySQLProvide;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -22,8 +23,9 @@ public interface CategoryMapper {
     @Select("select * from category where id=#{id}")
     public Category getCategory(int id);
 
-    @Select("select * from category t where ((t.name like '%'||#{name}||'%') or (t.nameEn like '%'||#{name}||'%')) and t.level = #{level} and t.status = 1 order by t.order")
-    public List<Category> findByNameLike(@Param("name")String name,@Param("type")int type,@Param("level")int level);
+//    @Select("select * from category t where ((t.name like '%'||#{name}||'%') or (t.nameEn like '%'||#{name}||'%')) and t.level = #{level} and t.status = 1 order by t.order")
+    @SelectProvider(type = CategorySQLProvide.class,method = "findByNameLike")
+    public List<Category> findByNameLike(String name,int type,int level);
 
     @Select("select * from category t where t.level = #{level} and t.type = #{type} and t.status = 1 order by t.order asc")
     public List<Category> findByLevelAndType(@Param("level") int level,@Param("type")int type);

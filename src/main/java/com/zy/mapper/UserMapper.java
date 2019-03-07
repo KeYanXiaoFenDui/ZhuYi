@@ -1,7 +1,11 @@
 package com.zy.mapper;
 
 import com.zy.domain.User;
+import com.zy.mapper.sqlProvide.UserSQLProvider;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface UserMapper {
@@ -18,5 +22,8 @@ public interface UserMapper {
 
     @Select("select * from user where id=#{id}")
     public User getUser(int id);
+
+    @SelectProvider(type = UserSQLProvider.class,method = "getUserList")
+    public List<Map> getUserList(String name);
 
 }
