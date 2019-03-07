@@ -22,7 +22,7 @@ public interface CategoryMapper {
     @Select("select * from category where id=#{id}")
     public Category getCategory(int id);
 
-    @Select("select * from category t where ((t.name like '%'||#{name}||'%') or (t.nameEn like '%'||#{name}||'%')) and t.level = #{level} and t.status = 1 order by t.order")
+    @Select("select * from category t where (t.name like '%'||#{name}||'%' or t.nameEn like '%'||#{name}||'%') and t.type = #{type} and t.level = #{level} and t.status = 1 order by t.order")
     public List<Category> findByNameLike(@Param("name")String name,@Param("type")int type,@Param("level")int level);
 
     @Select("select * from category t where t.level = #{level} and t.type = #{type} and t.status = 1 order by t.order asc")
