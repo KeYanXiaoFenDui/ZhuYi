@@ -12,6 +12,8 @@ public class CrewService implements Serializable {
     private String serviceLogoUrl;//图标链接
     private String servicePicUrl;//服务图片
     private String description;//服务描述
+    private String nameEn;//服务名称（英文）
+    private String descriptionEn;//服务描述（英文）
 
     public int getId() { return id; }
 
@@ -44,4 +46,20 @@ public class CrewService implements Serializable {
     public String getDescription() { return description; }
 
     public void setDescription(String description) { this.description = description; }
+
+    public String getNameEn() {
+        return nameEn;
+    }
+
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
+    }
+
+    public String getDescriptionEn() {
+        return descriptionEn;
+    }
+
+    public void setDescriptionEn(String descriptionEn) {
+        this.descriptionEn = descriptionEn;
+    }
 }

@@ -4,6 +4,9 @@ package com.zy.mapper;
 import com.zy.domain.Menu;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+import java.util.Map;
+
 @Mapper
 public interface MenuMapper {
 
@@ -19,5 +22,8 @@ public interface MenuMapper {
 
     @Select("select * from menu where id=#{id}")
     public Menu getMenu(int id);
+
+    @Select("select * from menu ")
+    public List<Map> getMenuList();
 
 }

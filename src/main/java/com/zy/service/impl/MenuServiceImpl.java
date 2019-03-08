@@ -7,6 +7,9 @@ import com.zy.service.IMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class MenuServiceImpl implements IMenuService {
     @Autowired
@@ -30,5 +33,10 @@ public class MenuServiceImpl implements IMenuService {
     @Override
     public Menu getMenu(int id) {
         return menuMapper.getMenu(id);
+    }
+
+    @Override
+    public List<Map> getMenuList() {
+        return menuMapper.getMenuList();
     }
 }
