@@ -10,3 +10,7 @@ swagger2 教程链接： https://www.cnblogs.com/fengli9998/p/7522973.html
 @ApiImplicitParam(name = “id”, value = “主键ID", paramType = "path", required = true, dataType = "Integer")
 
 @ApiParam(name = “id” ,value=“主键ID")
+
+
+//热部署文档 方便页面开发
+https://www.cnblogs.com/zxguan/p/7941711.html

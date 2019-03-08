@@ -22,7 +22,7 @@ public class HelloController {
     public String index(Model model)
     {
 
-        return "index";
+        return "zhuYiIndex";
     }
 
 }
