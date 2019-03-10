@@ -42,4 +42,8 @@ public class CategoryServiceImpl implements ICategoryService {
     public List<Category> findByLevelAndType(int level,int type) {
         return categoryMapper.findByLevelAndType(level,type);
     }
+    @Override
+    public int cascadeDeleteCategory(int id) {
+        return categoryMapper.cascadeDeleteCategory(id);
+    }
 }
