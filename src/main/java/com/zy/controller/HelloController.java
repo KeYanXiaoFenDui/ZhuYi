@@ -24,5 +24,11 @@ public class HelloController {
 
         return "zhuYiIndex";
     }
+    @RequestMapping(value = "/newPage")
+    public String newPage(Model model)
+    {
+
+        return "newPage";
+    }
 
 }
