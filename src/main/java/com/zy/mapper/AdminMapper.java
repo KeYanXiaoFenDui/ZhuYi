@@ -2,7 +2,10 @@ package com.zy.mapper;
 
 
 import com.zy.domain.Admin;
+import com.zy.mapper.sqlProvide.AdminSQLProvider;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface AdminMapper {
@@ -19,5 +22,8 @@ public interface AdminMapper {
 
     @Select("select * from admin where id=#{id}")
     public Admin getAdmin(int id);
+
+    @SelectProvider(type = AdminSQLProvider.class,method = "getAdminList")
+    public List<Admin> getAdminList(String accountOrName);
 
 }

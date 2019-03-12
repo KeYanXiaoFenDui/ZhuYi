@@ -2,9 +2,11 @@ package com.zy.controller;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.zy.domain.Admin;
 import com.zy.domain.Category;
 import com.zy.domain.Menu;
 import com.zy.enums.CategoryType;
+import com.zy.service.IAdminService;
 import com.zy.service.ICategoryService;
 import com.zy.service.IMenuService;
 import com.zy.util.CommonUtil;
@@ -12,16 +14,19 @@ import com.zy.util.PageBean;
 import com.zy.util.constant.MessageConstant;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 
-@RestController
+@Controller
 @RequestMapping("/zhuYi")
 public class ZhuYiController {
 
@@ -29,6 +34,8 @@ public class ZhuYiController {
     private IMenuService menuService;
     @Autowired
     private ICategoryService categoryService;
+    @Autowired
+    private IAdminService adminService;
 
     /**
      *新增菜单数据
@@ -81,16 +88,19 @@ public class ZhuYiController {
      *管理后台查询管理员列表
      */
     @RequestMapping(value = "/getAdminList")
-    public HashMap<String,Object> getAdminList(HttpServletRequest request) {
+    public String getAdminList(Model m,HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
         PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
-        String account = CommonUtil.getStr(request.getParameter("account"),"");
+        String accountOrName = CommonUtil.getStr(request.getParameter("accountOrName"),"");
         String name = CommonUtil.getStr(request.getParameter("name"),"");
-        List resultList = new ArrayList();
-        PageBean<Map> list = new PageBean<Map>(resultList);
-        return CommonUtil.ToResultHashMap(status,message,data);
+        List<Admin> resultList = adminService.getAdminList(accountOrName);
+        PageBean<Admin> list = new PageBean<Admin>(resultList);
+        System.out.println(list.toString());
+        m.addAttribute("adminList",list);
+        return "newPage";
+//        return CommonUtil.ToResultHashMap(status,message,list);
     }
     /**
      *新增&编辑管理员

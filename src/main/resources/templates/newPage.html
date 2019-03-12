@@ -185,17 +185,17 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>
+                            <tr th:each="a : ${adminList.list}">
+                                <td th:text="${a.id}">
                                     1
                                 </td>
-                                <td>
+                                <td th:text="${a.account}">
                                     15060606060
                                 </td>
-                                <td>
+                                <td th:text="${a.name}">
                                     管理员1
                                 </td>
-                                <td>
+                                <td th:text="${a.roleId}">
                                     对账财务
                                 </td>
                                 <td>

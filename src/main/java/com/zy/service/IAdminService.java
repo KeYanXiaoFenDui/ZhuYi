@@ -4,6 +4,8 @@ package com.zy.service;
 import com.zy.domain.Admin;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface IAdminService {
     public int insertAdmin(Admin admin);
@@ -13,4 +15,6 @@ public interface IAdminService {
     public int deleteAdmin(int id);
 
     public Admin getAdmin(int id);
+
+    public List<Admin> getAdminList(String accountOrName);
 }

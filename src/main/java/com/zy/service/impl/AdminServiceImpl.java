@@ -7,6 +7,8 @@ import com.zy.service.IAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AdminServiceImpl implements IAdminService {
     @Autowired
@@ -30,5 +32,10 @@ public class AdminServiceImpl implements IAdminService {
     @Override
     public Admin getAdmin(int id) {
         return adminMapper.getAdmin(id);
+    }
+
+    @Override
+    public List<Admin> getAdminList(String accountOrName) {
+        return adminMapper.getAdminList(accountOrName);
     }
 }
