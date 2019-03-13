@@ -152,9 +152,9 @@
                         <div class="col-md-10 column">
                             <div class="col-sm-5">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="请输入管理员账号/姓名进行搜索">
+                                    <input id="accountOrName" type="text" class="form-control" placeholder="请输入管理员账号/姓名进行搜索" th:value="${accountOrName}">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                                        <button class="btn btn-primary" type="button" onclick="getAdminList();"><span class="glyphicon glyphicon-search"></span></button>
                                     </span>
                                 </div>
                             </div>
@@ -203,132 +203,82 @@
                                     <button class="btn btn-primary" type="button">删除</button>
                                 </td>
                             </tr>
-                            <tr>
-                            <td>
-                            2
-                            </td>
-                            <td>
-                            15060606060
-                            </td>
-                            <td>
-                            路人甲
-                            </td>
-                            <td>
-                            门店管理员
-                            </td>
-                                <td>
-                                    <button class="btn btn-primary" type="button">编辑</button>
-                                    <button class="btn btn-primary" type="button">删除</button>
-                                </td>
-                            </tr>
-                            <tr>
-                            <td>
-                            3
-                            </td>
-                            <td>
-                            15060606060
-                            </td>
-                            <td>
-                            路人乙
-                            </td>
-                            <td>
-                            场景管理员
-                            </td>
-                                <td>
-                                    <button class="btn btn-primary" type="button">编辑</button>
-                                    <button class="btn btn-primary" type="button">删除</button>
-                                </td>
-                            </tr>
-                            <tr>
-                            <td>
-                            4
-                            </td>
-                            <td>
-                            15060606060
-                            </td>
-                            <td>
-                            路人丙
-                            </td>
-                            <td>
-                            需求管理员
-                            </td>
-                                <td>
-                                    <button class="btn btn-primary" type="button">编辑</button>
-                                    <button class="btn btn-primary" type="button">删除</button>
-                                </td>
-                            </tr>
-                            <tr>
-                            <td>
-                            5
-                            </td>
-                            <td>
-                            15060606060
-                            </td>
-                            <td>
-                            路人丁
-                            </td>
-                            <td>
-                            超级管理员
-                            </td>
-                                <td>
-                                    <button class="btn btn-primary" type="button">编辑</button>
-                                    <button class="btn btn-primary" type="button">删除</button>
-                                </td>
-                            </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="row clearfix">
-                        <div class="col-md-5 column">
-                            <span style="height: inherit;">共   <span>5</span>    条记录</span>
+                        <input type="hidden" id="pageNum" th:value="${adminList.pageNum}"/>
+                        <input type="hidden" id="pageSize" th:value="${adminList.pageSize}"/>
+                        <input type="hidden" id="pages" th:value="${adminList.pages}"/>
+                        <div class="col-md-4 column">
+                            <span style="height: inherit;">共   <span th:text="${adminList.total}">5</span>    条记录</span>
                         </div>
-                        <div class="col-md-7 column">
+                        <div class="col-md-8 column">
                             <ul class="pagination" style="margin: 0 0;">
-                                <li>
-                                    <a href="#">上一页</a>
-                                </li>
-                                <li>
-                                    <a href="#">1</a>
-                                </li>
-                                <li>
-                                    <a href="#">2</a>
-                                </li>
-                                <li>
-                                    <a href="#">3</a>
-                                </li>
-                                <li>
-                                    <a href="#">4</a>
-                                </li>
-                                <li>
-                                    <a href="#">5</a>
-                                </li>
-                                <li>
-                                    <a href="#">下一页</a>
-                                </li>
+                                <th:block th:if="${adminList.pageNum > 1}">
+                                    <li>
+                                        <a th:href="'getAdminList?pageSize='+${adminList.pageSize}+'&pageNum='+${adminList.pageNum-1}+'&accountOrName='+${accountOrName}">上一页</a>
+                                    </li>
+                                </th:block>
+                                <th:block th:if="${adminList.pages < 9}">
+                                    <li th:each="dayCyc : ${#numbers.sequence(1,adminList.pages)}" th:class="${dayCyc == adminList.pageNum}? 'active' : ''">
+                                        <a th:href="'getAdminList?pageSize='+${adminList.pageSize}+'&pageNum='+${dayCyc}+'&accountOrName='+${accountOrName}" th:text="${dayCyc}">1</a>
+                                    </li>
+                                </th:block>
+                                <th:block th:if="${adminList.pages >= 9}">
+                                    <li th:if="${adminList.pageNum >= 4}" th:class="${1 == adminList.pageNum}? 'active' : ''">
+                                        <a th:href="'getAdminList?pageSize='+${adminList.pageSize}+'&pageNum=1&accountOrName='+${accountOrName}">1</a>
+                                    </li>
+                                    <li th:if="${adminList.pageNum <= 3}" th:each="dayCyc : ${#numbers.sequence(1,5)}" th:class="${dayCyc == adminList.pageNum}? 'active' : ''">
+                                        <a th:href="'getAdminList?pageSize='+${adminList.pageSize}+'&pageNum='+${dayCyc}+'&accountOrName='+${accountOrName}" th:text="${dayCyc}">1</a>
+                                    </li>
+                                    <li th:if="${adminList.pageNum >= 5}">
+                                        <span>...</span>
+                                    </li>
+                                    <th:block th:if="${adminList.pageNum >= 4 and adminList.pageNum <= adminList.pages-3}">
+                                        <li th:each="dd : ${#numbers.sequence(-2,2)}" th:class="${adminList.pageNum+dd == adminList.pageNum}? 'active' : ''">
+                                            <a th:href="'getAdminList?pageSize='+${adminList.pageSize}+'&pageNum='+${adminList.pageNum+dd}+'&accountOrName='+${accountOrName}" th:text="${adminList.pageNum+dd}">1</a>
+                                        </li>
+                                    </th:block>
+                                    <li th:if="${adminList.pageNum <= adminList.pages - 4}">
+                                        <span>...</span>
+                                    </li>
+                                    <li th:if="${adminList.pageNum >= adminList.pages - 2}" th:each="dayCyc : ${#numbers.sequence(-4,0)}" th:class="${adminList.pages + dayCyc == adminList.pageNum}? 'active' : ''">
+                                        <a th:href="'getAdminList?pageSize='+${adminList.pageSize}+'&pageNum='+${adminList.pages + dayCyc}+'&accountOrName='+${accountOrName}" th:text="${adminList.pages + dayCyc}">1</a>
+                                    </li>
+                                    <li th:if="${adminList.pageNum <= adminList.pages - 3}" th:class="${adminList.pages == adminList.pageNum}? 'active' : ''">
+                                        <a th:href="'getAdminList?pageSize='+${adminList.pageSize}+'&pageNum='+${adminList.pages}+'&accountOrName='+${accountOrName}" th:text="${adminList.pages}">1</a>
+                                    </li>
+                                </th:block>
+                                <th:block th:if="${adminList.pageNum < adminList.pages}">
+                                    <li>
+                                        <a th:href="'getAdminList?pageSize='+${adminList.pageSize}+'&pageNum='+${adminList.pageNum+1}+'&accountOrName='+${accountOrName}">下一页</a>
+                                    </li>
+                                </th:block>
                                 <li>
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">10条/页
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" th:text="${adminList.pageSize}+'条/页'">10条/页
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
                                             <li>
-                                                <a href="#">10条/页</a>
+                                                <a th:href="'getAdminList?pageSize=10&accountOrName='+${accountOrName}">10条/页</a>
                                             </li>
                                             <li>
-                                                <a href="#">20条/页</a>
+                                                <a th:href="'getAdminList?pageSize=20&accountOrName='+${accountOrName}">20条/页</a>
                                             </li>
                                             <li>
-                                                <a href="#">30条/页</a>
+                                                <a th:href="'getAdminList?pageSize=30&accountOrName='+${accountOrName}">30条/页</a>
                                             </li>
                                             <!--<li class="divider"></li>-->
                                             <li>
-                                                <a href="#">40条/页</a>
+                                                <a th:href="'getAdminList?pageSize=40&accountOrName='+${accountOrName}">40条/页</a>
                                             </li>
                                         </ul>
                                     </div>
                                 </li>
                                 <li>
-                                    跳至<input type="text" class="form-control" style="width: 50px;display: inline-block;"/>页
+                                    跳至<input id="jumpPage" type="text" class="form-control" style="width: 50px;display: inline-block;"/>页
                                 </li>
                             </ul>
                         </div>
@@ -400,10 +350,27 @@
 <script th:src="@{/jquery/jquery-3.2.1.min.js}"></script>
 <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
 <script>
-    function getTableDetail() {
-//        $.ajax({ url: "test.html", context: document.body, success: function(){
-            alert(1234);
-//        }});
+    $(document).keydown(function(event){
+        if(event.keyCode == 13){
+            if(isNumber($("#jumpPage").val())){//非数字不能跳转
+                window.location.href = 'getAdminList?accountOrName='+$("#accountOrName").val()+'&pageSize='+$("#pageSize").val()+'&pageNum='+$("#jumpPage").val();
+            }
+        }
+    });
+    //判断是否为数字方法
+    function isNumber(val){
+        var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+        var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+        if(regPos.test(val) || regNeg.test(val)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    function getAdminList() {
+        if($("#accountOrName").val().trim() != ''){
+            window.location.href = 'getAdminList?pageSize='+$("#pageSize").val()+'&accountOrName='+$("#accountOrName").val();
+        }
     }
 </script>
 </body>
