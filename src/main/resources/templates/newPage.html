@@ -69,7 +69,7 @@
                     <div class="panel-group" id="panel-594187">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" href="#panel-element-826081">用 户 管 理</a>
+                                <a id="userMenu" class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" href="#panel-element-826081">用 户 管 理</a>
                             </div>
                             <div id="panel-element-826081" class="panel-collapse collapse">
                                 <div class="panel-body">
@@ -124,9 +124,9 @@
                         </div>
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" href="#panel-element-792346">权 限 管 理</a>
+                                <a id="adminMenu" class="panel-title" data-toggle="collapse" data-parent="#panel-594187" href="#panel-element-792346" aria-expanded="true">权 限 管 理</a>
                             </div>
-                            <div id="panel-element-792346" class="panel-collapse collapse">
+                            <div id="panel-element-792346" class="panel-collapse collapse in" aria-expanded="true">
                                 <div class="panel-body">
                                     管理员列表<br/>
                                     身份列表<br/>
@@ -139,14 +139,14 @@
                 <div class="col-md-10 column">
                     <ul class="breadcrumb">
                         <li>
-                            <a href="#">权限管理</a>
-                        </li>
-                        <li>
-                            <a href="#">管理员列表</a>
+                            权限管理
                         </li>
                         <li class="active">
-                            Data
+                            管理员列表
                         </li>
+                        <!--<li class="active">-->
+                            <!--Data-->
+                        <!--</li>-->
                     </ul>
                     <div class="row clearfix">
                         <div class="col-md-10 column">
@@ -318,25 +318,24 @@
                                     <div class="form-group">
                                         <label for="select" class="col-sm-3 control-label">*管理员身份：</label>
                                         <div class="col-sm-9">
-                                            <select id="select" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-                                                　　<option value="苹果">苹果</option>
-                                                　　<option value="菠萝">菠萝</option>
-                                                　　<option value="香蕉">香蕉</option>
-                                                　　<option value="火龙果">火龙果</option>
-                                                　　<option value="梨子">梨子</option>
-                                                　　<option value="草莓">草莓</option>
-                                                　　<option value="哈密瓜">哈密瓜</option>
-                                                　　<option value="椰子">椰子</option>
-                                                　　<option value="猕猴桃">猕猴桃</option>
-                                                　　<option value="桃子">桃子</option>
+                                            <select id="roleId" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                　　<option value="1">苹果</option>
+                                                　　<option value="2">菠萝</option>
+                                                　　<option value="3">香蕉</option>
+                                                　　<option value="4">火龙果</option>
+                                                　　<option value="5">梨子</option>
+                                                　　<option value="6">草莓</option>
+                                                　　<option value="7">哈密瓜</option>
+                                                　　<option value="8">椰子</option>
+                                                　　<option value="9">猕猴桃</option>
                                             </select>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                                <button type="submit" class="btn btn-primary">确定</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" id="closeAddAdmin">取消</button>
+                                <button type="submit" class="btn btn-primary" onclick="insertAdmin();">确定</button>
                             </div>
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal -->
@@ -350,6 +349,9 @@
 <script th:src="@{/jquery/jquery-3.2.1.min.js}"></script>
 <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
 <script>
+    $(document).ready(function (){
+//        $("#adminMenu").click();
+    });
     $(document).keydown(function(event){
         if(event.keyCode == 13){
             if(isNumber($("#jumpPage").val())){//非数字不能跳转
@@ -357,6 +359,26 @@
             }
         }
     });
+    function insertAdmin(){
+        $.ajax({
+            url: "http://localhost:8080/zhuYi/createAndUpdateAdmin",
+            method: "post",
+            data: {
+                account:$("#account").val(),
+                name:$("#adminName").val(),
+                password:$("#password").val(),
+                roleId:$("#roleId").val()
+            },
+            success: function(result){
+                if(result.status == 1){
+                    alert(result.message);
+                    window.location.href = 'getAdminList';
+                }else{
+                    alert(result.message);
+                }
+            }
+        });
+    }
     //判断是否为数字方法
     function isNumber(val){
         var regPos = /^\d+(\.\d+)?$/; //非负浮点数

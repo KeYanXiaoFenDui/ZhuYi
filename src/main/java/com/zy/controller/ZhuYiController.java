@@ -123,17 +123,20 @@ public class ZhuYiController {
         int roleId = Integer.parseInt(CommonUtil.getStr(request.getParameter("roleId"),"-500"));
         if(roleId == -500){return CommonUtil.ToResultHashMap(status,"roleId为空!",null);}
         try {
-            for(int i = 5;i<100;i++){
                 Admin a = new Admin();
                 a.setAccStatus(1);
-                a.setAccount("admin"+i);
-                a.setName("管理员"+i);
-                a.setPassword("123456");
-                a.setRoleId(1);
+                a.setAccount(account);
+                a.setName(name);
+                a.setPassword(password);
+                a.setRoleId(roleId);
                 a.setCreateTime(new Date());
                 a.setStatus(1);
-                adminService.insertAdmin(a);
-            }
+                int result = adminService.insertAdmin(a);
+                if(result == 1){
+                    status = MessageConstant.SUCCESS_CODE;
+                    message = MessageConstant.SUCCESS_INFO;
+                }
+
         } catch (Exception e){
             e.printStackTrace();
 //            logger.error("新增&编辑管理员异常：" + e.getMessage());
