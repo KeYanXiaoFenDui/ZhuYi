@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="row clearfix" th:fragment="page(optionList,requestUrl,urlParamStr)">
+    <input type="hidden" id="pageNum" th:value="${optionList.pageNum}"/>
+    <input type="hidden" id="pageSize" th:value="${optionList.pageSize}"/>
+    <input type="hidden" id="pages" th:value="${optionList.pages}"/>
+    <div class="col-md-4 column">
+        <span style="height: inherit;">共   <span th:text="${optionList.total}">5</span>    条记录</span>
+    </div>
+    <div class="col-md-8 column">
+        <ul class="pagination" style="margin: 0 0;">
+            <th:block th:if="${optionList.pageNum > 1}">
+                <li>
+                    <a th:href="${requestUrl}+'?pageSize='+${optionList.pageSize}+'&pageNum='+${optionList.pageNum-1}+${urlParamStr}">上一页</a>
+                </li>
+            </th:block>
+            <th:block th:if="${optionList.pages < 9}">
+                <li th:each="dayCyc : ${#numbers.sequence(1,optionList.pages)}" th:class="${dayCyc == optionList.pageNum}? 'active' : ''">
+                    <a th:href="${requestUrl}+'?pageSize='+${optionList.pageSize}+'&pageNum='+${dayCyc}+${urlParamStr}" th:text="${dayCyc}">1</a>
+                </li>
+            </th:block>
+            <th:block th:if="${optionList.pages >= 9}">
+                <li th:if="${optionList.pageNum >= 4}" th:class="${1 == optionList.pageNum}? 'active' : ''">
+                    <a th:href="${requestUrl}+'?pageSize='+${optionList.pageSize}+'&pageNum=1&accountOrName='+${accountOrName}">1</a>
+                </li>
+                <li th:if="${optionList.pageNum <= 3}" th:each="dayCyc : ${#numbers.sequence(1,5)}" th:class="${dayCyc == optionList.pageNum}? 'active' : ''">
+                    <a th:href="${requestUrl}+'?pageSize='+${optionList.pageSize}+'&pageNum='+${dayCyc}+${urlParamStr}" th:text="${dayCyc}">1</a>
+                </li>
+                <li th:if="${optionList.pageNum >= 5}">
+                    <span>...</span>
+                </li>
+                <th:block th:if="${optionList.pageNum >= 4 and optionList.pageNum <= optionList.pages-3}">
+                    <li th:each="dd : ${#numbers.sequence(-2,2)}" th:class="${optionList.pageNum+dd == optionList.pageNum}? 'active' : ''">
+                        <a th:href="${requestUrl}+'?pageSize='+${optionList.pageSize}+'&pageNum='+${optionList.pageNum+dd}${urlParamStr}" th:text="${optionList.pageNum+dd}">1</a>
+                    </li>
+                </th:block>
+                <li th:if="${optionList.pageNum <= optionList.pages - 4}">
+                    <span>...</span>
+                </li>
+                <li th:if="${optionList.pageNum >= optionList.pages - 2}" th:each="dayCyc : ${#numbers.sequence(-4,0)}" th:class="${optionList.pages + dayCyc == optionList.pageNum}? 'active' : ''">
+                    <a th:href="${requestUrl}+'?pageSize='+${optionList.pageSize}+'&pageNum='+${optionList.pages + dayCyc}+${urlParamStr}" th:text="${optionList.pages + dayCyc}">1</a>
+                </li>
+                <li th:if="${optionList.pageNum <= optionList.pages - 3}" th:class="${optionList.pages == optionList.pageNum}? 'active' : ''">
+                    <a th:href="${requestUrl}+'?pageSize='+${optionList.pageSize}+'&pageNum='+${optionList.pages}+${urlParamStr}" th:text="${optionList.pages}">1</a>
+                </li>
+            </th:block>
+            <th:block th:if="${optionList.pageNum < optionList.pages}">
+                <li>
+                    <a th:href="${requestUrl}+'?pageSize='+${optionList.pageSize}+'&pageNum='+${optionList.pageNum+1}+${urlParamStr}">下一页</a>
+                </li>
+            </th:block>
+            <li>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" th:text="${optionList.pageSize}+'条/页'">10条/页
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <a th:href="${requestUrl}+'?pageSize=10'+${urlParamStr}">10条/页</a>
+                        </li>
+                        <li>
+                            <a th:href="${requestUrl}+'?pageSize=20'+${urlParamStr}">20条/页</a>
+                        </li>
+                        <li>
+                            <a th:href="${requestUrl}+'?pageSize=30'+${urlParamStr}">30条/页</a>
+                        </li>
+                        <!--<li class="divider"></li>-->
+                        <li>
+                            <a th:href="${requestUrl}+'?pageSize=40'+${urlParamStr}">40条/页</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                跳至<input id="jumpPage" type="text" class="form-control" style="width: 50px;display: inline-block;"/>页
+            </li>
+        </ul>
+    </div>
+</div>
+</html>
+
+

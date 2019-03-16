@@ -46,4 +46,9 @@ public class CategoryServiceImpl implements ICategoryService {
     public int cascadeDeleteCategory(int id) {
         return categoryMapper.cascadeDeleteCategory(id);
     }
+
+    @Override
+    public List<Category> findSubByNameLike(String parentId, String name,int type) {
+        return categoryMapper.findSubByNameLike( parentId, name,type);
+    }
 }

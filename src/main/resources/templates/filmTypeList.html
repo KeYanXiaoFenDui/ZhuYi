@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Carbon - Admin Template</title>
+    <link rel="stylesheet" th:href="@{/vendor/simple-line-icons/css/simple-line-icons.css}">
+    <link rel="stylesheet" th:href="@{/vendor/font-awesome/css/fontawesome-all.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="sidebar-fixed header-fixed">
+<div class="page-wrapper" >
+<div th:replace="commonFrame::frameLyout"></div>
+<div class="main-container">
+    <div th:replace="leftmenu::leftmenu"></div>
+    <div class="content">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Home</a>
+                    </li>
+                    >
+                    <li>
+                        <a href="#">Library</a>
+                    </li>
+                    >
+                    <li class="active">
+                        Data
+                    </li>
+                </ul>
+                <div class="row clearfix">
+                    <div class="col-md-8 column">
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputEmail3" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 column">
+                        <button type="button" class="btn btn-default">按钮</button>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <table class="table table-bordered table-hover table-condensed">
+                            <thead>
+                            <tr>
+                                <th>
+                                    编号
+                                </th>
+                                <th>
+                                    权重
+                                </th>
+                                <th>
+                                    类型名称（中文）
+                                </th>
+                                <th>
+                                    类型名称（英文）
+                                </th>
+                                <th>
+                                    状态
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="dataTable">
+                                <tr th:each="film : ${filmTypeList.list}">
+                                    <td th:text="${film.id}">
+                                        1
+                                    </td>
+                                    <td th:text="${film.order}">
+                                        TB - Monthly
+                                    </td>
+                                    <td th:text="${film.name}">
+                                        01/04/2012
+                                    </td>
+                                    <td th:text="${film.nameEn}">
+                                        Default
+                                    </td>
+                                    <td th:text="${film.nameEn}">
+                                       状态
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="pagination::page(${filmTypeList.list},'getFilmTypeList','&name=111')"></div>
+    </div>
+</div>
+</div>
+
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/popper.js/popper.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/vendor/chart.js/chart.min.js}"></script>
+<script th:src="@{/js/carbon.js}"></script>
+<script th:src="@{/js/demo.js}"></script>
+</body>
+</html>
+
+

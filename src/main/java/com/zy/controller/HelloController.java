@@ -27,8 +27,13 @@ public class HelloController {
     @RequestMapping(value = "/newPage")
     public String newPage(Model model)
     {
-
         return "newPage";
+    }
+    @RequestMapping(value = "/template")
+    public String commonFrame(Model model)
+    {
+
+        return "contentTemplate";
     }
 
 }

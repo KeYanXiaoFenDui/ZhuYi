@@ -32,4 +32,7 @@ public interface CategoryMapper {
 
     @Update("update category set status = 0 where (id=#{id} or parent_id = #{id})")
     public int cascadeDeleteCategory(@Param("id")int id);
+
+    @SelectProvider(type = CategorySQLProvide.class,method = "findSubByNameLike")
+    public List<Category> findSubByNameLike(String parentId, String name,int type);
 }
