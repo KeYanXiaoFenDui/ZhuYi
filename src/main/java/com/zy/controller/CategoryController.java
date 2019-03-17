@@ -15,6 +15,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +57,7 @@ public class CategoryController {
      * @return
      */
     @RequestMapping(value = "/getStageStyleList")
-    public HashMap<String,Object> getStageStyleList(HttpServletRequest request) {
+    public String getStageStyleList(Model model, HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
@@ -69,7 +70,9 @@ public class CategoryController {
             resultList = categoryService.findByLevelAndType(1,CategoryType.STAGE_STYLE);
         }
         PageBean<Map> list = new PageBean<Map>(resultList);
-        return CommonUtil.ToResultHashMap(status,message,list);
+//        return CommonUtil.ToResultHashMap(status,message,list);
+        model.addAttribute("stageStyleList",list);
+        return "stageStyleList";
     }
 
     /**
@@ -78,7 +81,7 @@ public class CategoryController {
      * @return
      */
     @RequestMapping(value = "/getStageTypeList")
-    public HashMap<String,Object> getStageTypeList(HttpServletRequest request) {
+    public String getStageTypeList(Model model,HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
@@ -91,7 +94,9 @@ public class CategoryController {
             resultList = categoryService.findByLevelAndType(1,CategoryType.STAGE_TYPE);
         }
         PageBean<Map> list = new PageBean<Map>(resultList);
-        return CommonUtil.ToResultHashMap(status,message,list);
+//        return CommonUtil.ToResultHashMap(status,message,list);
+        model.addAttribute("stageTypeList",list);
+        return "stageTypeList";
     }
 
     /**
@@ -100,7 +105,7 @@ public class CategoryController {
      * @return
      */
     @RequestMapping(value = "/getSubStageTypeList/{parentId}")
-    public HashMap<String,Object> getSubStageTypeList(HttpServletRequest request
+    public String getSubStageTypeList(Model model,HttpServletRequest request
             ,@PathVariable("parentId")String parentId) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -109,7 +114,9 @@ public class CategoryController {
         String name = CommonUtil.getStr(request.getParameter("name"),"");
         List resultList = categoryService.findSubByNameLike(parentId,name,CategoryType.STAGE_TYPE);
         PageBean<Map> list = new PageBean<Map>(resultList);
-        return CommonUtil.ToResultHashMap(status,message,list);
+//        return CommonUtil.ToResultHashMap(status,message,list);
+        model.addAttribute("subStageTypeList",list);
+        return "subStageTypeList";
     }
 
     /**
@@ -117,6 +124,7 @@ public class CategoryController {
      */
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "/insertCategory")
+    @ResponseBody
     public HashMap<String,Object> insertCategory(Category c, HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -146,6 +154,7 @@ public class CategoryController {
      */
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "/updateCategory")
+    @ResponseBody
     public HashMap<String,Object> updateCategory(Category c, HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -177,6 +186,7 @@ public class CategoryController {
      */
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "/deleteCategory/{categoryId}")
+    @ResponseBody
     public HashMap<String,Object> deleteCategory(@PathVariable("categoryId")int categoryId, HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;

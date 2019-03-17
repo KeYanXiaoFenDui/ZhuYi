@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Carbon - Admin Template</title>
+    <link rel="stylesheet" th:href="@{/vendor/simple-line-icons/css/simple-line-icons.css}">
+    <link rel="stylesheet" th:href="@{/vendor/font-awesome/css/fontawesome-all.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="sidebar-fixed header-fixed">
+<div class="page-wrapper" >
+<div th:replace="commonFrame::frameLyout"></div>
+<div class="main-container">
+    <div th:replace="leftmenu::leftmenu"></div>
+    <div class="content">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Home</a>
+                    </li>
+                    >
+                    <li>
+                        <a href="#">Library</a>
+                    </li>
+                    >
+                    <li class="active">
+                        Data
+                    </li>
+                </ul>
+                <div class="row clearfix">
+                    <div class="col-md-8 column">
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputEmail3" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 column">
+                        <button type="button" class="btn btn-default">按钮</button>
+                    </div>
+                    <div class="col-md-2 column">
+                        <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#insertCategory">新增分类</button>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <table class="table table-bordered table-hover table-condensed">
+                            <thead>
+                            <tr>
+                                <th>
+                                    编号
+                                </th>
+                                <th>
+                                    权重
+                                </th>
+                                <th>
+                                    类型名称（中文）
+                                </th>
+                                <th>
+                                    类型名称（英文）
+                                </th>
+                                <th>
+                                    状态
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="dataTable">
+                                <tr th:each="style : ${stageStyleList.list}">
+                                    <td th:text="${style.id}">
+                                        1
+                                    </td>
+                                    <td th:text="${style.order}">
+                                        TB - Monthly
+                                    </td>
+                                    <td th:text="${style.name}">
+                                        01/04/2012
+                                    </td>
+                                    <td th:text="${style.nameEn}">
+                                        Default
+                                    </td>
+                                    <td>
+                                        <a href="javascript:void(0);" class="btn btn-primary">编辑</a>
+                                        <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'deleteCategory(\''+${style.id}+'\')'">删除</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="pagination::page(${stageStyleList.list},'getStageStyleList','&name=111')"></div>
+    </div>
+</div>
+</div>
+
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/popper.js/popper.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/vendor/chart.js/chart.min.js}"></script>
+<script th:src="@{/js/carbon.js}"></script>
+<script th:src="@{/js/demo.js}"></script>
+
+<div class="modal fade" id="insertCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">新增类型</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" id="form">
+                    <input type="hidden" name="level" value="1"/>
+                    <input type="hidden" name="type" value="2"/>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-5 control-label">*类型名称（中文）：</label>
+                        <div class="col-sm-5">
+                            <input type="text" name="name" class="form-control" id="name" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nameEn" class="col-sm-5 control-label">*类型名称（英文）：</label>
+                        <div class="col-sm-5">
+                            <input type="text" name="nameEn" class="form-control" id="nameEn" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="order" class="col-sm-3 control-label">*权重：</label>
+                        <div class="col-sm-9">
+                            <select id="order" name="order" class="show-tick form-control" data-live-search="true" data-actions-box="true">
+                                　　<option value="0">0</option>
+                                　　<option value="1">1</option>
+                                　　<option value="2">2</option>
+                                　　<option value="3">3</option>
+                                　　<option value="4">4</option>
+                                　　<option value="5">5</option>
+                                　　<option value="6">6</option>
+                                　　<option value="7">7</option>
+                                　　<option value="8">8</option>
+                                　　<option value="9">9</option>
+                                　　<option value="10">10</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="closeAddAdmin">取消</button>
+                <button type="submit" class="btn btn-primary" onclick="insertCategory();">确定</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<script>
+function insertCategory(){
+    $.ajax({
+            url: "http://localhost:8080/category/insertCategory",
+            method: "post",
+            data: $('#form').serialize(),
+            success: function(result){
+                if(result.status == 1){
+                    alert(result.message);
+                    window.location.href = 'getStageStyleList';
+                }else{
+                    alert(result.message);
+                }
+            }
+        });
+}
+function deleteCategory(id){
+    $.ajax({
+        url: "http://localhost:8080/category/deleteCategory/"+id,
+        method: "post",
+        success: function(result){
+            if(result.status == 1){
+                alert(result.message);
+                window.location.href = 'getStageStyleList';
+            }else{
+                alert(result.message);
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>
+
+
