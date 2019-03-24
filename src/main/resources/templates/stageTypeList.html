@@ -19,16 +19,13 @@
             <div class="col-md-12 column">
                 <ul class="breadcrumb">
                     <li>
-                        <a href="#">Home</a>
+                        <a href="#">分类管理</a>
                     </li>
                     >
                     <li>
-                        <a href="#">Library</a>
+                        <a href="#">场景类型列表</a>
                     </li>
-                    >
-                    <li class="active">
-                        Data
-                    </li>
+
                 </ul>
                 <div class="row clearfix">
                     <div class="col-md-8 column">
@@ -80,6 +77,7 @@
                                         Default
                                     </td>
                                     <td>
+                                        <a href="javascript:void(0);" class="btn btn-primary" th:href="${#httpServletRequest.getContextPath()}+'/category/getSubStageTypeList/'+${stage.id}">查看二级</a>
                                         <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'openUpdateModal(\''+${stage.id}+'\',\''+${stage.name}+'\',\''+${stage.nameEn}+'\',\''+${stage.order}+'\')'">编辑</a>
                                         <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'deleteCategory(\''+${stage.id}+'\')'">删除</a>
                                     </td>
@@ -90,7 +88,7 @@
                 </div>
             </div>
         </div>
-        <div th:replace="pagination::page(${stageTypeList.list},'getStageTypeList','&name=111')"></div>
+        <div th:replace="pagination::page(${stageTypeList.list},'getStageTypeList','&name='+${name})"></div>
     </div>
 </div>
 </div>
@@ -112,7 +110,7 @@
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="form">
                     <input type="hidden" name="level" value="1"/>
-                    <input type="hidden" name="type" value="2"/>
+                    <input type="hidden" name="type" value="3"/>
                     <div class="form-group">
                         <label for="name" class="col-sm-5 control-label">*类型名称（中文）：</label>
                         <div class="col-sm-5">
@@ -128,8 +126,8 @@
                     <div class="form-group">
                         <label  class="col-sm-3 control-label">*权重：</label>
                         <div class="col-sm-9">
-                            <select th:each="order : ${orderList}" name="order" class="show-tick form-control" data-live-search="true" data-actions-box="true">
-                                <option th:text="${order}"></option>
+                            <select name="order" class="show-tick form-control" data-live-search="true" data-actions-box="true">
+                                <option th:each="o : ${orderList}"  th:text="${o}"></option>
                             </select>
                         </div>
                     </div>
@@ -154,7 +152,7 @@
                 <form class="form-horizontal" role="form" id="updateForm">
                     <input type="hidden" name="id" value=""/>
                     <input type="hidden" name="level" value="1"/>
-                    <input type="hidden" name="type" value="2"/>
+                    <input type="hidden" name="type" value="3"/>
                     <div class="form-group">
                         <label for="name" class="col-sm-5 control-label">*类型名称（中文）：</label>
                         <div class="col-sm-5">
@@ -167,11 +165,11 @@
                             <input type="text" name="nameEn" class="form-control"  placeholder="">
                         </div>
                     </div>
-                    <div class="form-group">s
+                    <div class="form-group">
                         <label for="order" class="col-sm-3 control-label">*权重：</label>
                         <div  class="col-sm-9">
-                            <select name="order" th:each="o : ${orderList}" class="show-tick form-control" data-live-search="true" data-actions-box="true">
-                                <option th:text="${o}"></option>
+                            <select name="order" class="show-tick form-control" data-live-search="true" data-actions-box="true">
+                                <option th:each="o : ${orderList}"  th:text="${o}"></option>
                             </select>
                         </div>
                     </div>
@@ -205,9 +203,9 @@ function insertCategory(){
 
 function openUpdateModal(id,name,nameEn,order){
     $("#updateForm input[name='id']").val(id);
-    $("#updateForm input[name='name']").val(name);
-    $("#updateForm input[name='nameEn']").val(nameEn);
-    $("#updateForm input[name='order']").val(order);
+    $("#updateForm input[name='name']").val(name=='null'?'':name);
+    $("#updateForm input[name='nameEn']").val(nameEn=='null'?'':nameEn);
+    $("#updateForm select[name='order']").val(order);
     $("#updateCategory").modal();
 }
 
@@ -228,7 +226,7 @@ function updateCategory(){
 }
 function deleteCategory(id){
     $.ajax({
-        url: "http://localhost:8080/category/deleteCategory/"+id,
+        url: "/category/deleteCategory/"+id,
         method: "post",
         success: function(result){
             if(result.status == 1){

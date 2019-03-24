@@ -5,9 +5,9 @@
     <input type="hidden" id="pageSize" th:value="${optionList.pageSize}"/>
     <input type="hidden" id="pages" th:value="${optionList.pages}"/>
     <div class="col-md-4 column">
-        <span style="height: inherit;">共   <span th:text="${optionList.total}">5</span>    条记录</span>
+        <span style="height: inherit;">共   <span th:text="${optionList.total}"></span>    条记录</span>
     </div>
-    <div class="col-md-8 column">
+    <div class="col-md-8 column" th:if="${optionList.total gt 0 }">
         <ul class="pagination" style="margin: 0 0;">
             <th:block th:if="${optionList.pageNum > 1}">
                 <li>

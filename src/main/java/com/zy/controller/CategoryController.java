@@ -48,6 +48,7 @@ public class CategoryController {
 //        return CommonUtil.ToResultHashMap(status,message,list);
         model.addAttribute("filmTypeList",list);
         model.addAttribute("orderList",getOrderList());
+        model.addAttribute("name",name);
         return "filmTypeList";
     }
 
@@ -74,6 +75,7 @@ public class CategoryController {
 //        return CommonUtil.ToResultHashMap(status,message,list);
         model.addAttribute("stageStyleList",list);
         model.addAttribute("orderList",getOrderList());
+        model.addAttribute("name",name);
         return "stageStyleList";
     }
 
@@ -98,6 +100,7 @@ public class CategoryController {
         PageBean<Map> list = new PageBean<Map>(resultList);
         model.addAttribute("stageTypeList",list);
         model.addAttribute("orderList",getOrderList());
+        model.addAttribute("name",name);
         return "stageTypeList";
     }
 
@@ -118,6 +121,8 @@ public class CategoryController {
         PageBean<Map> list = new PageBean<Map>(resultList);
         model.addAttribute("subStageTypeList",list);
         model.addAttribute("orderList",getOrderList());
+        model.addAttribute("parentId",parentId);
+        model.addAttribute("name",name);
         return "subStageTypeList";
     }
 
@@ -215,7 +220,7 @@ public class CategoryController {
      * @return
      */
     @RequestMapping(value = "/getStageLocaledList")
-    public HashMap<String,Object> getStageLocaledList(HttpServletRequest request) {
+    public String getStageLocaledList(Model model,HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
@@ -228,7 +233,10 @@ public class CategoryController {
             resultList = categoryService.findByLevelAndType(1,CategoryType.STAGE_LOCALED);
         }
         PageBean<Map> list = new PageBean<Map>(resultList);
-        return CommonUtil.ToResultHashMap(status,message,list);
+        model.addAttribute("stageLocaledList",list);
+        model.addAttribute("orderList",getOrderList());
+        model.addAttribute("name",name);
+        return "stageLocaledList";
     }
 
     /**
@@ -237,7 +245,7 @@ public class CategoryController {
      * @return
      */
     @RequestMapping(value = "/getSubStageLocaledList/{parentId}")
-    public HashMap<String,Object> getSubStageLocaledList(HttpServletRequest request
+    public String getSubStageLocaledList(Model model,HttpServletRequest request
             ,@PathVariable("parentId")String parentId) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -246,7 +254,11 @@ public class CategoryController {
         String name = CommonUtil.getStr(request.getParameter("name"),"");
         List resultList = categoryService.findSubByNameLike(parentId,name,CategoryType.STAGE_LOCALED);
         PageBean<Map> list = new PageBean<Map>(resultList);
-        return CommonUtil.ToResultHashMap(status,message,list);
+        model.addAttribute("subStageLocaledList",list);
+        model.addAttribute("parentId",parentId);
+        model.addAttribute("orderList",getOrderList());
+        model.addAttribute("name",name);
+        return "subStageLocaledList";
     }
 
     private List<String> getOrderList(){
