@@ -3,7 +3,7 @@
 <div class="sidebar" th:fragment="leftmenu">
     <nav class="sidebar-nav">
         <ul class="nav">
-            <li class="nav-item nav-dropdown">
+            <li class="nav-item nav-dropdown open">
                 <a href="#" class="nav-link nav-dropdown-toggle">
                     <i class="icon icon-target"></i> 用户管理 <i class="fa fa-caret-left"></i>
                 </a>
@@ -18,7 +18,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item nav-dropdown">
+            <li class="nav-item nav-dropdown open">
                 <a href="#" class="nav-link nav-dropdown-toggle">
                     <i class="icon icon-energy"></i> 场景管理 <i class="fa fa-caret-left"></i>
                 </a>
@@ -38,7 +38,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item nav-dropdown">
+            <li class="nav-item nav-dropdown open">
                 <a href="#" class="nav-link nav-dropdown-toggle">
                     <i class="icon icon-graph"></i> 需求管理 <i class="fa fa-caret-left"></i>
                 </a>
@@ -53,7 +53,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item nav-dropdown">
+            <li class="nav-item nav-dropdown open">
                 <a href="#" class="nav-link nav-dropdown-toggle">
                     <i class="icon icon-puzzle"></i> 内容管理 <i class="fa fa-caret-left"></i>
                 </a>
@@ -79,33 +79,38 @@
                 </ul>
             </li>
 
-            <li class="nav-item nav-dropdown">
+            <li class="nav-item nav-dropdown open">
                 <a href="#" class="nav-link nav-dropdown-toggle">
                     <i class="icon icon-grid"></i> 分类管理 <i class="fa fa-caret-left"></i>
                 </a>
 
-                <ul class="nav-dropdown-items">
+                <ul class="nav-dropdown-items open">
+                    <li class="nav-item nav-dropdown open">
+                        <a th:href="${#httpServletRequest.getContextPath()}+'/category/getFilmTypeList'" class="nav-link">
+                            <i class="icon icon-grid"></i> 场景地区列表
+                        </a>
+                    </li>
                     <li class="nav-item">
-                        <a href="layouts-normal.html" class="nav-link">
+                        <a th:href="${#httpServletRequest.getContextPath()}+'/category/getFilmTypeList'" class="nav-link">
                             <i class="icon icon-grid"></i> 影视剧类型列表
                         </a>
                     </li>
-
                     <li class="nav-item">
-                        <a href="layouts-normal.html" class="nav-link">
+                        <a th:href="${#httpServletRequest.getContextPath()}+'/category/getStageTypeList'" class="nav-link">
+                            <i class="icon icon-grid"></i> 场景类型列表
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="${#httpServletRequest.getContextPath()}+'/category/getStageStyleList'" class="nav-link">
                             <i class="icon icon-grid"></i> 场景风格列表
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a href="layouts-normal.html" class="nav-link">
-                            <i class="icon icon-grid"></i> 场景类型列表
-                        </a>
-                    </li>
+
                 </ul>
             </li>
 
-            <li class="nav-item nav-dropdown">
+            <li class="nav-item nav-dropdown open">
                 <a href="#" class="nav-link nav-dropdown-toggle">
                     <i class="icon icon-umbrella"></i> 权限管理 <i class="fa fa-caret-left"></i>
                 </a>

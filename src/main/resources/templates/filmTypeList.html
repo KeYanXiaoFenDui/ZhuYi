@@ -76,8 +76,9 @@
                                     <td th:text="${film.nameEn}">
                                         Default
                                     </td>
-                                    <td th:text="${film.nameEn}">
-                                       状态
+                                    <td>
+                                        <a href="javascript:void(0);" class="btn btn-primary">编辑</a>
+                                        <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'deleteCategory(\''+${film.id}+'\')'">删除</a>
                                     </td>
                                 </tr>
                             </tbody>

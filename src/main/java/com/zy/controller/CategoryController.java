@@ -47,6 +47,7 @@ public class CategoryController {
         PageBean<Map> list = new PageBean<Map>(resultList);
 //        return CommonUtil.ToResultHashMap(status,message,list);
         model.addAttribute("filmTypeList",list);
+        model.addAttribute("orderList",getOrderList());
         return "filmTypeList";
     }
 
@@ -72,6 +73,7 @@ public class CategoryController {
         PageBean<Map> list = new PageBean<Map>(resultList);
 //        return CommonUtil.ToResultHashMap(status,message,list);
         model.addAttribute("stageStyleList",list);
+        model.addAttribute("orderList",getOrderList());
         return "stageStyleList";
     }
 
@@ -94,8 +96,8 @@ public class CategoryController {
             resultList = categoryService.findByLevelAndType(1,CategoryType.STAGE_TYPE);
         }
         PageBean<Map> list = new PageBean<Map>(resultList);
-//        return CommonUtil.ToResultHashMap(status,message,list);
         model.addAttribute("stageTypeList",list);
+        model.addAttribute("orderList",getOrderList());
         return "stageTypeList";
     }
 
@@ -114,8 +116,8 @@ public class CategoryController {
         String name = CommonUtil.getStr(request.getParameter("name"),"");
         List resultList = categoryService.findSubByNameLike(parentId,name,CategoryType.STAGE_TYPE);
         PageBean<Map> list = new PageBean<Map>(resultList);
-//        return CommonUtil.ToResultHashMap(status,message,list);
         model.addAttribute("subStageTypeList",list);
+        model.addAttribute("orderList",getOrderList());
         return "subStageTypeList";
     }
 
@@ -247,4 +249,11 @@ public class CategoryController {
         return CommonUtil.ToResultHashMap(status,message,list);
     }
 
+    private List<String> getOrderList(){
+        List<String> result = new ArrayList<>();
+        for(int i=0;i<=10;i++){
+            result.add(String.valueOf(i));
+        }
+        return result;
+    }
 }

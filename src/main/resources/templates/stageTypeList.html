@@ -66,22 +66,22 @@
                             </tr>
                             </thead>
                             <tbody id="dataTable">
-                                <tr th:each="style : ${stageStyleList.list}">
-                                    <td th:text="${style.id}">
+                                <tr th:each="stage : ${stageTypeList.list}">
+                                    <td th:text="${stage.id}">
                                         1
                                     </td>
-                                    <td th:text="${style.order}">
+                                    <td th:text="${stage.order}">
                                         TB - Monthly
                                     </td>
-                                    <td th:text="${style.name}">
+                                    <td th:text="${stage.name}">
                                         01/04/2012
                                     </td>
-                                    <td th:text="${style.nameEn}">
+                                    <td th:text="${stage.nameEn}">
                                         Default
                                     </td>
                                     <td>
-                                        <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'openUpdateModal(\''+${style.id}+'\',\''+${style.name}+'\',\''+${style.nameEn}+'\',\''+${style.order}+'\')'">编辑</a>
-                                        <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'deleteCategory(\''+${style.id}+'\')'">删除</a>
+                                        <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'openUpdateModal(\''+${stage.id}+'\',\''+${stage.name}+'\',\''+${stage.nameEn}+'\',\''+${stage.order}+'\')'">编辑</a>
+                                        <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'deleteCategory(\''+${stage.id}+'\')'">删除</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -90,7 +90,7 @@
                 </div>
             </div>
         </div>
-        <div th:replace="pagination::page(${stageStyleList.list},'getStageStyleList','&name=111')"></div>
+        <div th:replace="pagination::page(${stageTypeList.list},'getStageTypeList','&name=111')"></div>
     </div>
 </div>
 </div>
@@ -126,9 +126,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="order" class="col-sm-3 control-label">*权重：</label>
+                        <label  class="col-sm-3 control-label">*权重：</label>
                         <div class="col-sm-9">
-                            <select th:each="order : ${orderList}" id="order" name="order" class="show-tick form-control" data-live-search="true" data-actions-box="true">
+                            <select th:each="order : ${orderList}" name="order" class="show-tick form-control" data-live-search="true" data-actions-box="true">
                                 <option th:text="${order}"></option>
                             </select>
                         </div>
@@ -167,11 +167,11 @@
                             <input type="text" name="nameEn" class="form-control"  placeholder="">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group">s
                         <label for="order" class="col-sm-3 control-label">*权重：</label>
-                        <div class="col-sm-9">
-                            <select th:each="order : ${orderList}" id="order" name="order" class="show-tick form-control" data-live-search="true" data-actions-box="true">
-                                <option th:text="${order}"></option>
+                        <div  class="col-sm-9">
+                            <select name="order" th:each="o : ${orderList}" class="show-tick form-control" data-live-search="true" data-actions-box="true">
+                                <option th:text="${o}"></option>
                             </select>
                         </div>
                     </div>
@@ -195,7 +195,7 @@ function insertCategory(){
             success: function(result){
                 if(result.status == 1){
                     alert(result.message);
-                    window.location.href = 'getStageStyleList';
+                    window.location.href = 'getStageTypeList';
                 }else{
                     alert(result.message);
                 }
@@ -219,7 +219,7 @@ function updateCategory(){
         success: function(result){
             if(result.status == 1){
                 alert(result.message);
-                window.location.href = 'getStageStyleList';
+                window.location.href = 'getStageTypeList';
             }else{
                 alert(result.message);
             }
@@ -233,7 +233,7 @@ function deleteCategory(id){
         success: function(result){
             if(result.status == 1){
                 alert(result.message);
-                window.location.href = 'getStageStyleList';
+                window.location.href = 'getStageTypeList';
             }else{
                 alert(result.message);
             }
