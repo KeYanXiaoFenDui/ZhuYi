@@ -5,6 +5,7 @@ import com.zy.domain.Admin;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface IAdminService {
@@ -16,5 +17,7 @@ public interface IAdminService {
 
     public Admin getAdmin(int id);
 
-    public List<Admin> getAdminList(String accountOrName);
+    public List<Map> getAdminList(String accountOrName);
+
+    public Admin adminLogin(String account,String password);
 }

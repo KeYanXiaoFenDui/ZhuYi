@@ -6,6 +6,8 @@ import com.zy.service.IOperateLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class OperateLogServiceImpl implements IOperateLogService {
     @Autowired
@@ -29,5 +31,10 @@ public class OperateLogServiceImpl implements IOperateLogService {
     @Override
     public OperateLog getOperateLog(int id) {
         return operateLogMapper.getOperateLog(id);
+    }
+
+    @Override
+    public List<OperateLog> getOperateLogList(String nameOrMenu, String startTime, String endTime) {
+        return operateLogMapper.getOperateLogList(nameOrMenu, startTime, endTime);
     }
 }

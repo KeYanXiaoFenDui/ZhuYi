@@ -13,4 +13,6 @@ public interface IMenuRoleService {
     public int deleteMenuRole(int id);
 
     public MenuRole getMenuRole(int id);
+
+    public int deleteMenuRoleByRoleId(int roleId);
 }

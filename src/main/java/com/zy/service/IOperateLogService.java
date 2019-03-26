@@ -3,6 +3,8 @@ package com.zy.service;
 import com.zy.domain.OperateLog;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface IOperateLogService {
     public int insertOperateLog(OperateLog operateLog);
@@ -12,4 +14,6 @@ public interface IOperateLogService {
     public int deleteOperateLog(int id);
 
     public OperateLog getOperateLog(int id);
+
+    public List<OperateLog> getOperateLogList(String nameOrMenu, String startTime, String endTime);
 }

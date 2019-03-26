@@ -1,7 +1,10 @@
 package com.zy.mapper;
 
 import com.zy.domain.OperateLog;
+import com.zy.mapper.sqlProvide.OperateLogSQLProvider;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface OperateLogMapper {
@@ -18,5 +21,8 @@ public interface OperateLogMapper {
 
     @Select("select * from operate_log where id=#{id}")
     public OperateLog getOperateLog(int id);
+
+    @SelectProvider(type = OperateLogSQLProvider.class,method = "getOperateLogList")
+    public List<OperateLog> getOperateLogList(String nameOrMenu,String startTime,String endTime);
 
 }

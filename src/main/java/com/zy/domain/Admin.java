@@ -11,6 +11,7 @@ public class Admin implements Serializable {
     private String name;//姓名
     private int roleId;//身份类型Id
     private Date createTime;//创建时间
+    private Date updateTime;//修改时间
     private int status;//状态(1有效,,,0无效)
 
     public int getId() {
@@ -69,6 +70,14 @@ public class Admin implements Serializable {
         this.createTime = createTime;
     }
 
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     public int getStatus() {
         return status;
     }
@@ -77,4 +86,18 @@ public class Admin implements Serializable {
         this.status = status;
     }
 
+    @Override
+    public String toString() {
+        return "Admin{" +
+                "id=" + id +
+                ", accStatus=" + accStatus +
+                ", account='" + account + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", roleId=" + roleId +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", status=" + status +
+                '}';
+    }
 }

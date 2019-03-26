@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminServiceImpl implements IAdminService {
@@ -35,7 +36,12 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public List<Admin> getAdminList(String accountOrName) {
+    public List<Map> getAdminList(String accountOrName) {
         return adminMapper.getAdminList(accountOrName);
+    }
+
+    @Override
+    public Admin adminLogin(String account, String password) {
+        return adminMapper.adminLogin(account, password);
     }
 }

@@ -7,58 +7,27 @@
     <link th:href="@{/bootstrap/css/bootstrap-theme.min.css}" rel="stylesheet"/>
 </head>
 <body>
-<!--<div class="container-fluid">-->
-    <!--<div class="row-fluid">-->
-        <!--<div class="span12">-->
-            <!--<ul th:each="a : ${articles.param_relation}">-->
-                <!--<li th:text="${a.db_param_name}">-->
-                <!--</li>-->
-                <!--<li th:text="${a.comment}">-->
-                <!--</li>-->
-            <!--</ul>-->
-            <!--<button class="btn" type="button">按钮</button>-->
-            <!--<ul th:each="b : ${articles.table_param}">-->
-                <!--<li th:text="${b.db_param_name}">-->
-                <!--</li>-->
-                <!--<li th:text="${b.comment}">-->
-                <!--</li>-->
-            <!--</ul>-->
-            <!--<button class="btn" type="button" onclick="getTableDetail();">按钮</button>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
 
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-12 column">
             <nav class="navbar navbar-default" role="navigation">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">注艺租赁管理后台</a>
+                    <a class="navbar-brand" href="/wellcome">注艺租赁管理后台</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#">Link</a>
+                            <a href="#" th:each="cookie :${#httpServletRequest.getCookies()}"
+                                  th:if="${cookie.getName().equals('name')}"
+                                  th:text="${cookie.getValue()}+'，您好'"></a>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="#">Action</a>
-                                </li>
-                                <li>
-                                    <a href="#">Another action</a>
-                                </li>
-                                <li>
-                                    <a href="#">Something else here</a>
-                                </li>
-                                <li class="divider">
-                                </li>
-                                <li>
-                                    <a href="#">Separated link</a>
-                                </li>
-                            </ul>
+                        <li>
+                            <a href="/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;登出</a>
+                        </li>
+                        <li>
+                            <a href="/changePwd">修改密码</a>
                         </li>
                     </ul>
                 </div>
@@ -67,70 +36,23 @@
             <div class="row clearfix">
                 <div class="col-md-2 column">
                     <div class="panel-group" id="panel-594187">
-                        <div class="panel panel-default">
+                        <div class="panel panel-default" th:each="m : ${menu}" th:if="${m.title} ne ${pageTitle}">
                             <div class="panel-heading">
-                                <a id="userMenu" class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" href="#panel-element-826081">用 户 管 理</a>
+                                <a th:text="${m.title}" class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-826081'+${m.id}">用 户 管 理</a>
                             </div>
-                            <div id="panel-element-826081" class="panel-collapse collapse">
+                            <div th:id="'panel-element-826081'+${m.id}" class="panel-collapse collapse">
                                 <div class="panel-body">
-                                    用户列表
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="panel panel-default">
+                        <div class="panel panel-default" th:each="m : ${menu}" th:if="${m.title} eq ${pageTitle}">
                             <div class="panel-heading">
-                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" href="#panel-element-792342">场 景 管 理</a>
+                                <a th:text="${m.title}" class="panel-title" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-792346'+${m.id}" aria-expanded="true">权 限 管 理</a>
                             </div>
-                            <div id="panel-element-792342" class="panel-collapse collapse">
+                            <div th:id="'panel-element-792346'+${m.id}" class="panel-collapse collapse in" aria-expanded="true">
                                 <div class="panel-body">
-                                    场景列表<br/>
-                                    场景审核列表
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" href="#panel-element-792343">需 求 管 理</a>
-                            </div>
-                            <div id="panel-element-792343" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    需求列表
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" href="#panel-element-792344">内 容 管 理</a>
-                            </div>
-                            <div id="panel-element-792344" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    轮播图列表<br/>
-                                    剧组服务列表<br/>
-                                    反馈信息
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" href="#panel-element-792345">分 类 管 理</a>
-                            </div>
-                            <div id="panel-element-792345" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    影视剧类型列表<br/>
-                                    场景风格列表<br/>
-                                    场景类型列表
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <a id="adminMenu" class="panel-title" data-toggle="collapse" data-parent="#panel-594187" href="#panel-element-792346" aria-expanded="true">权 限 管 理</a>
-                            </div>
-                            <div id="panel-element-792346" class="panel-collapse collapse in" aria-expanded="true">
-                                <div class="panel-body">
-                                    管理员列表<br/>
-                                    身份列表<br/>
-                                    操作日志
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +82,7 @@
                             </div>
                         </div>
                         <div class="col-md-2 column">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增管理员</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="clearAdminMsg();">新增管理员</button>
                         </div>
                     </div>
                     <div>
@@ -195,12 +117,12 @@
                                 <td th:text="${a.name}">
                                     管理员1
                                 </td>
-                                <td th:text="${a.roleId}">
+                                <td th:text="${a.title}">
                                     对账财务
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary" type="button">编辑</button>
-                                    <button class="btn btn-primary" type="button">删除</button>
+                                    <button class="btn btn-primary" type="button" th:onclick="'getAdminDetailForUpdate('+${a.id}+')'" data-toggle="modal" data-target="#myModal">编辑</button>
+                                    <button class="btn btn-primary" type="button"  th:onclick="'deleteAdmin('+${a.id}+')'">删除</button>
                                 </td>
                             </tr>
                             </tbody>
@@ -213,7 +135,7 @@
                         <div class="col-md-4 column">
                             <span style="height: inherit;">共   <span th:text="${adminList.total}">5</span>    条记录</span>
                         </div>
-                        <div class="col-md-8 column">
+                        <div class="col-md-8 column" th:if="${adminList.total > 0}">
                             <ul class="pagination" style="margin: 0 0;">
                                 <th:block th:if="${adminList.pageNum > 1}">
                                     <li>
@@ -285,9 +207,9 @@
                     </div>
                 </div>
 
-                <!-- 按钮触发模态框 -->
+                 <!--按钮触发模态框 -->
                 <!--<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">开始演示模态框</button>-->
-                <!-- 模态框（Modal） -->
+                 <!--模态框（Modal） -->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -297,6 +219,7 @@
                             </div>
                             <div class="modal-body">
                                 <form class="form-horizontal" role="form">
+                                    <input type="hidden" id="adminId"/>
                                     <div class="form-group">
                                         <label for="account" class="col-sm-3 control-label">*管理员账号：</label>
                                         <div class="col-sm-9">
@@ -349,9 +272,6 @@
 <script th:src="@{/jquery/jquery-3.2.1.min.js}"></script>
 <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
 <script>
-    $(document).ready(function (){
-//        $("#adminMenu").click();
-    });
     $(document).keydown(function(event){
         if(event.keyCode == 13){
             if(isNumber($("#jumpPage").val())){//非数字不能跳转
@@ -359,11 +279,74 @@
             }
         }
     });
-    function insertAdmin(){
+    function clearAdminMsg() {
+        $("#adminId").val("");
+        $("#account").val("");
+        $("#adminName").val("");
+        $("#password").val("");
+        $("#roleId").val("");
+        var str = "<option value=''>选择身份</option>";
         $.ajax({
-            url: "http://localhost:8080/zhuYi/createAndUpdateAdmin",
+            url: "/admin/getRoleDataMsg",
+            method: "get",
+            success: function(result){
+                if(result.status == 1){
+                    var roleData = result.data;
+                    for(var i=0;i<roleData.length;i++){
+                        str += "<option value='"+roleData[i].id+"'>"+roleData[i].title+"</option>"
+                    }
+                    $("#roleId").html(str);
+                }else{
+                    alert(result.message);
+                }
+            }
+        });
+    }
+    function getAdminDetailForUpdate(id){
+        var str = "<option value=''>选择身份</option>";
+        $.ajax({
+            url: "/admin/getRoleDataMsg",
+            method: "get",
+            success: function(result){
+                if(result.status == 1){
+                    var roleData = result.data;
+                    for(var i=0;i<roleData.length;i++){
+                        str += "<option value='"+roleData[i].id+"'>"+roleData[i].title+"</option>"
+                    }
+                    $("#roleId").html(str);
+
+                    $.ajax({
+                        url: "/zhuYi/getAdminMsgById",
+                        method: "get",
+                        data: {
+                            id:id
+                        },
+                        success: function(result){
+                            if(result.status == 1){
+                                $("#adminId").val(result.data.id);
+                                $("#account").val(result.data.account);
+                                $("#adminName").val(result.data.name);
+                                $("#password").val(result.data.password);
+                                $("#roleId").val(result.data.roleId);
+                            }else{
+                                alert(result.message);
+                            }
+                        }
+                    });
+
+                }else{
+                    alert(result.message);
+                }
+            }
+        });
+    }
+    function insertAdmin(){
+
+        $.ajax({
+            url: "/zhuYi/createAndUpdateAdmin",
             method: "post",
             data: {
+                id:$("#adminId").val(),
                 account:$("#account").val(),
                 name:$("#adminName").val(),
                 password:$("#password").val(),
@@ -379,6 +362,28 @@
             }
         });
     }
+
+    function deleteAdmin(id) {
+        var result = confirm("确认删除该管理员账号?");
+        if(result){
+            $.ajax({
+                url: "/admin/deleteAdmin",
+                method: "post",
+                data: {
+                    id:id
+                },
+                success: function(result){
+                    if(result.status == 1){
+                        alert(result.message);
+                        window.location.href = 'getAdminList';
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+    }
+
     //判断是否为数字方法
     function isNumber(val){
         var regPos = /^\d+(\.\d+)?$/; //非负浮点数
@@ -394,6 +399,7 @@
             window.location.href = 'getAdminList?pageSize='+$("#pageSize").val()+'&accountOrName='+$("#accountOrName").val();
         }
     }
+
 </script>
 </body>
 </html>

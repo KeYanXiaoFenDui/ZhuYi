@@ -18,4 +18,10 @@ public interface IMenuService {
     public Menu getMenu(int id);
 
     public List<Map> getMenuList();
+
+    public List<Map> getParentMenu();
+    public List<Map> getAdminParentMenu(int roleId);
+
+    public List<Map> getSonMenu(String menuNo);
+    public List<Map> getAdminSonMenu(String menuNo,int roleId);
 }

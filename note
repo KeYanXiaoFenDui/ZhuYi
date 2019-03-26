@@ -17,3 +17,16 @@ https://www.cnblogs.com/zxguan/p/7941711.html
 
 bootstrap界面拖拽搭建
 http://www.runoob.com/try/bootstrap/layoutit/
+
+
+========================================================================================================
+2019/03/26
+redis下载安装参考下面网站:
+http://www.runoob.com/redis/redis-install.html
+
+安装好redis后,运行redis,更新数据库sql,运行项目访问
+http://localhost:8080/login
+账号:admin1
+密码:123456
+
+权限管理的页面功能完成90%

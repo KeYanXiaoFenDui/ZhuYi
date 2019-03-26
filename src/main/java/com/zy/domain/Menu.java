@@ -9,6 +9,7 @@ public class Menu implements Serializable {
     private String menuNo;//菜单编号
     private String parentMenuNo;//父菜单编号
     private int type;//菜单级别(1父,,,2子)
+    private String urlPath;//菜单访问路径
     private Date createTime;//创建时间
     private int status;//状态(1有效,,,0无效)
 
@@ -50,6 +51,14 @@ public class Menu implements Serializable {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getUrlPath() {
+        return urlPath;
+    }
+
+    public void setUrlPath(String urlPath) {
+        this.urlPath = urlPath;
     }
 
     public Date getCreateTime() {

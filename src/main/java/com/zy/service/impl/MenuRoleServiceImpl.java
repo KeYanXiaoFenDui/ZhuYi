@@ -31,4 +31,9 @@ public class MenuRoleServiceImpl implements IMenuRoleService {
     public MenuRole getMenuRole(int id) {
         return menuRoleMapper.getMenuRole(id);
     }
+
+    @Override
+    public int deleteMenuRoleByRoleId(int roleId) {
+        return menuRoleMapper.deleteMenuRoleByRoleId(roleId);
+    }
 }

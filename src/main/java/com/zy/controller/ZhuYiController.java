@@ -11,8 +11,10 @@ import com.zy.service.ICategoryService;
 import com.zy.service.IMenuService;
 import com.zy.util.CommonUtil;
 import com.zy.util.PageBean;
+import com.zy.util.RedisComponentUtil;
 import com.zy.util.constant.MessageConstant;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 
@@ -36,6 +41,8 @@ public class ZhuYiController {
     private ICategoryService categoryService;
     @Autowired
     private IAdminService adminService;
+    @Autowired
+    public RedisComponentUtil redisComponentUtil;
 
     /**
      *新增菜单数据
@@ -88,18 +95,35 @@ public class ZhuYiController {
      *管理后台查询管理员列表
      */
     @RequestMapping(value = "/getAdminList")
-    public String getAdminList(Model m,HttpServletRequest request) {
+    public String getAdminList(Model m, HttpServletRequest request, HttpSession session, HttpServletResponse response) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
         PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
         String accountOrName = CommonUtil.getStr(request.getParameter("accountOrName"),"");
-        String name = CommonUtil.getStr(request.getParameter("name"),"");
-        List<Admin> resultList = adminService.getAdminList(accountOrName);
-        PageBean<Admin> list = new PageBean<Admin>(resultList);
-        System.out.println(list.toString());
+        List<Map> resultList = adminService.getAdminList(accountOrName);
+        PageBean<Map> list = new PageBean<Map>(resultList);
         m.addAttribute("adminList",list);
         m.addAttribute("accountOrName",accountOrName);
+        m.addAttribute("pageTitle","权限管理");
+        setAdminMsg(m, request, session);
+
+//        session.setAttribute("auth_token","abcde");
+//        String token = session.getAttribute("user").toString();
+
+
+//        Admin a = (Admin) adminMsg.get("admin");
+//        System.out.println("menu:::"+adminMsg.get("menu").toString());
+
+
+
+//        System.out.println("Admin::"+a.toString());
+//        System.out.println("tokenId::"+session.getId());
+//        System.out.println("token::"+token);
+
+
+
+
         return "newPage";
 //        return CommonUtil.ToResultHashMap(status,message,list);
     }
@@ -114,6 +138,7 @@ public class ZhuYiController {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
+        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
         String account = CommonUtil.getStr(request.getParameter("account"),"");
         if(account == null || account.equals("")){return CommonUtil.ToResultHashMap(status,"account为空!",null);}
         String name = CommonUtil.getStr(request.getParameter("name"),"");
@@ -123,20 +148,28 @@ public class ZhuYiController {
         int roleId = Integer.parseInt(CommonUtil.getStr(request.getParameter("roleId"),"-500"));
         if(roleId == -500){return CommonUtil.ToResultHashMap(status,"roleId为空!",null);}
         try {
-                Admin a = new Admin();
-                a.setAccStatus(1);
-                a.setAccount(account);
-                a.setName(name);
-                a.setPassword(password);
-                a.setRoleId(roleId);
-                a.setCreateTime(new Date());
-                a.setStatus(1);
-                int result = adminService.insertAdmin(a);
-                if(result == 1){
-                    status = MessageConstant.SUCCESS_CODE;
-                    message = MessageConstant.SUCCESS_INFO;
-                }
-
+            Admin a = new Admin();
+            if (id != -500){
+                a = adminService.getAdmin(id);
+            }
+            a.setAccStatus(1);
+            a.setAccount(account);
+            a.setName(name);
+            a.setPassword(password);
+            a.setRoleId(roleId);
+            a.setCreateTime(new Date());
+            a.setUpdateTime(new Date());
+            a.setStatus(1);
+            int result = 0;
+            if(id != -500){
+                result = adminService.updateAdmin(a);
+            }else{
+                result = adminService.insertAdmin(a);
+            }
+            if(result == 1){
+                status = MessageConstant.SUCCESS_CODE;
+                message = MessageConstant.SUCCESS_INFO;
+            }
         } catch (Exception e){
             e.printStackTrace();
 //            logger.error("新增&编辑管理员异常：" + e.getMessage());
@@ -148,6 +181,7 @@ public class ZhuYiController {
      *根据Id获取管理员信息
      *获取管理员信息(编辑用)
      */
+    @ResponseBody
     @RequestMapping(value = "/getAdminMsgById")
     public HashMap<String,Object> getAdminMsgById(HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
@@ -155,99 +189,25 @@ public class ZhuYiController {
         HashMap<String,Object> data = new HashMap<>();
         int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
         if(id == -500){return CommonUtil.ToResultHashMap(status,"id为空!",null);}
-        return CommonUtil.ToResultHashMap(status,message,data);
-    }
-    /**
-     *身份列表查询
-     *管理后台获取管理员身份列表接口
-     */
-    @RequestMapping(value = "/getRoleList")
-    public HashMap<String,Object> getRoleList(HttpServletRequest request) {
-        int status = MessageConstant.ERROR_CODE;
-        String message = MessageConstant.ERROR_INFO_DEMO;
-        HashMap<String,Object> data = new HashMap<>();
-        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
-        //管理员身份标题	模糊查询管理员身份数据
-        String title = CommonUtil.getStr(request.getParameter("title"),"");
-        List resultList = new ArrayList();
-        PageBean<Map> list = new PageBean<Map>(resultList);
-        return CommonUtil.ToResultHashMap(status,message,data);
-    }
-    /**
-     *新增&编辑身份
-     *管理后台新增$编辑后保存管理员角色身份接口
-     */
-    @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "/createAndUpdateRole")
-    public HashMap<String,Object> createAndUpdateRole(HttpServletRequest request) {
-        int status = MessageConstant.ERROR_CODE;
-        String message = MessageConstant.ERROR_INFO_DEMO;
-        HashMap<String,Object> data = new HashMap<>();
-        String title = CommonUtil.getStr(request.getParameter("title"),"");
-        if(title == null || title.equals("")){return CommonUtil.ToResultHashMap(status,"title为空!",null);}
-        String moduleList = request.getParameter("moduleList");
-        if(moduleList == null || title.equals("")){return CommonUtil.ToResultHashMap(status,"moduleList为空!",null);}
-        try {
-        } catch (Exception e){
-            e.printStackTrace();
-//            logger.error("新增身份异常：" + e.getMessage());
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        Admin a = adminService.getAdmin(id);
+        if(a != null){
+            status = MessageConstant.SUCCESS_CODE;
+            message = MessageConstant.SUCCESS_INFO;
         }
-        return CommonUtil.ToResultHashMap(status,message,data);
+        return CommonUtil.ToResultHashMap(status,message,a);
     }
 
-    /**
-     *获取身份信息
-     *获取身份信息(编辑用)
-     */
-    @RequestMapping(value = "/getRoleMsgById")
-    public HashMap<String,Object> getRoleMsgById(HttpServletRequest request) {
-        int status = MessageConstant.ERROR_CODE;
-        String message = MessageConstant.ERROR_INFO_DEMO;
-        HashMap<String,Object> data = new HashMap<>();
-        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
-        if(id == -500){return CommonUtil.ToResultHashMap(status,"id为空!",null);}
-        return CommonUtil.ToResultHashMap(status,message,data);
-    }
-    /**
-     *删除身份
-     *根据Id删除身份角色
-     */
-    @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "/deleteRoleById")
-    public HashMap<String,Object> deleteRoleById(HttpServletRequest request) {
-        int status = MessageConstant.ERROR_CODE;
-        String message = MessageConstant.ERROR_INFO_DEMO;
-        HashMap<String,Object> data = new HashMap<>();
-        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
-        if(id == -500){return CommonUtil.ToResultHashMap(status,"id为空!",null);}
-        try {
-        } catch (Exception e){
-            e.printStackTrace();
-//            logger.error("删除身份异常：" + e.getMessage());
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return CommonUtil.ToResultHashMap(status,message,data);
-    }
-    /**
-     *操作日志查询
-     *管理后台查询操作记录接口
-     */
-    @RequestMapping(value = "/getOperateLogList")
-    public HashMap<String,Object> getOperateLogList(HttpServletRequest request) {
-        int status = MessageConstant.ERROR_CODE;
-        String message = MessageConstant.ERROR_INFO_DEMO;
-        HashMap<String,Object> data = new HashMap<>();
-        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
-        String nameOrMenu = CommonUtil.getStr(request.getParameter("nameOrMenu"),"");
-        //起始时间	格式(yyyy-MM-dd)
-        String startTime = CommonUtil.getStr(request.getParameter("startTime"),"");
-        //截止时间	格式(yyyy-MM-dd)
-        String endTime = CommonUtil.getStr(request.getParameter("endTime"),"");
-        List resultList = new ArrayList();
-        PageBean<Map> list = new PageBean<Map>(resultList);
-        return CommonUtil.ToResultHashMap(status,message,list);
-    }
 
+    public void setAdminMsg(Model m, HttpServletRequest request,HttpSession session){
+        HashMap<String,Object> adminMsg = (HashMap<String,Object>)redisComponentUtil.get(session.getId());
+        m.addAttribute("menu",adminMsg.get("menu"));
+//        Cookie[] cookies = request.getCookies();
+//        String cookieValue = null;
+//        if (null != cookies) {
+//            for (Cookie cookie : cookies) {
+//                System.out.println("cookie::"+cookie.getName()+"::::"+cookie.getValue());
+//            }
+//        }
+    }
 
 }

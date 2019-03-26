@@ -39,4 +39,24 @@ public class MenuServiceImpl implements IMenuService {
     public List<Map> getMenuList() {
         return menuMapper.getMenuList();
     }
+
+    @Override
+    public List<Map> getParentMenu() {
+        return menuMapper.getParentMenu();
+    }
+
+    @Override
+    public List<Map> getAdminParentMenu(int roleId) {
+        return menuMapper.getAdminParentMenu(roleId);
+    }
+
+    @Override
+    public List<Map> getSonMenu(String menuNo) {
+        return menuMapper.getSonMenu(menuNo);
+    }
+
+    @Override
+    public List<Map> getAdminSonMenu(String menuNo,int roleId) {
+        return menuMapper.getAdminSonMenu(menuNo, roleId);
+    }
 }

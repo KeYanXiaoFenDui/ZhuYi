@@ -1,32 +1,53 @@
 package com.zy.controller;
 
-import com.zy.domain.Menu;
-import com.zy.service.IMenuService;
+import com.github.pagehelper.PageHelper;
+import com.zy.domain.*;
+import com.zy.service.*;
 import com.zy.util.CommonUtil;
+import com.zy.util.PageBean;
+import com.zy.util.RedisComponentUtil;
 import com.zy.util.constant.MessageConstant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 
-@RestController
+@Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
     private IMenuService menuService;
 
+    @Autowired
+    private IAdminService adminService;
+
+    @Autowired
+    private IRoleService roleService;
+
+    @Autowired
+    private IMenuRoleService menuRoleService;
+
+    @Autowired
+    private IOperateLogService operateLogService;
+
+    @Autowired
+    public RedisComponentUtil redisComponentUtil;
 
     /**
      *新增菜单数据
      *手动插入菜单方法
      */
+    @ResponseBody
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "/insertMenu")
     public HashMap<String,Object> insertMenu(HttpServletRequest request) {
@@ -69,5 +90,400 @@ public class AdminController {
         return CommonUtil.ToResultHashMap(status,message,data);
     }
 
+    /**
+     *删除管理员账号
+     *根据Id删除管理员
+     */
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping(value = "/deleteAdmin")
+    public HashMap<String,Object> deleteAdmin(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
+        if(id == -500){return CommonUtil.ToResultHashMap(status,"id为空!",null);}
+        try {
+            int result = adminService.deleteAdmin(id);
+            if(result == 1){
+                status = MessageConstant.SUCCESS_CODE;
+                message = MessageConstant.SUCCESS_INFO;
+            }else{
+                throw new RuntimeException();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+//            logger.error("删除管理员账号异常：" + e.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return CommonUtil.ToResultHashMap(status,message,data);
+    }
 
+    /**
+     *身份列表查询
+     *管理后台获取管理员身份列表接口
+     */
+    @RequestMapping(value = "/getRoleList")
+    public String getRoleList(Model m,HttpServletRequest request,HttpSession session) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        //管理员身份标题	模糊查询管理员身份数据
+        String title = CommonUtil.getStr(request.getParameter("title"),"");
+        List resultList = roleService.getRoleList();
+
+        PageBean<Map> list = new PageBean<Map>(resultList);
+//        Map roleMsg = new HashMap();
+//        roleMsg.put("id",1);
+//        roleMsg.put("roleTitle","市场部管理员");
+//        roleMsg.put("managerModel","用户管理/店场景管理");
+//        resultList.add(roleMsg);
+        m.addAttribute("roleList",list);
+        m.addAttribute("pageTitle","权限管理");
+        setAdminMsg(m, request, session);
+        return "roleListPage";
+    }
+
+    /**
+     *获取身份键值对信息
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getRoleDataMsg")
+    public HashMap<String,Object> getRoleDataMsg(Model m,HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        List resultList = roleService.getRoleDataMsg();
+        if(resultList != null){
+            status = MessageConstant.SUCCESS_CODE;
+            message = MessageConstant.SUCCESS_INFO;
+        }
+        return CommonUtil.ToResultHashMap(status,message,resultList);
+    }
+    /**
+     *身份列表查询
+     *管理后台获取管理员身份列表接口
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getAdminMenu")
+    public HashMap<String,Object> getAdminMenu(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+//        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        //管理员身份标题	模糊查询管理员身份数据
+        String title = CommonUtil.getStr(request.getParameter("title"),"");
+
+        HttpSession session  = request.getSession();
+        Admin a = (Admin)redisComponentUtil.get(session.getId());
+        a.getRoleId();
+        //select m.id,m.title,m.menu_no as menuNo from menu_role mr,menu m where m.type = 1 and mr.menu_id = m.id and mr.`status` = 1 and mr.role_id = ?
+        List<Map> resultList = menuService.getAdminParentMenu(a.getRoleId());
+        for (Map pMenu : resultList){
+            //select m.id,m.title from menu m,menu_role mr where mr.menu_id = m.id and m.`status` = 1 and m.type = 2 and m.parent_menu_no = ? and mr.role_id = ? and mr.`status` = 1
+            pMenu.put("children",menuService.getAdminSonMenu(CommonUtil.getStr(pMenu.get("menuNo"),""),a.getRoleId()));
+        }
+
+//        Map m = new HashMap();
+//        m.put("id",1);
+//        m.put("title","用户管理");
+//        List<Map> subList = new ArrayList<Map>();
+//        Map subM = new HashMap();
+//        subM.put("id",2);
+//        subM.put("title","用户列表");
+//        subList.add(subM);
+//        m.put("children",subList);
+//        resultList.add(m);
+//
+//        m = new HashMap();
+//        m.put("id",3);
+//        m.put("title","场景管理");
+//        subList = new ArrayList<Map>();
+//        subM = new HashMap();
+//        subM.put("id",4);
+//        subM.put("title","场景列表");
+//        subList.add(subM);
+//        subM = new HashMap();
+//        subM.put("id",5);
+//        subM.put("title","场景审核列表");
+//        subList.add(subM);
+//        m.put("children",subList);
+//        resultList.add(m);
+//
+//        m = new HashMap();
+//        m.put("id",6);
+//        m.put("title","需求管理");
+//        subList = new ArrayList<Map>();
+//        subM = new HashMap();
+//        subM.put("id",7);
+//        subM.put("title","需求列表");
+//        subList.add(subM);
+//        m.put("children",subList);
+//        resultList.add(m);
+//
+//        m = new HashMap();
+//        m.put("id",8);
+//        m.put("title","内容管理");
+//        subList = new ArrayList<Map>();
+//        subM = new HashMap();
+//        subM.put("id",9);
+//        subM.put("title","轮播图列表");
+//        subList.add(subM);
+//        subM = new HashMap();
+//        subM.put("id",10);
+//        subM.put("title","剧组服务列表");
+//        subList.add(subM);
+//        subM = new HashMap();
+//        subM.put("id",11);
+//        subM.put("title","反馈信息");
+//        subList.add(subM);
+//        m.put("children",subList);
+//        resultList.add(m);
+//        PageBean<Map> list = new PageBean<Map>(resultList);
+//        Map roleMsg = new HashMap();
+//        roleMsg.put("id",1);
+//        roleMsg.put("roleTitle","市场部管理员");
+//        roleMsg.put("managerModel","用户管理/店场景管理");
+//        resultList.add(roleMsg);
+        status = MessageConstant.SUCCESS_CODE;
+        message = MessageConstant.SUCCESS_INFO;
+
+        return CommonUtil.ToResultHashMap(status,message,resultList);
+    }
+    /**
+     *身份列表查询
+     *管理后台获取管理员身份列表接口
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getModelList")
+    public HashMap<String,Object> getModelList(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+//        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        //管理员身份标题	模糊查询管理员身份数据
+        String title = CommonUtil.getStr(request.getParameter("title"),"");
+        List<Map> resultList = menuService.getParentMenu();
+        for (Map pMenu : resultList){
+            pMenu.put("children",menuService.getSonMenu(CommonUtil.getStr(pMenu.get("menuNo"),"")));
+        }
+
+//        Map m = new HashMap();
+//        m.put("id",1);
+//        m.put("title","用户管理");
+//        List<Map> subList = new ArrayList<Map>();
+//        Map subM = new HashMap();
+//        subM.put("id",2);
+//        subM.put("title","用户列表");
+//        subList.add(subM);
+//        m.put("children",subList);
+//        resultList.add(m);
+//
+//        m = new HashMap();
+//        m.put("id",3);
+//        m.put("title","场景管理");
+//        subList = new ArrayList<Map>();
+//        subM = new HashMap();
+//        subM.put("id",4);
+//        subM.put("title","场景列表");
+//        subList.add(subM);
+//        subM = new HashMap();
+//        subM.put("id",5);
+//        subM.put("title","场景审核列表");
+//        subList.add(subM);
+//        m.put("children",subList);
+//        resultList.add(m);
+//
+//        m = new HashMap();
+//        m.put("id",6);
+//        m.put("title","需求管理");
+//        subList = new ArrayList<Map>();
+//        subM = new HashMap();
+//        subM.put("id",7);
+//        subM.put("title","需求列表");
+//        subList.add(subM);
+//        m.put("children",subList);
+//        resultList.add(m);
+//
+//        m = new HashMap();
+//        m.put("id",8);
+//        m.put("title","内容管理");
+//        subList = new ArrayList<Map>();
+//        subM = new HashMap();
+//        subM.put("id",9);
+//        subM.put("title","轮播图列表");
+//        subList.add(subM);
+//        subM = new HashMap();
+//        subM.put("id",10);
+//        subM.put("title","剧组服务列表");
+//        subList.add(subM);
+//        subM = new HashMap();
+//        subM.put("id",11);
+//        subM.put("title","反馈信息");
+//        subList.add(subM);
+//        m.put("children",subList);
+//        resultList.add(m);
+//        PageBean<Map> list = new PageBean<Map>(resultList);
+//        Map roleMsg = new HashMap();
+//        roleMsg.put("id",1);
+//        roleMsg.put("roleTitle","市场部管理员");
+//        roleMsg.put("managerModel","用户管理/店场景管理");
+//        resultList.add(roleMsg);
+        status = MessageConstant.SUCCESS_CODE;
+        message = MessageConstant.SUCCESS_INFO;
+
+        return CommonUtil.ToResultHashMap(status,message,resultList);
+    }
+    /**
+     *新增&编辑身份
+     *管理后台新增$编辑后保存管理员角色身份接口
+     */
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping(value = "/createAndUpdateRole")
+    public HashMap<String,Object> createAndUpdateRole(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+//        HashMap<String,Object> data = new HashMap<>();
+        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"0"));//id不为空时,,更新角色
+        String title = CommonUtil.getStr(request.getParameter("title"),"");
+        if(title == null || title.equals("")){return CommonUtil.ToResultHashMap(status,"title为空!",null);}
+        String moduleList = request.getParameter("moduleList");
+        if(moduleList == null || title.equals("")){return CommonUtil.ToResultHashMap(status,"moduleList为空!",null);}
+        try {
+            Date d = new Date();
+            Role r = new Role();
+            if(id != 0){
+                r = roleService.getRole(id);
+            }
+            r.setTitle(title);
+            if (id != 0){
+                r.setUpdateTime(d);
+            }else{
+                r.setCreateTime(d);
+                r.setUpdateTime(d);
+            }
+            r.setStatus(1);
+            int result = 0;
+            if(id != 0){
+                result = roleService.updateRole(r);
+            }else{
+                result = roleService.insertRole(r);
+            }
+            if(result == 1){
+                if(id != 0){
+                    menuRoleService.deleteMenuRoleByRoleId(id);
+                }
+                String[] modules = moduleList.split(",");
+                for (String m : modules){
+                    MenuRole mr = new MenuRole();
+                    mr.setMenuId(Integer.parseInt(m));
+                    mr.setRoleId(r.getId());
+                    mr.setCreateTime(d);
+                    mr.setStatus(1);
+                    menuRoleService.insertMenuRole(mr);
+                }
+                status = MessageConstant.SUCCESS_CODE;
+                message = MessageConstant.SUCCESS_INFO;
+            }
+            System.out.println(title);
+            System.out.println(moduleList);
+        } catch (Exception e){
+            e.printStackTrace();
+//            logger.error("新增身份异常：" + e.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return CommonUtil.ToResultHashMap(status,message,null);
+    }
+
+    /**
+     *获取身份信息
+     *获取身份信息(编辑用)
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getRoleMsgById")
+    public HashMap<String,Object> getRoleMsgById(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+//        HashMap<String,Object> data = new HashMap<>();
+        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
+        if(id == -500){return CommonUtil.ToResultHashMap(status,"id为空!",null);}
+
+        Map roleMsg = roleService.getRoleMenuMsgById(id);
+        if(roleMsg != null){
+            status = MessageConstant.SUCCESS_CODE;
+            message = MessageConstant.SUCCESS_INFO;
+        }
+        return CommonUtil.ToResultHashMap(status,message,roleMsg);
+    }
+    /**
+     *删除身份
+     *根据Id删除身份角色
+     */
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping(value = "/deleteRoleById")
+    public HashMap<String,Object> deleteRoleById(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
+        if(id == -500){return CommonUtil.ToResultHashMap(status,"id为空!",null);}
+        try {
+            boolean result = roleService.deleteRole(id);
+            if(result){
+                status = MessageConstant.SUCCESS_CODE;
+                message = MessageConstant.SUCCESS_INFO;
+            }else{
+                throw new RuntimeException();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+//            logger.error("删除身份异常：" + e.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return CommonUtil.ToResultHashMap(status,message,null);
+    }
+
+    /**
+     *操作日志查询
+     *管理后台查询操作记录接口
+     */
+    @RequestMapping(value = "/getOperateLogList")
+    public String getOperateLogList(Model m,HttpServletRequest request,HttpSession session) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        String nameOrMenu = CommonUtil.getStr(request.getParameter("nameOrMenu"),"");
+        //起始时间	格式(yyyy-MM-dd)
+        String startTime = CommonUtil.getStr(request.getParameter("startTime"),"");
+        //截止时间	格式(yyyy-MM-dd)
+        String endTime = CommonUtil.getStr(request.getParameter("endTime"),"");
+        List<OperateLog> resultList = operateLogService.getOperateLogList(nameOrMenu,startTime,endTime);
+        if(resultList != null){
+            status = MessageConstant.SUCCESS_CODE;
+            message = MessageConstant.SUCCESS_INFO;
+        }
+        PageBean<OperateLog> list = new PageBean<OperateLog>(resultList);
+        m.addAttribute("logList",list);
+        m.addAttribute("nameOrMenu",nameOrMenu);
+        m.addAttribute("startTime",startTime);
+        m.addAttribute("endTime",endTime);
+        m.addAttribute("pageTitle","权限管理");
+        setAdminMsg(m, request, session);
+        return "logListPage";
+    }
+    public void setAdminMsg(Model m, HttpServletRequest request,HttpSession session){
+        HashMap<String,Object> adminMsg = (HashMap<String,Object>)redisComponentUtil.get(session.getId());
+        m.addAttribute("menu",adminMsg.get("menu"));
+//        Cookie[] cookies = request.getCookies();
+//        String cookieValue = null;
+//        if (null != cookies) {
+//            for (Cookie cookie : cookies) {
+//                System.out.println("cookie::"+cookie.getName()+"::::"+cookie.getValue());
+//            }
+//        }
+    }
 }
