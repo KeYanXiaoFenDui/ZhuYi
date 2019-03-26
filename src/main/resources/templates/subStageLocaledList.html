@@ -19,16 +19,17 @@
             <div class="col-md-12 column">
                 <ul class="breadcrumb">
                     <li>
-                        <a href="#">Home</a>
+                        <a href="#">分类管理</a>
                     </li>
                     >
                     <li>
-                        <a href="#">Library</a>
+                        <a href="#">场景类型列表</a>
                     </li>
                     >
-                    <li class="active">
-                        Data
+                    <li>
+                        <a href="#">二级场景类型列表</a>
                     </li>
+
                 </ul>
                 <div class="row clearfix">
                     <div class="col-md-8 column">
@@ -40,7 +41,7 @@
                         <button type="button" class="btn btn-default">按钮</button>
                     </div>
                     <div class="col-md-2 column">
-                        <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#insertCategory">新增分类</button>
+                        <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#insertCategory">新增二级分类</button>
                     </div>
                 </div>
                 <div class="row clearfix">
@@ -66,22 +67,22 @@
                             </tr>
                             </thead>
                             <tbody id="dataTable">
-                                <tr th:each="style : ${stageStyleList.list}">
-                                    <td th:text="${style.id}">
+                                <tr th:if="${subStageLocaledList.total gt 0}" th:each="stage : ${subStageLocaledList.list}">
+                                    <td th:text="${stage.id}">
                                         1
                                     </td>
-                                    <td th:text="${style.order}">
+                                    <td th:text="${stage.order}">
                                         TB - Monthly
                                     </td>
-                                    <td th:text="${style.name}">
+                                    <td th:text="${stage.name}">
                                         01/04/2012
                                     </td>
-                                    <td th:text="${style.nameEn}">
+                                    <td th:text="${stage.nameEn}">
                                         Default
                                     </td>
                                     <td>
-                                        <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'openUpdateModal(\''+${style.id}+'\',\''+${style.name}+'\',\''+${style.nameEn}+'\',\''+${style.order}+'\')'">编辑</a>
-                                        <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'deleteCategory(\''+${style.id}+'\')'">删除</a>
+                                        <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'openUpdateModal(\''+${stage.id}+'\',\''+${stage.name}+'\',\''+${stage.nameEn}+'\',\''+${stage.order}+'\')'">编辑</a>
+                                        <a href="javascript:void(0);" class="btn btn-primary" th:onclick="'deleteCategory(\''+${stage.id}+'\')'">删除</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -90,7 +91,7 @@
                 </div>
             </div>
         </div>
-        <div th:replace="pagination::page(${stageStyleList.list},'getStageStyleList','&name='+${name})"></div>
+        <div th:replace="pagination::page(${subStageLocaledList.list},'/category/getSubStageLocaledList/'+${parentId},'&name='+${name})"></div>
     </div>
 </div>
 </div>
@@ -111,22 +112,23 @@
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="form">
-                    <input type="hidden" name="level" value="1"/>
-                    <input type="hidden" name="type" value="2"/>
+                    <input type="hidden" name="level" value="2"/>
+                    <input type="hidden" name="type" value="4"/>
+                    <input type="hidden" name="parentId" th:value="${parentId}"/>
                     <div class="form-group">
-                        <label for="name" class="col-sm-5 control-label">*类型名称（中文）：</label>
+                        <label for="name" class="col-sm-5 control-label">*地区名称（中文）：</label>
                         <div class="col-sm-5">
                             <input type="text" name="name" class="form-control" id="name" placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="nameEn" class="col-sm-5 control-label">*类型名称（英文）：</label>
+                        <label for="nameEn" class="col-sm-5 control-label">*地区名称（英文）：</label>
                         <div class="col-sm-5">
                             <input type="text" name="nameEn" class="form-control" id="nameEn" placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="order" class="col-sm-3 control-label">*权重：</label>
+                        <label  class="col-sm-3 control-label">*权重：</label>
                         <div class="col-sm-9">
                             <select name="order" class="show-tick form-control" data-live-search="true" data-actions-box="true">
                                 <option th:each="o : ${orderList}"  th:text="${o}"></option>
@@ -147,29 +149,30 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">编辑类型</h4>
+                <h4 class="modal-title">编辑地区</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" role="form" id="updateForm">
                     <input type="hidden" name="id" value=""/>
-                    <input type="hidden" name="level" value="1"/>
-                    <input type="hidden" name="type" value="2"/>
+                    <input type="hidden" name="level" value="2"/>
+                    <input type="hidden" name="type" value="4"/>
+                    <input type="hidden" name="parentId" th:value="${parentId}"/>
                     <div class="form-group">
-                        <label for="name" class="col-sm-5 control-label">*类型名称（中文）：</label>
+                        <label for="name" class="col-sm-5 control-label">*地区名称（中文）：</label>
                         <div class="col-sm-5">
                             <input type="text" name="name" class="form-control"  placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="nameEn" class="col-sm-5 control-label">*类型名称（英文）：</label>
+                        <label for="nameEn" class="col-sm-5 control-label">*地区名称（英文）：</label>
                         <div class="col-sm-5">
                             <input type="text" name="nameEn" class="form-control"  placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="order" class="col-sm-3 control-label">*权重：</label>
-                        <div class="col-sm-9">
+                        <div  class="col-sm-9">
                             <select name="order" class="show-tick form-control" data-live-search="true" data-actions-box="true">
                                 <option th:each="o : ${orderList}"  th:text="${o}"></option>
                             </select>
@@ -195,7 +198,7 @@ function insertCategory(){
             success: function(result){
                 if(result.status == 1){
                     alert(result.message);
-                    window.location.href = 'getStageStyleList';
+                    window.location.href = '/category/getSubStageLocaledList/[[${parentId}]]';
                 }else{
                     alert(result.message);
                 }
@@ -204,7 +207,7 @@ function insertCategory(){
 }
 
 function openUpdateModal(id,name,nameEn,order){
-    $("#updateForm input[name='id']").val(id==null?'':id);
+    $("#updateForm input[name='id']").val(id);
     $("#updateForm input[name='name']").val(name=='null'?'':name);
     $("#updateForm input[name='nameEn']").val(nameEn=='null'?'':nameEn);
     $("#updateForm select[name='order']").val(order);
@@ -219,7 +222,7 @@ function updateCategory(){
         success: function(result){
             if(result.status == 1){
                 alert(result.message);
-                window.location.href = 'getStageStyleList';
+                window.location.href = '/category/getSubStageLocaledList/[[${parentId}]]';
             }else{
                 alert(result.message);
             }
@@ -233,7 +236,7 @@ function deleteCategory(id){
         success: function(result){
             if(result.status == 1){
                 alert(result.message);
-                window.location.href = 'getStageStyleList';
+                window.location.href = '/category/getSubStageLocaledList/[[${parentId}]]';
             }else{
                 alert(result.message);
             }
