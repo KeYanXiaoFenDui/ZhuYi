@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+    <style>
+        .fileinput-button {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .fileinput-button input{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            opacity: 0;
+            -ms-filter: 'alpha(opacity=0)';
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/wellcome">注艺租赁管理后台</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" th:each="cookie :${#httpServletRequest.getCookies()}"
+                                  th:if="${cookie.getName().equals('name')}"
+                                  th:text="${cookie.getValue()}+'，您好'"></a>
+                        </li>
+                        <li>
+                            <a href="/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;登出</a>
+                        </li>
+                        <li>
+                            <a href="/changePwd">修改密码</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+            <div class="row clearfix">
+                <div class="col-md-2 column">
+                    <div class="panel-group" id="panel-594187">
+                        <div class="panel panel-default" th:each="m : ${menu}">
+                            <div class="panel-heading" th:if="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-826081'+${m.id}">用 户 管 理</a>
+                            </div>
+                            <div  th:if="${m.title} ne ${pageTitle}" th:id="'panel-element-826081'+${m.id}" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+
+                            <div class="panel-heading" th:unless="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-792346'+${m.id}" aria-expanded="true">权 限 管 理</a>
+                            </div>
+                            <div th:unless="${m.title} ne ${pageTitle}" th:id="'panel-element-792346'+${m.id}" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 column">
+                    <ul class="breadcrumb">
+                        <li>
+                            内容管理
+                        </li>
+                        <li class="active">
+                            轮播图列表
+                        </li>
+                        <!--<li class="active">-->
+                            <!--Data-->
+                        <!--</li>-->
+                    </ul>
+                    <div class="row clearfix">
+                        <div class="col-md-10 column"></div>
+                        <div class="col-md-2 column">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="clearRotationPicMsg();">新增轮播图</button>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>
+                                    编号
+                                </th>
+                                <th>
+                                    权重
+                                </th>
+                                <th>
+                                    轮播图名称
+                                </th>
+                                <th>
+                                    跳转链接
+                                </th>
+                                <th>
+                                    轮播图图片
+                                </th>
+                                <th>
+                                    操作
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="a : ${rotationPicList}">
+                                <td th:text="${a.id}">
+                                    1
+                                </td>
+                                <td th:text="${a.order}">
+                                    15060606060
+                                </td>
+                                <td th:text="${a.picName}">
+                                    管理员1
+                                </td>
+                                <td th:text="${a.requestUrl}">
+                                    对账财务
+                                </td>
+                                <td>
+                                    <img th:src="${a.picUrl}" style="width: 100px;"/>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" type="button" th:onclick="'getRotationPicForUpdate('+${a.id}+')'" data-toggle="modal" data-target="#myModal">编辑</button>
+                                    <button class="btn btn-primary" type="button"  th:onclick="'deleteRotationPic('+${a.id}+')'">删除</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                 <!--按钮触发模态框 -->
+                <!--<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">开始演示模态框</button>-->
+                 <!--模态框（Modal） -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="myModalLabel">新增轮播图</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form" id="rotationMsgForm" enctype="multipart/form-data">
+                                    <input type="hidden" id="rotationPicId"/>
+                                    <input type="hidden" id="picUrl"/>
+                                    <div class="form-group">
+                                        <label for="picName" class="col-sm-4 control-label">*轮播图名称：</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="picName" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="requestUrl" class="col-sm-4 control-label">*跳转链接：</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="requestUrl" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="order" class="col-sm-4 control-label">*权重：</label>
+                                        <div class="col-sm-8">
+                                            <select id="order" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                　　<option value="0">0</option>
+                                                　　<option value="1">1</option>
+                                                　　<option value="2">2</option>
+                                                　　<option value="3">3</option>
+                                                　　<option value="4">4</option>
+                                                　　<option value="5">5</option>
+                                                　　<option value="6">6</option>
+                                                　　<option value="7">7</option>
+                                                　　<option value="8">8</option>
+                                                　　<option value="9">9</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fileUrl" class="col-sm-4 control-label">*轮播图图片：</label>
+                                        <div class="col-sm-8">
+                                            <div id="showPic"></div>
+                                            <span class="btn btn-primary fileinput-button">
+                                                <span>上传</span>
+                                                <input type="file" name="file" id="fileUrl" placeholder="" onchange="fileUpload('ssss');">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal" id="closeAddAdmin">取消</button>
+                                <button type="submit" class="btn btn-primary" onclick="insertRotationPic();">确定</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/jquery/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+    function fileUpload(ssss) {
+
+//        var data = new FormData();
+//        data.append("file",$('#picUrl'));
+        $.ajax({
+            url: "http://www.breaa.cn/api/image/uploadFile",
+            method: "post",
+            data: new FormData($("#rotationMsgForm")[0]),
+            dataType: 'JSON',
+            cache: false,
+            processData: false,
+            contentType: false,
+//            async:false,
+            success: function(result){
+                if(result.code == 1){
+                    alert("图片上传成功");
+                    var prePath = "http://breaa-pic-1255419371.pictj.myqcloud.com";
+                    $("#picUrl").val(prePath+result.data.picPath);
+//                    $("#picName").val(result.data.picName);
+//                    $("#requestUrl").val(result.data.requestUrl);
+//                    $("#order").val(result.data.order);
+//                    $("#picUrl").val(result.data.picUrl);
+                }else{
+                    alert(result.message);
+                    $("#picUrl").val("");
+                }
+                if($("#picUrl").val()!=""){
+                    var str = "<img src='"+$("#picUrl").val()+"' width='200px'/>";
+                    $("#showPic").html(str);
+                }else{
+                    $("#showPic").html("");
+                }
+            }
+        });
+    }
+    function clearRotationPicMsg() {
+        $("#rotationPicId").val("");
+        $("#picName").val("");
+        $("#requestUrl").val("");
+        $("#order").val("");
+        $("#picUrl").val("");
+        $("#showPic").html("");
+//        var str = "<option value=''>选择身份</option>";
+    }
+    function getRotationPicForUpdate(id){
+        $("#rotationPicId").val(id);
+        $.ajax({
+            url: "/content/getRotationPicById",
+            method: "get",
+            data: {
+                id:id
+            },
+            success: function(result){
+                if(result.status == 1){
+                    $("#picName").val(result.data.picName);
+                    $("#requestUrl").val(result.data.requestUrl);
+                    $("#order").val(result.data.order);
+                    $("#picUrl").val(result.data.picUrl);
+                }else{
+                    alert(result.message);
+                }
+                if($("#picUrl").val()!=""){
+                    var str = "<img src='"+$("#picUrl").val()+"' width='200px'/>";
+                    $("#showPic").html(str);
+                }else{
+                    $("#showPic").html("");
+                }
+            }
+        });
+    }
+    function insertRotationPic(){
+        if($("#rotationPicId").val() != ""){
+            $.ajax({
+                url: "/content/updateRotationPic",
+                method: "post",
+                data: {
+                    id:$("#rotationPicId").val(),
+                    picName:$("#picName").val(),
+                    order:$("#order").val(),
+                    requestUrl:$("#requestUrl").val(),
+                    picUrl:$("#picUrl").val()
+                },
+                success: function(result){
+                    if(result.status == 1){
+                        alert(result.message);
+                        window.location.href = 'getRotationPicList';
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }else{
+            $.ajax({
+                url: "/content/insertRotationPic",
+                method: "post",
+                data: {
+                    picName:$("#picName").val(),
+                    order:$("#order").val(),
+                    requestUrl:$("#requestUrl").val(),
+                    picUrl:$("#picUrl").val()
+                },
+                success: function(result){
+                    if(result.status == 1){
+                        alert(result.message);
+                        window.location.href = 'getRotationPicList';
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+
+    }
+
+    function deleteRotationPic(id) {
+        var result = confirm("确认删除该轮播图?");
+        if(result){
+            $.ajax({
+                url: "/content/deleteRotationPic",
+                method: "get",
+                data:{
+                    rotationPicId:id
+                },
+                success: function(result){
+                    if(result.status == 1){
+                        alert(result.message);
+                        window.location.href = 'getRotationPicList';
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+</body>
+</html>

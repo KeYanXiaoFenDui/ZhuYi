@@ -51,4 +51,14 @@ public class CategoryServiceImpl implements ICategoryService {
     public List<Category> findSubByNameLike(String parentId, String name,int type) {
         return categoryMapper.findSubByNameLike( parentId, name,type);
     }
+
+    @Override
+    public List<Category> getStage1stCategory() {
+        return categoryMapper.getStage1stCategory();
+    }
+
+    @Override
+    public List<Category> getSubCategoryList(int id) {
+        return categoryMapper.getSubCategoryList(id);
+    }
 }

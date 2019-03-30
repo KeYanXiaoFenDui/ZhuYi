@@ -27,7 +27,7 @@
                             <a href="/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;登出</a>
                         </li>
                         <li>
-                            <a href="#">修改密码</a>
+                            <a href="/changePwd">修改密码</a>
                         </li>
                     </ul>
                 </div>
@@ -60,10 +60,10 @@
                 <div class="col-md-10 column">
                     <ul class="breadcrumb">
                         <li>
-                            权限管理
+                            用户管理
                         </li>
                         <li class="active">
-                            操作日志
+                            用户列表
                         </li>
                         <!--<li class="active">-->
                         <!--Data-->
@@ -73,9 +73,9 @@
                         <div class="col-md-12 column">
                             <div class="col-sm-3">
                                 <div class="input-group">
-                                    <input id="nameOrMenu" type="text" class="form-control" placeholder="请输入进行搜索" th:value="${nameOrMenu}">
+                                    <input id="nameOrAccount" type="text" class="form-control" placeholder="请输入用户昵称/账号进行搜索" th:value="${nameOrAccount}">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="button" onclick="getLogList();"><span class="glyphicon glyphicon-search"></span></button>
+                                        <button class="btn btn-primary" type="button" onclick="getUserList();"><span class="glyphicon glyphicon-search"></span></button>
                                     </span>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@
                                 <input id="startTime" type="date" class="form-control" style="display: inline-block;width: 150px;" th:value="${startTime}"/>
                                 <span>至</span>
                                 <input id="endTime" type="date" class="form-control" style="display: inline-block;width: 150px;" th:value="${endTime}"/>
-                                <button type="button" class="btn btn-primary" onclick="getLogList();">筛选</button>
+                                <button type="button" class="btn btn-primary" onclick="getUserList();">筛选</button>
                             </div>
                         </div>
                         <!--<div class="col-md-2 column">-->
@@ -100,101 +100,109 @@
                                     编号
                                 </th>
                                 <th>
-                                    管理员姓名
+                                    用户昵称
                                 </th>
                                 <th>
-                                    操作时间
+                                    账号
                                 </th>
                                 <th>
-                                    操作菜单
+                                    注册时间
+                                </th>
+                                <th>
+                                    操作
                                 </th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="a : ${logList.list}">
+                            <tr th:each="a : ${userList.list}">
                                 <td th:text="${a.id}">
                                     1
                                 </td>
-                                <td th:text="${a.adminName}">
+                                <td th:text="${a.userName}">
+                                    15060606060
+                                </td>
+                                <td th:text="${a.account}">
                                     15060606060
                                 </td>
                                 <td>
                                     <div th:text="${#dates.format(a.createTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
                                 </td>
                                 <td>
-                                    <div th:text="${a.operateTitle}"></div>
+                                    <button class="btn btn-primary" type="button" th:onclick="'getAdminDetailForUpdate('+${a.id}+')'">禁用</button>
+                                    <button class="btn btn-primary" type="button" th:onclick="'getUserRequestList('+${a.id}+')'">用户需求</button>
+                                    <button class="btn btn-primary" type="button"  th:onclick="'getUserStageList('+${a.id}+')'">用户场景</button>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="row clearfix">
-                        <input type="hidden" id="pageNum" th:value="${logList.pageNum}"/>
-                        <input type="hidden" id="pageSize" th:value="${logList.pageSize}"/>
-                        <input type="hidden" id="pages" th:value="${logList.pages}"/>
+                        <input type="hidden" id="pageNum" th:value="${userList.pageNum}"/>
+                        <input type="hidden" id="pageSize" th:value="${userList.pageSize}"/>
+                        <input type="hidden" id="pages" th:value="${userList.pages}"/>
                         <div class="col-md-4 column">
-                            <span style="height: inherit;">共   <span th:text="${logList.total}">5</span>    条记录</span>
+                            <span style="height: inherit;">共   <span th:text="${userList.total}">5</span>    条记录</span>
                         </div>
-                        <div class="col-md-8 column" th:if="${logList.total > 0}">
+                        <div class="col-md-8 column" th:if="${userList.total > 0}">
                             <ul class="pagination" style="margin: 0 0;">
-                                <th:block th:if="${logList.pageNum > 1}">
+                                <th:block th:if="${userList.pageNum > 1}">
                                     <li>
-                                        <a th:href="'getOperateLogList?pageSize='+${logList.pageSize}+'&pageNum='+${logList.pageNum-1}+'&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}">上一页</a>
+                                        <a th:href="'getUserList?pageSize='+${userList.pageSize}+'&pageNum='+${userList.pageNum-1}+'&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}">上一页</a>
                                     </li>
                                 </th:block>
-                                <th:block th:if="${logList.pages < 9}">
-                                    <li th:each="dayCyc : ${#numbers.sequence(1,logList.pages)}" th:class="${dayCyc == logList.pageNum}? 'active' : ''">
-                                        <a th:href="'getOperateLogList?pageSize='+${logList.pageSize}+'&pageNum='+${dayCyc}+'&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${dayCyc}">1</a>
+                                <th:block th:if="${userList.pages < 9}">
+                                    <li th:each="dayCyc : ${#numbers.sequence(1,userList.pages)}" th:class="${dayCyc == userList.pageNum}? 'active' : ''">
+                                        <a th:href="'getUserList?pageSize='+${userList.pageSize}+'&pageNum='+${dayCyc}+'&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${dayCyc}">1</a>
                                     </li>
                                 </th:block>
-                                <th:block th:if="${logList.pages >= 9}">
-                                    <li th:if="${logList.pageNum >= 4}" th:class="${1 == logList.pageNum}? 'active' : ''">
-                                        <a th:href="'getOperateLogList?pageSize='+${logList.pageSize}+'&pageNum=1&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}">1</a>
+                                <th:block th:if="${userList.pages >= 9}">
+                                    <li th:if="${userList.pageNum >= 4}" th:class="${1 == userList.pageNum}? 'active' : ''">
+                                        <a th:href="'getUserList?pageSize='+${userList.pageSize}+'&pageNum=1&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}">1</a>
                                     </li>
-                                    <li th:if="${logList.pageNum <= 3}" th:each="dayCyc : ${#numbers.sequence(1,5)}" th:class="${dayCyc == logList.pageNum}? 'active' : ''">
-                                        <a th:href="'getOperateLogList?pageSize='+${logList.pageSize}+'&pageNum='+${dayCyc}+'&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${dayCyc}">1</a>
+                                    <li th:if="${userList.pageNum <= 3}" th:each="dayCyc : ${#numbers.sequence(1,5)}" th:class="${dayCyc == userList.pageNum}? 'active' : ''">
+                                        <a th:href="'getUserList?pageSize='+${userList.pageSize}+'&pageNum='+${dayCyc}+'&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${dayCyc}">1</a>
                                     </li>
-                                    <li th:if="${logList.pageNum >= 5}">
+                                    <li th:if="${userList.pageNum >= 5}">
                                         <span>...</span>
                                     </li>
-                                    <th:block th:if="${logList.pageNum >= 4 and logList.pageNum <= logList.pages-3}">
-                                        <li th:each="dd : ${#numbers.sequence(-2,2)}" th:class="${logList.pageNum+dd == logList.pageNum}? 'active' : ''">
-                                            <a th:href="'getOperateLogList?pageSize='+${logList.pageSize}+'&pageNum='+${logList.pageNum+dd}+'&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${logList.pageNum+dd}">1</a>
+                                    <th:block th:if="${userList.pageNum >= 4 and userList.pageNum <= userList.pages-3}">
+                                        <li th:each="dd : ${#numbers.sequence(-2,2)}" th:class="${userList.pageNum+dd == userList.pageNum}? 'active' : ''">
+                                            <a th:href="'getUserList?pageSize='+${userList.pageSize}+'&pageNum='+${userList.pageNum+dd}+'&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${userList.pageNum+dd}">1</a>
                                         </li>
                                     </th:block>
-                                    <li th:if="${logList.pageNum <= logList.pages - 4}">
+                                    <li th:if="${userList.pageNum <= userList.pages - 4}">
                                         <span>...</span>
                                     </li>
-                                    <li th:if="${logList.pageNum >= logList.pages - 2}" th:each="dayCyc : ${#numbers.sequence(-4,0)}" th:class="${logList.pages + dayCyc == logList.pageNum}? 'active' : ''">
-                                        <a th:href="'getOperateLogList?pageSize='+${logList.pageSize}+'&pageNum='+${logList.pages + dayCyc}+'&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${logList.pages + dayCyc}">1</a>
+                                    <li th:if="${userList.pageNum >= userList.pages - 2}" th:each="dayCyc : ${#numbers.sequence(-4,0)}" th:class="${userList.pages + dayCyc == userList.pageNum}? 'active' : ''">
+                                        <a th:href="'getUserList?pageSize='+${userList.pageSize}+'&pageNum='+${userList.pages + dayCyc}+'&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${userList.pages + dayCyc}">1</a>
                                     </li>
-                                    <li th:if="${logList.pageNum <= logList.pages - 3}" th:class="${logList.pages == logList.pageNum}? 'active' : ''">
-                                        <a th:href="'getOperateLogList?pageSize='+${logList.pageSize}+'&pageNum='+${logList.pages}+'&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${logList.pages}">1</a>
+                                    <li th:if="${userList.pageNum <= userList.pages - 3}" th:class="${userList.pages == userList.pageNum}? 'active' : ''">
+                                        <a th:href="'getUserList?pageSize='+${userList.pageSize}+'&pageNum='+${userList.pages}+'&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${userList.pages}">1</a>
                                     </li>
                                 </th:block>
-                                <th:block th:if="${logList.pageNum < logList.pages}">
+                                <th:block th:if="${userList.pageNum < userList.pages}">
                                     <li>
-                                        <a th:href="'getOperateLogList?pageSize='+${logList.pageSize}+'&pageNum='+${logList.pageNum+1}+'&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}">下一页</a>
+                                        <a th:href="'getUserList?pageSize='+${userList.pageSize}+'&pageNum='+${userList.pageNum+1}+'&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}">下一页</a>
                                     </li>
                                 </th:block>
                                 <li>
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" th:text="${logList.pageSize}+'条/页'">10条/页
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" th:text="${userList.pageSize}+'条/页'">10条/页
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
                                             <li>
-                                                <a th:href="'getOperateLogList?pageSize=10&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}">10条/页</a>
+                                                <a th:href="'getUserList?pageSize=10&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}">10条/页</a>
                                             </li>
                                             <li>
-                                                <a th:href="'getOperateLogList?pageSize=20&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}">20条/页</a>
+                                                <a th:href="'getUserList?pageSize=20&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}">20条/页</a>
                                             </li>
                                             <li>
-                                                <a th:href="'getOperateLogList?pageSize=30&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}">30条/页</a>
+                                                <a th:href="'getUserList?pageSize=30&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}">30条/页</a>
                                             </li>
                                             <!--<li class="divider"></li>-->
                                             <li>
-                                                <a th:href="'getOperateLogList?pageSize=40&nameOrMenu='+${nameOrMenu}+'&startTime='+${startTime}+'&endTime='+${endTime}">40条/页</a>
+                                                <a th:href="'getUserList?pageSize=40&nameOrAccount='+${nameOrAccount}+'&startTime='+${startTime}+'&endTime='+${endTime}">40条/页</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -215,13 +223,10 @@
 <script th:src="@{/jquery/jquery-3.2.1.min.js}"></script>
 <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
 <script>
-//    $(document).ready(function (){
-////        $("#adminMenu").click();
-//    });
     $(document).keydown(function(event){
         if(event.keyCode == 13){
             if(isNumber($("#jumpPage").val())){//非数字不能跳转
-                window.location.href = 'getOperateLogList?startTime='+$("#startTime").val()+'&endTime='+$("#endTime").val()+'&nameOrMenu='+$("#nameOrMenu").val()+'&pageSize='+$("#pageSize").val()+'&pageNum='+$("#jumpPage").val();
+                window.location.href = 'getUserList?startTime='+$("#startTime").val()+'&endTime='+$("#endTime").val()+'&nameOrAccount='+$("#nameOrAccount").val()+'&pageSize='+$("#pageSize").val()+'&pageNum='+$("#jumpPage").val();
             }
         }
     });
@@ -235,8 +240,14 @@
             return false;
         }
     }
-    function getLogList() {
-        window.location.href = 'getOperateLogList?pageSize='+$("#pageSize").val()+'&nameOrMenu='+$("#nameOrMenu").val().trim()+'&startTime='+$("#startTime").val()+'&endTime='+$("#endTime").val();
+    function getUserRequestList(userId) {
+        window.location.href = 'getUserRequestList?userId='+userId;
+    }
+    function getUserStageList(userId) {
+        window.location.href = 'getUserStageList?userId='+userId;
+    }
+    function getUserList() {
+        window.location.href = 'getUserList?pageSize='+$("#pageSize").val()+'&nameOrAccount='+$("#nameOrAccount").val().trim()+'&startTime='+$("#startTime").val()+'&endTime='+$("#endTime").val();
     }
 
 </script>

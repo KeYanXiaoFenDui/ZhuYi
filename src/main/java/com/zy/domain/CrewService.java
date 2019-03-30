@@ -62,4 +62,20 @@ public class CrewService implements Serializable {
     public void setDescriptionEn(String descriptionEn) {
         this.descriptionEn = descriptionEn;
     }
+
+    @Override
+    public String toString() {
+        return "CrewService{" +
+                "id=" + id +
+                ", createTime=" + createTime +
+                ", status=" + status +
+                ", name='" + name + '\'' +
+                ", order=" + order +
+                ", serviceLogoUrl='" + serviceLogoUrl + '\'' +
+                ", servicePicUrl='" + servicePicUrl + '\'' +
+                ", description='" + description + '\'' +
+                ", nameEn='" + nameEn + '\'' +
+                ", descriptionEn='" + descriptionEn + '\'' +
+                '}';
+    }
 }

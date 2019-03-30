@@ -23,7 +23,10 @@ public interface UserMapper {
     @Select("select * from user where id=#{id}")
     public User getUser(int id);
 
+//    @SelectProvider(type = UserSQLProvider.class,method = "getUserList")
+//    public List<Map> getUserList(String name);
+
     @SelectProvider(type = UserSQLProvider.class,method = "getUserList")
-    public List<Map> getUserList(String name);
+    public List<User> getUserList(String nameOrAccount,String startTime,String endTime);
 
 }

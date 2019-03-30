@@ -1,10 +1,14 @@
 package com.zy.service.impl;
 
 import com.zy.domain.Stage;
+import com.zy.domain.vo.StageRequestVo;
 import com.zy.mapper.StageMapper;
 import com.zy.service.IStageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class StageServiceImpl implements IStageService {
@@ -30,4 +34,15 @@ public class StageServiceImpl implements IStageService {
     public Stage getStage(int id) {
         return stageMapper.getStage(id);
     }
+
+    @Override
+    public List<Map> getUserStageList(int userId, int processStatus, String idOrName) {
+        return stageMapper.getUserStageList(userId, processStatus, idOrName);
+    }
+
+    @Override
+    public List<Stage> getStageList(StageRequestVo vo) {
+        return stageMapper.getStageList(vo);
+    }
+
 }

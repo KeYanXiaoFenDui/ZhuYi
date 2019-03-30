@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/wellcome">注艺租赁管理后台</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" th:each="cookie :${#httpServletRequest.getCookies()}"
+                                  th:if="${cookie.getName().equals('name')}"
+                                  th:text="${cookie.getValue()}+'，您好'"></a>
+                        </li>
+                        <li>
+                            <a href="/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;登出</a>
+                        </li>
+                        <li>
+                            <a href="/changePwd">修改密码</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+            <div class="row clearfix">
+                <div class="col-md-2 column">
+                    <div class="panel-group" id="panel-594187">
+                        <div class="panel panel-default" th:each="m : ${menu}">
+                            <div class="panel-heading" th:if="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-826081'+${m.id}">用 户 管 理</a>
+                            </div>
+                            <div  th:if="${m.title} ne ${pageTitle}" th:id="'panel-element-826081'+${m.id}" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+
+                            <div class="panel-heading" th:unless="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-792346'+${m.id}" aria-expanded="true">权 限 管 理</a>
+                            </div>
+                            <div th:unless="${m.title} ne ${pageTitle}" th:id="'panel-element-792346'+${m.id}" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 column">
+                    <ul class="breadcrumb">
+                        <li>
+                            内容管理
+                        </li>
+                        <li class="active">
+                            反馈信息
+                        </li>
+                    </ul>
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <div style="border: 1px solid #aaaaaa;border-radius: 5px;">
+                                <div style="padding: 20px 5px 5px 5px;">
+                                    <form class="form-horizontal" role="form" id="rotationMsgForm">
+                                        <div class="form-group">
+                                            <span style="padding-left: 15px;">*场景反馈信息（中文）：</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <select id="stage" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    　　<option value="1">待审核</option>
+                                                    　　<option value="2">已通过</option>
+                                                    　　<option value="0">已驳回</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <!--<input type="hidden" class="form-control" id="descriptionEn" placeholder="">-->
+                                                <textarea th:each="r : ${responseInfoList}" class="form-control stage" th:id="|stage${r.processStatus}|" th:text="${r.content}" th:if="${r.type == '1' and r.language == 1}" th:style="${r.processStatus != 1 ?'display: none;':''}"  th:val="${r.id}"></textarea>
+                                                <!--<textarea class="form-control stage" id="stage1"></textarea>-->
+                                                <!--<textarea class="form-control stage" id="stage2" style="display: none;"></textarea>-->
+                                                <!--<textarea class="form-control stage" id="stage0" style="display: none;"></textarea>-->
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3"></div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="back();">取消</button>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-primary" onclick="updateResponseInfo(1,1);">保存</button>
+                                            </div>
+                                            <div class="col-sm-4"></div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <span style="padding-left: 15px;">*场景反馈信息（英文）：</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <select id="stageEn" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    　　<option value="1">待审核</option>
+                                                    　　<option value="2">已通过</option>
+                                                    　　<option value="0">已驳回</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <!--<input type="hidden" class="form-control" id="descriptionEn" placeholder="">-->
+                                                <textarea th:each="r : ${responseInfoList}" class="form-control stageEn" th:id="|stageEn${r.processStatus}|" th:text="${r.content}" th:if="${r.type == '1' and r.language == 2}" th:style="${r.processStatus != 1 ?'display: none;':''}" th:val="${r.id}"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3"></div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="back();">取消</button>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-primary" onclick="updateResponseInfo(1,2);">保存</button>
+                                            </div>
+                                            <div class="col-sm-4"></div>
+                                        </div>
+
+                                        <div class="form-group">
+                                        <span style="padding-left: 15px;">*需求反馈信息（中文）：</span>
+                                    </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <select id="request" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    　　<option value="1">待推荐</option>
+                                                    　　<option value="2">推荐中</option>
+                                                    　　<option value="0">已终止</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <!--<input type="hidden" class="form-control" id="descriptionEn" placeholder="">-->
+                                                <textarea th:each="r : ${responseInfoList}" class="form-control request" th:id="|request${r.processStatus}|" th:text="${r.content}" th:if="${r.type == '2' and r.language == 1}" th:style="${r.processStatus != 1 ?'display: none;':''}" th:val="${r.id}"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3"></div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="back();">取消</button>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-primary" onclick="updateResponseInfo(2,1);">保存</button>
+                                            </div>
+                                            <div class="col-sm-4"></div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <span style="padding-left: 15px;">*需求反馈信息（英文）：</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <select id="requestEn" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    　　<option value="1">待推荐</option>
+                                                    　　<option value="2">推荐中</option>
+                                                    　　<option value="0">已终止</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <!--<input type="hidden" class="form-control" id="descriptionEn" placeholder="">-->
+                                                <textarea th:each="r : ${responseInfoList}" class="form-control requestEn" th:id="|requestEn${r.processStatus}|" th:text="${r.content}" th:if="${r.type == '2' and r.language == 2}" th:style="${r.processStatus != 1 ?'display: none;':''}" th:val="${r.id}"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3"></div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="back();">取消</button>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-primary" onclick="updateResponseInfo(2,2);">保存</button>
+                                            </div>
+                                            <div class="col-sm-4"></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/jquery/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+
+    $("#stage").change(function(){
+        $(".stage").hide();
+        var opt=$("#stage").val();
+        $("#stage"+opt).show();
+    });
+    $("#stageEn").change(function(){
+        $(".stageEn").hide();
+        var opt=$("#stageEn").val();
+        $("#stageEn"+opt).show();
+    });
+    $("#request").change(function(){
+        $(".request").hide();
+        var opt=$("#request").val();
+        $("#request"+opt).show();
+    });
+    $("#requestEn").change(function(){
+        $(".requestEn").hide();
+        var opt=$("#requestEn").val();
+        $("#requestEn"+opt).show();
+    });
+
+    function updateResponseInfo(type,language){
+        var id = 0;
+        var content = "";
+        if(type == 1 && language == 1){
+            id = $("#stage"+$("#stage").val()).attr('val');//id
+            content = $("#stage"+$("#stage").val()).val();//content
+        }else if(type == 1 && language == 2){
+            id = $("#stageEn"+$("#stageEn").val()).attr('val');//id
+            content = $("#stageEn"+$("#stageEn").val()).val();//content
+        }else if(type == 2 && language == 1){
+            id = $("#request"+$("#request").val()).attr('val');//id
+            content = $("#request"+$("#request").val()).val();//content
+        }else if(type == 2 && language == 2){
+            id = $("#requestEn"+$("#requestEn").val()).attr('val');//id
+            content = $("#requestEn"+$("#requestEn").val()).val();//content
+        }
+//        alert(id+":::"+content);
+        $.ajax({
+            url: "/content/updateResponseInfo",
+            method: "post",
+            data: {
+                id:id,
+                content:content
+            },
+            success: function(result){
+                if(result.status == 1){
+                    alert(result.message);
+                    window.location.href = 'getResponseInfoList';
+                }else{
+                    alert(result.message);
+                }
+            }
+        });
+    }
+
+    function deleteCrewService(id) {
+        var result = confirm("确认删除该剧组服务?");
+        if(result){
+            $.ajax({
+                url: "/content/deleteCrewService",
+                method: "get",
+                data:{
+                    rotationPicId:id
+                },
+                success: function(result){
+                    if(result.status == 1){
+                        alert(result.message);
+                        window.location.href = 'getCrewServiceList';
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+</body>
+</html>

@@ -6,6 +6,7 @@ import com.zy.enums.CategoryType;
 import com.zy.service.ICategoryService;
 import com.zy.util.CommonUtil;
 import com.zy.util.PageBean;
+import com.zy.util.RedisComponentUtil;
 import com.zy.util.constant.MessageConstant;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +17,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Controller
-@RequestMapping("/category111")
-public class CategoryController {
+@RequestMapping("/category")
+public class CategoryNewController {
     @Autowired
     private ICategoryService categoryService;
+    @Autowired
+    public RedisComponentUtil redisComponentUtil;
 
     /**
      * 影视剧类型列表
@@ -33,7 +36,7 @@ public class CategoryController {
      * @return
      */
     @RequestMapping(value = "/getFilmTypeList")
-    public String getFilmTypeList(Model model, HttpServletRequest request) {
+    public String getFilmTypeList(Model model, HttpServletRequest request,HttpSession session) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
@@ -48,8 +51,11 @@ public class CategoryController {
 //        return CommonUtil.ToResultHashMap(status,message,list);
         model.addAttribute("filmTypeList",list);
         model.addAttribute("orderList",getOrderList());
+        model.addAttribute("level",1);
         model.addAttribute("name",name);
-        return "filmTypeList";
+        model.addAttribute("pageTitle","分类管理");
+        setAdminMsg(model, request, session);
+        return "filmTypeListPage";
     }
 
 
@@ -59,7 +65,7 @@ public class CategoryController {
      * @return
      */
     @RequestMapping(value = "/getStageStyleList")
-    public String getStageStyleList(Model model, HttpServletRequest request) {
+    public String getStageStyleList(Model model, HttpServletRequest request,HttpSession session) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
@@ -75,8 +81,11 @@ public class CategoryController {
 //        return CommonUtil.ToResultHashMap(status,message,list);
         model.addAttribute("stageStyleList",list);
         model.addAttribute("orderList",getOrderList());
+        model.addAttribute("level",1);
         model.addAttribute("name",name);
-        return "stageStyleList";
+        model.addAttribute("pageTitle","分类管理");
+        setAdminMsg(model, request, session);
+        return "stageStyleListPage";
     }
 
     /**
@@ -85,7 +94,7 @@ public class CategoryController {
      * @return
      */
     @RequestMapping(value = "/getStageTypeList")
-    public String getStageTypeList(Model model,HttpServletRequest request) {
+    public String getStageTypeList(Model model,HttpServletRequest request,HttpSession session) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
@@ -100,8 +109,11 @@ public class CategoryController {
         PageBean<Map> list = new PageBean<Map>(resultList);
         model.addAttribute("stageTypeList",list);
         model.addAttribute("orderList",getOrderList());
+        model.addAttribute("level",1);
         model.addAttribute("name",name);
-        return "stageTypeList";
+        model.addAttribute("pageTitle","分类管理");
+        setAdminMsg(model, request, session);
+        return "stageTypeListPage";
     }
 
     /**
@@ -109,9 +121,9 @@ public class CategoryController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/getSubStageTypeList/{parentId}")
-    public String getSubStageTypeList(Model model,HttpServletRequest request
-            ,@PathVariable("parentId")String parentId) {
+    @RequestMapping(value = "/getStageType2ndList")
+    public String getStageType2ndList(Model model,HttpServletRequest request
+            ,String parentId,HttpSession session) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
@@ -119,13 +131,34 @@ public class CategoryController {
         String name = CommonUtil.getStr(request.getParameter("name"),"");
         List resultList = categoryService.findSubByNameLike(parentId,name,CategoryType.STAGE_TYPE);
         PageBean<Map> list = new PageBean<Map>(resultList);
-        model.addAttribute("subStageTypeList",list);
+        model.addAttribute("stageType2ndList",list);
         model.addAttribute("orderList",getOrderList());
         model.addAttribute("parentId",parentId);
+        model.addAttribute("level",2);
         model.addAttribute("name",name);
-        return "subStageTypeList";
+        model.addAttribute("pageTitle","分类管理");
+        setAdminMsg(model, request, session);
+        return "stageType2ndListPage";
     }
 
+
+    /**
+     *根据Id获取分类数据
+     */
+    @RequestMapping(value = "/getCategoryById")
+    @ResponseBody
+    public HashMap<String,Object> getCategory(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
+        Category c = categoryService.getCategory(id);
+        if(c != null){
+            status = MessageConstant.SUCCESS_CODE;
+            message = MessageConstant.SUCCESS_INFO;
+        }
+        return CommonUtil.ToResultHashMap(status,message,c);
+    }
     /**
      *新增分类数据
      */
@@ -219,8 +252,8 @@ public class CategoryController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/getStageLocaledList")
-    public String getStageLocaledList(Model model,HttpServletRequest request) {
+    @RequestMapping(value = "/getStageAreaList")
+    public String getStageAreaList(Model model,HttpServletRequest request,HttpSession session) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
@@ -233,10 +266,13 @@ public class CategoryController {
             resultList = categoryService.findByLevelAndType(1,CategoryType.STAGE_LOCALED);
         }
         PageBean<Map> list = new PageBean<Map>(resultList);
-        model.addAttribute("stageLocaledList",list);
+        model.addAttribute("stageAreaList",list);
         model.addAttribute("orderList",getOrderList());
+        model.addAttribute("level",1);
         model.addAttribute("name",name);
-        return "stageLocaledList";
+        model.addAttribute("pageTitle","分类管理");
+        setAdminMsg(model, request, session);
+        return "stageAreaListPage";
     }
 
     /**
@@ -244,9 +280,9 @@ public class CategoryController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/getSubStageLocaledList/{parentId}")
-    public String getSubStageLocaledList(Model model,HttpServletRequest request
-            ,@PathVariable("parentId")String parentId) {
+    @RequestMapping(value = "/getStageArea2ndList")
+    public String getStageArea2ndList(Model model,HttpServletRequest request
+            ,String parentId,HttpSession session) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
@@ -254,11 +290,57 @@ public class CategoryController {
         String name = CommonUtil.getStr(request.getParameter("name"),"");
         List resultList = categoryService.findSubByNameLike(parentId,name,CategoryType.STAGE_LOCALED);
         PageBean<Map> list = new PageBean<Map>(resultList);
-        model.addAttribute("subStageLocaledList",list);
-        model.addAttribute("parentId",parentId);
+        model.addAttribute("stageAreaList",list);
         model.addAttribute("orderList",getOrderList());
+        model.addAttribute("parentId",parentId);
+        model.addAttribute("level",2);
         model.addAttribute("name",name);
-        return "subStageLocaledList";
+        model.addAttribute("pageTitle","分类管理");
+        setAdminMsg(model, request, session);
+        return "stageArea2ndListPage";
+    }
+
+    /**
+     * 场景三级场景地区列表
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/getStageArea3rdList")
+    public String getStageArea3ndList(Model model,HttpServletRequest request
+            ,String parentId,HttpSession session) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        String name = CommonUtil.getStr(request.getParameter("name"),"");
+        List resultList = categoryService.findSubByNameLike(parentId,name,CategoryType.STAGE_LOCALED);
+        PageBean<Map> list = new PageBean<Map>(resultList);
+        model.addAttribute("stageAreaList",list);
+        model.addAttribute("orderList",getOrderList());
+        model.addAttribute("parentId",parentId);
+        model.addAttribute("level",3);
+        model.addAttribute("name",name);
+        model.addAttribute("pageTitle","分类管理");
+        setAdminMsg(model, request, session);
+        return "stageArea3rdListPage";
+    }
+
+    /**
+     *获取子分类数据
+     */
+    @RequestMapping(value = "/getSubCategoryList")
+    @ResponseBody
+    public HashMap<String,Object> getSubCategoryList(HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
+        List<Category> c = categoryService.getSubCategoryList(id);
+        if(c != null && c.size() > 0){
+            status = MessageConstant.SUCCESS_CODE;
+            message = MessageConstant.SUCCESS_INFO;
+        }
+        return CommonUtil.ToResultHashMap(status,message,c);
     }
 
     private List<String> getOrderList(){
@@ -267,5 +349,16 @@ public class CategoryController {
             result.add(String.valueOf(i));
         }
         return result;
+    }
+    public void setAdminMsg(Model m, HttpServletRequest request,HttpSession session){
+        HashMap<String,Object> adminMsg = (HashMap<String,Object>)redisComponentUtil.get(session.getId());
+        m.addAttribute("menu",adminMsg.get("menu"));
+//        Cookie[] cookies = request.getCookies();
+//        String cookieValue = null;
+//        if (null != cookies) {
+//            for (Cookie cookie : cookies) {
+//                System.out.println("cookie::"+cookie.getName()+"::::"+cookie.getValue());
+//            }
+//        }
     }
 }

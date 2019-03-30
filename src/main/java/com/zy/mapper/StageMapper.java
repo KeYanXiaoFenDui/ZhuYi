@@ -1,7 +1,14 @@
 package com.zy.mapper;
 
 import com.zy.domain.Stage;
+import com.zy.domain.User;
+import com.zy.domain.vo.StageRequestVo;
+import com.zy.mapper.sqlProvide.StageSQLProvider;
+import com.zy.mapper.sqlProvide.UserSQLProvider;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface StageMapper {
@@ -19,4 +26,9 @@ public interface StageMapper {
     @Select("select * from stage where id=#{id}")
     public Stage getStage(int id);
 
+    @SelectProvider(type = StageSQLProvider.class,method = "getUserStageList")
+    public List<Map> getUserStageList(int userId, int processStatus, String idOrName);
+
+    @SelectProvider(type = StageSQLProvider.class,method = "getStageList")
+    public List<Stage> getStageList(StageRequestVo vo);
 }

@@ -23,4 +23,8 @@ public interface ICategoryService {
     public int cascadeDeleteCategory(int id);
 
     public List<Category> findSubByNameLike(String parentId,String name,int type);
+
+    public List<Category> getStage1stCategory();
+
+    public List<Category> getSubCategoryList(int id);
 }

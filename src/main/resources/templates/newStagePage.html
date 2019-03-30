@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+    <style>
+        .fileinput-button {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .fileinput-button input{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            opacity: 0;
+            -ms-filter: 'alpha(opacity=0)';
+        }
+        .imgDiv {
+            display: inline-block;
+            position: relative;
+        }
+
+        .imgDiv .delete {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+        .noPaddingLeft{
+            padding-left: 0px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/wellcome">注艺租赁管理后台</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" th:each="cookie :${#httpServletRequest.getCookies()}"
+                                  th:if="${cookie.getName().equals('name')}"
+                                  th:text="${cookie.getValue()}+'，您好'"></a>
+                        </li>
+                        <li>
+                            <a href="/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;登出</a>
+                        </li>
+                        <li>
+                            <a href="/changePwd">修改密码</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+            <div class="row clearfix">
+                <div class="col-md-2 column">
+                    <div class="panel-group" id="panel-594187">
+                        <div class="panel panel-default" th:each="m : ${menu}">
+                            <div class="panel-heading" th:if="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-826081'+${m.id}">用 户 管 理</a>
+                            </div>
+                            <div  th:if="${m.title} ne ${pageTitle}" th:id="'panel-element-826081'+${m.id}" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+
+                            <div class="panel-heading" th:unless="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-792346'+${m.id}" aria-expanded="true">权 限 管 理</a>
+                            </div>
+                            <div th:unless="${m.title} ne ${pageTitle}" th:id="'panel-element-792346'+${m.id}" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 column">
+                    <ul class="breadcrumb">
+                        <li>
+                            场景管理
+                        </li>
+                        <li>
+                            场景列表
+                        </li>
+                        <li class="active">
+                            新增场景
+                        </li>
+                    </ul>
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <div style="border: 1px solid #aaaaaa;border-radius: 5px;">
+                                <div style="padding: 20px 5px 5px 5px;">
+                                    <form class="form-horizontal" role="form" id="rotationMsgForm" enctype="multipart/form-data">
+                                        <input type="hidden" id="stageId"/>
+                                        <input type="hidden" id="picUrl"/>
+                                        <input type="hidden" id="picType"/>
+                                        <input type="file" name="file" style="display:none" id="selectFile" onchange="fileUpload();"/>
+                                        <div class="form-group">
+                                            <strong class="col-sm-3 control-label">场景信息：</strong>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name" class="col-sm-3 control-label">*场景名称（中文）：</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" id="name" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameEn" class="col-sm-3 control-label">*场景名称（英文）：</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" id="nameEn" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">*场景地区：</label>
+                                            <div class="col-sm-2">
+                                                <select id="country" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    <option value="">场景地区</option>
+                                                　　<option th:each="c : ${category1stList}" th:value="${c.id}" th:text="${c.name}" th:if="${c.type == 4}">0</option>
+                                                    <!--　　<option th:each="c : ${category1stList}" th:value="${c.id}" th:text="${c.name}" th:if="${c.type == 4}">0</option>-->
+                                                </select>
+                                            </div>
+
+                                            <div id="provinceDiv" class="col-sm-2 noPaddingLeft" style="display: none;">
+                                                <select id="province" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true"></select>
+                                            </div>
+
+                                            <div id="cityDiv" class="col-sm-2 noPaddingLeft" style="display: none;">
+                                                <select id="city" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true"></select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="address" class="col-sm-3 control-label">*详细地址（中文）：</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" id="address" placeholder="请输入详细地址">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="addressEn" class="col-sm-3 control-label">*详细地址（英文）：</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" id="addressEn" placeholder="请输入详细地址">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">*影视剧类型：</label>
+                                            <div class="col-sm-2">
+                                                <select id="filmTypeId" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    　　<option value="">影视剧类型</option>
+                                                    　　<option th:each="c : ${category1stList}" th:value="${c.id}" th:text="${c.name}" th:if="${c.type == 1}">0</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">*场景类型：</label>
+                                            <div class="col-sm-2">
+                                                <select id="stageMainTypeId" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    　　<option value="">场景类型</option>
+                                                    　　<option th:each="c : ${category1stList}" th:value="${c.id}" th:text="${c.name}" th:if="${c.type == 3}">0</option>
+                                                </select>
+                                            </div>
+
+                                            <div id="stageSubTypeIdDiv" class="col-sm-2 noPaddingLeft" style="display: none;">
+                                                <select id="stageSubTypeId" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true"></select>
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">*场景风格：</label>
+                                            <div class="col-sm-2">
+                                                <select id="filmStyleId" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    　　<option value="">场景风格</option>
+                                                    　　<option th:each="c : ${category1stList}" th:value="${c.id}" th:text="${c.name}" th:if="${c.type == 2}">0</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">*场景面积：</label>
+                                            <div class="col-sm-2">
+                                                <select id="stageArea" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    　　<option value="1">0-100㎡</option>
+                                                    　　<option value="2">100-300㎡</option>
+                                                    　　<option value="3">300-500㎡</option>
+                                                    　　<option value="4">500-1000㎡</option>
+                                                    　　<option value="5">1000㎡以上</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">*可拍设时间：</label>
+                                            <div class="col-sm-2">
+                                                <select id="workTime" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    　　<option value="1">周末</option>
+                                                    　　<option value="2">工作日</option>
+                                                    　　<option value="3">不限</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">*停车位：</label>
+                                            <div class="col-sm-2">
+                                                <input id="parking" type="number" class="form-control" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">*电压：</label>
+                                            <div class="col-sm-2">
+                                                <select id="voltage" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                    　　<option value="1">220V</option>
+                                                    　　<option value="2">380V</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="otherNote" class="col-sm-3 control-label">*其他配套（中文）：</label>
+                                            <div class="col-sm-6">
+                                                <!--<input type="hidden" class="form-control" id="description" placeholder="">-->
+                                                <textarea class="form-control" id="otherNote"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="otherNoteEn" class="col-sm-3 control-label">*其他配套（英文）：</label>
+                                            <div class="col-sm-6">
+                                                <!--<input type="hidden" class="form-control" id="descriptionEn" placeholder="">-->
+                                                <textarea class="form-control" id="otherNoteEn"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="stageDesc" class="col-sm-3 control-label">场景描述（中文）：</label>
+                                            <div class="col-sm-6">
+                                                <!--<input type="hidden" class="form-control" id="description" placeholder="">-->
+                                                <textarea class="form-control" id="stageDesc"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="stageDescEn" class="col-sm-3 control-label">场景描述（英文）：</label>
+                                            <div class="col-sm-6">
+                                                <!--<input type="hidden" class="form-control" id="descriptionEn" placeholder="">-->
+                                                <textarea class="form-control" id="stageDescEn"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <strong class="col-sm-3 control-label">场景相关文件：</strong>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="hidden" id="picNum" value="0"/>
+                                            <label class="col-sm-3 control-label">*图片：</label>
+                                            <div class="col-sm-9">
+                                                <div id="showPic"></div>
+                                                <span class="btn btn-primary fileinput-button" th:onclick="'clickUpload(1)'" id="uploadBtn">
+                                                    <span>点击上传</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="hidden" id="picNum2" value="0"/>
+                                            <label class="col-sm-3 control-label">视频：</label>
+                                            <div class="col-sm-9">
+                                                <div id="showPic2"></div>
+                                                <span class="btn btn-primary fileinput-button" th:onclick="'clickUpload(2)'" id="uploadBtn2">
+                                                    <span>点击上传</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="hidden" id="picNum3" value="0"/>
+                                            <label class="col-sm-3 control-label">相关文件：</label>
+                                            <div class="col-sm-9">
+                                                <div id="showPic3"></div>
+                                                <span class="btn btn-primary fileinput-button" th:onclick="'clickUpload(3)'" id="uploadBtn3">
+                                                    <span>点击上传</span>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-3"></div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="back();">返回</button>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-primary" onclick="insertStage();">保存</button>
+                                            </div>
+                                            <div class="col-sm-4"></div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/jquery/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+
+    $("#country").change(function(){
+        var opt=$("#country").val();
+        $.ajax({
+            url: "/category/getSubCategoryList",
+            method: "get",
+            data: {
+                id:opt
+            },
+            success: function(result){
+                if(result.status == 1){
+                    var str = "<option value=''>二级地区</option>";
+                    var msg = result.data;
+                    for(var i=0;i<msg.length;i++){
+                        str += "<option value='"+msg[i].id+"'>"+msg[i].name+"</option>";
+                    }
+                    $("#province").html(str);
+                    $("#provinceDiv").show();
+                }else{
+                    $("#province").html("");
+                    $("#provinceDiv").hide();
+                    $("#city").html("");
+                    $("#cityDiv").hide();
+                }
+            }
+        });
+    });
+
+    $("#province").change(function(){
+        var opt=$("#province").val();
+        $.ajax({
+            url: "/category/getSubCategoryList",
+            method: "get",
+            data: {
+                id:opt
+            },
+            success: function(result){
+                if(result.status == 1){
+                    var str = "<option value=''>三级地区</option>";
+                    var msg = result.data;
+                    for(var i=0;i<msg.length;i++){
+                        str += "<option value='"+msg[i].id+"'>"+msg[i].name+"</option>";
+                    }
+                    $("#city").html(str);
+                    $("#cityDiv").show();
+                }else{
+                    $("#city").html("");
+                    $("#cityDiv").hide();
+                }
+            }
+        });
+    });
+
+    $("#stageMainTypeId").change(function(){
+        var opt=$("#stageMainTypeId").val();
+        $.ajax({
+            url: "/category/getSubCategoryList",
+            method: "get",
+            data: {
+                id:opt
+            },
+            success: function(result){
+                if(result.status == 1){
+                    var str = "<option value=''>二级场景</option>";
+                    var msg = result.data;
+                    for(var i=0;i<msg.length;i++){
+                        str += "<option value='"+msg[i].id+"'>"+msg[i].name+"</option>";
+                    }
+                    $("#stageSubTypeId").html(str);
+                    $("#stageSubTypeIdDiv").show();
+                }else{
+                    $("#stageSubTypeId").html("");
+                    $("#stageSubTypeIdDiv").hide();
+                }
+            }
+        });
+    });
+
+
+    function back() {
+        window.location.href = 'getStageList';
+    }
+    $(document).on('click',".delete",function () {
+        var uld = $(this).parent().parent().parent();
+        var btn = $(uld).parent().parent().find(".btn");
+        $(btn).css("display","");
+        var num = $(uld).parent().parent().parent().find("input");
+        $(num).val(parseInt($(num).val())-1);
+        $(uld).remove();
+    });
+    function clickUpload(type) {
+        $("#picType").val(type);
+        $("#selectFile").click();
+    }
+    function fileUpload() {
+//        data.append("file",$('#picUrl'));
+        $("#picUrl").val("");
+//        var data = new FormData();
+        $.ajax({
+            url: "http://www.breaa.cn/api/image/uploadFile",
+            method: "post",
+            data: new FormData($("#rotationMsgForm")[0]),
+            dataType: 'JSON',
+            cache: false,
+            processData: false,
+            contentType: false,
+//            async:false,
+            success: function(result){
+                if(result.code == 1){
+                    alert("图片上传成功");
+                    var prePath = "http://breaa-pic-1255419371.pictj.myqcloud.com";
+                    $("#picUrl").val(prePath+result.data.picPath);
+//                    $("#picName").val(result.data.picName);
+//                    $("#requestUrl").val(result.data.requestUrl);
+//                    $("#order").val(result.data.order);
+//                    $("#picUrl").val(result.data.picUrl);
+                }else{
+                    alert(result.message);
+                    $("#picUrl").val("");
+                }
+                if($("#picUrl").val()!=""){
+                    if($("#picType").val()==1){
+                        var str = "<div class='col-sm-3'><input type='hidden' name='picUrl' value='"+$("#picUrl").val()+"'/><div class='imgDiv'><img src='"+$("#picUrl").val()+"' width='100%'/><a href='#'><span class='glyphicon glyphicon-remove delete'></span></a></div></div>";
+                        $("#showPic").html($("#showPic").html()+str);
+                        $("#picNum").val(1+parseInt($("#picNum").val()));
+                        if($("#picNum").val()== 9){
+                            $("#uploadBtn").css("display","none");
+                        }
+                    }else if($("#picType").val()==2){
+                        var str = "<div class='col-sm-3'><input type='hidden' name='videoUrl' value='"+$("#picUrl").val()+"'/><div class='imgDiv'><img src='"+$("#picUrl").val()+"' width='100%'/><a href='#'><span class='glyphicon glyphicon-remove delete'></span></a></div></div>";
+                        $("#showPic2").html($("#showPic2").html()+str);
+                        $("#picNum2").val(1+parseInt($("#picNum2").val()));
+                        if($("#picNum2").val()== 4){
+                            $("#uploadBtn2").css("display","none");
+                        }
+                    }else if($("#picType").val()==3){
+                        var str = "<div class='col-sm-3'><input type='hidden' name='fileUrl' value='"+$("#picUrl").val()+"'/><div class='imgDiv'><img src='"+$("#picUrl").val()+"' width='100%'/><a href='#'><span class='glyphicon glyphicon-remove delete'></span></a></div></div>";
+                        $("#showPic3").html($("#showPic3").html()+str);
+                        $("#picNum3").val(1+parseInt($("#picNum3").val()));
+                        if($("#picNum3").val()== 4){
+                            $("#uploadBtn3").css("display","none");
+                        }
+                    }
+                }
+            }
+        });
+    }
+    function clearStageMsg() {
+        $("#stageId").val("");
+        $("#picName").val("");
+        $("#requestUrl").val("");
+        $("#order").val("");
+        $("#picUrl").val("");
+        $("#showPic").html("");
+//        var str = "<option value=''>选择身份</option>";
+    }
+    function getStageForUpdate(id){
+        $("#stageId").val(id);
+        $.ajax({
+            url: "/stage/getStageById",
+            method: "get",
+            data: {
+                id:id
+            },
+            success: function(result){
+                if(result.status == 1){
+                    $("#picName").val(result.data.picName);
+                    $("#requestUrl").val(result.data.requestUrl);
+                    $("#order").val(result.data.order);
+                    $("#picUrl").val(result.data.picUrl);
+                }else{
+                    alert(result.message);
+                }
+                if($("#picUrl").val()!=""){
+                    var str = "<img src='"+$("#picUrl").val()+"' width='200px'/>";
+                    $("#showPic").html(str);
+                }else{
+                    $("#showPic").html("");
+                }
+            }
+        });
+    }
+    function insertStage(){
+//        if($("#rotationPicId").val() != ""){
+        var pics = [];
+        $("input[name='picUrl']").each(function(j,item){
+            console.log("下标:"+j);
+            console.log("value值:"+item.value);
+            pics.push(item.value);
+        });
+        var pics2 = [];
+        $("input[name='videoUrl']").each(function(j,item){
+            pics2.push(item.value);
+        });
+        var pics3 = [];
+        $("input[name='fileUrl']").each(function(j,item){
+            pics3.push(item.value);
+        });
+
+            $.ajax({
+                url: "/stage/insertStage",
+                method: "post",
+                data: {
+                    name:$("#name").val(),
+                    nameEn:$("#nameEn").val(),
+                    country:$("#country").val(),
+                    province:$("#province").val(),
+                    city:$("#city").val(),
+                    address:$("#address").val(),
+                    addressEn:$("#addressEn").val(),
+                    filmTypeId:$("#filmTypeId").val(),
+                    stageMainTypeId:$("#stageMainTypeId").val(),
+                    stageSubTypeId:$("#stageSubTypeId").val(),
+                    filmStyleId:$("#filmStyleId").val(),
+                    stageArea:$("#stageArea").val(),
+                    workTime:$("#workTime").val(),
+                    parking:$("#parking").val(),
+                    voltage:$("#voltage").val(),
+                    otherNote:$("#otherNote").val(),
+                    otherNoteEn:$("#otherNoteEn").val(),
+                    stageDesc:$("#stageDesc").val(),
+                    stageDescEn:$("#stageDescEn").val(),
+                    processStatus:2,
+                    picUrl:pics.toString(),
+                    videoUrl:pics2.toString(),
+                    fileUrl:pics3.toString()
+                },
+                success: function(result){
+                    if(result.status == 1){
+                        alert(result.message);
+                        window.location.href = 'getStageList';
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+//        }else{
+//            $.ajax({
+//                url: "/stage/insertStage",
+//                method: "post",
+//                data: {
+//                    picName:$("#picName").val(),
+//                    order:$("#order").val(),
+//                    requestUrl:$("#requestUrl").val(),
+//                    picUrl:$("#picUrl").val()
+//                },
+//                success: function(result){
+//                    if(result.status == 1){
+//                        alert(result.message);
+//                        window.location.href = 'getStageList';
+//                    }else{
+//                        alert(result.message);
+//                    }
+//                }
+//            });
+//        }
+
+    }
+
+    function deleteStage(id) {
+        var result = confirm("确认删除该剧组服务?");
+        if(result){
+            $.ajax({
+                url: "/stage/deleteStage",
+                method: "get",
+                data:{
+                    rotationPicId:id
+                },
+                success: function(result){
+                    if(result.status == 1){
+                        alert(result.message);
+                        window.location.href = 'getStageList';
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+</body>
+</html>

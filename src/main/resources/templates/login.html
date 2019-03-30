@@ -59,7 +59,22 @@
 <script src="./js/carbon.js"></script>
 <script src="./js/demo.js"></script>
 <script>
+
+    $(document).keydown(function(event){
+        if(event.keyCode == 13){
+            doLogin();
+        }
+    });
+
     function doLogin() {
+        if($("#account").val().trim()==""){
+            alert("账号不能为空");
+            return;
+        }
+        if($("#password").val().trim()==""){
+            alert("密码不能为空");
+            return;
+        }
         $.ajax({
             url: "/loginPost",
             method: "post",
