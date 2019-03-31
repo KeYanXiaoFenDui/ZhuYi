@@ -6,6 +6,8 @@ import com.zy.service.ICrewServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CrewServiceServiceImpl implements ICrewServiceService {
     @Autowired
@@ -29,5 +31,10 @@ public class CrewServiceServiceImpl implements ICrewServiceService {
     @Override
     public CrewService getCrewService(int id) {
         return crewServiceMapper.getCrewService(id);
+    }
+
+    @Override
+    public List<CrewService> getCrewServiceList() {
+        return crewServiceMapper.getCrewServiceList();
     }
 }

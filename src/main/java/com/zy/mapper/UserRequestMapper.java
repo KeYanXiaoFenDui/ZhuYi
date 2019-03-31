@@ -1,7 +1,13 @@
 package com.zy.mapper;
 
+import com.zy.domain.User;
 import com.zy.domain.UserRequest;
+import com.zy.mapper.sqlProvide.UserRequestSQLProvider;
+import com.zy.mapper.sqlProvide.UserSQLProvider;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface UserRequestMapper {
@@ -18,5 +24,8 @@ public interface UserRequestMapper {
 
     @Select("select * from user_request where id=#{id}")
     public UserRequest getUserRequest(int id);
+
+    @SelectProvider(type = UserRequestSQLProvider.class,method = "getUserRequestList")
+    public List<Map> getUserRequestList(int id,int reqStatus, String filmName, String startTime, String endTime);
 
 }

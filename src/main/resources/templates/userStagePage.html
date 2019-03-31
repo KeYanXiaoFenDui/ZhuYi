@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/wellcome">注艺租赁管理后台</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" th:each="cookie :${#httpServletRequest.getCookies()}"
+                               th:if="${cookie.getName().equals('name')}"
+                               th:text="${cookie.getValue()}+'，您好'"></a>
+                        </li>
+                        <li>
+                            <a href="/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;登出</a>
+                        </li>
+                        <li>
+                            <a href="/changePwd">修改密码</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+            <div class="row clearfix">
+                <div class="col-md-2 column">
+                    <div class="panel-group" id="panel-594187">
+                        <div class="panel panel-default" th:each="m : ${menu}">
+                            <div class="panel-heading" th:if="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-826081'+${m.id}">用 户 管 理</a>
+                            </div>
+                            <div  th:if="${m.title} ne ${pageTitle}" th:id="'panel-element-826081'+${m.id}" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+
+                            <div class="panel-heading" th:unless="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-792346'+${m.id}" aria-expanded="true">权 限 管 理</a>
+                            </div>
+                            <div th:unless="${m.title} ne ${pageTitle}" th:id="'panel-element-792346'+${m.id}" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 column">
+                    <ul class="breadcrumb">
+                        <li>
+                            用户管理
+                        </li>
+                        <li>
+                            用户列表
+                        </li>
+                        <li class="active">
+                            用户场景
+                        </li>
+                        <!--<li class="active">-->
+                        <!--Data-->
+                        <!--</li>-->
+                    </ul>
+
+                    <div class="row clearfix">
+                        <input type="hidden" id="userId" th:value="${userId}"/>
+                        <div class="col-md-12 column">
+                            <div class="col-sm-4" style="padding-left: 0px;">
+                                <div class="input-group">
+                                    <input id="idOrName" type="text" class="form-control" placeholder="请输入编号/场景名称进行搜索" th:value="${idOrName}">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="button" onclick="getUserStageList();"><span class="glyphicon glyphicon-search"></span></button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <!--<div class="col-md-2 column">-->
+                        <!---->
+                        <!--</div>-->
+                    </div>
+                    <div class="row clearfix" style="height: 20px;"></div>
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <div class="tabbable">
+                                <ul class="nav nav-tabs">
+                                    <li th:if="${processStatus == -500}" th:class="active">
+                                        <a th:href="'getUserStageList?userId='+${userId}">全部</a>
+                                    </li>
+                                    <li th:unless="${processStatus == -500}">
+                                        <a th:href="'getUserStageList?userId='+${userId}">全部</a>
+                                    </li>
+                                    <li th:if="${processStatus == 1}" th:class="active">
+                                        <a th:href="'getUserStageList?processStatus=1&userId='+${userId}">待审核</a>
+                                    </li>
+                                    <li th:unless="${processStatus == 1}">
+                                        <a th:href="'getUserStageList?processStatus=1&userId='+${userId}">待审核</a>
+                                    </li>
+                                    <li th:if="${processStatus == 2}" th:class="active">
+                                        <a th:href="'getUserStageList?processStatus=2&userId='+${userId}">已通过</a>
+                                    </li>
+                                    <li th:unless="${processStatus == 2}">
+                                        <a th:href="'getUserStageList?processStatus=2&userId='+${userId}">已通过</a>
+                                    </li>
+                                    <li th:if="${processStatus == 0}" th:class="active">
+                                        <a th:href="'getUserStageList?processStatus=0&userId='+${userId}">已驳回</a>
+                                    </li>
+                                    <li th:unless="${processStatus == 0}">
+                                        <a th:href="'getUserStageList?processStatus=0&userId='+${userId}">已驳回</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>
+                                    编号
+                                </th>
+                                <th>
+                                    场景名称
+                                </th>
+                                <th>
+                                    发布者姓名
+                                </th>
+                                <th>
+                                    手机号码
+                                </th>
+                                <th>
+                                    邮箱
+                                </th>
+                                <th>
+                                    状态
+                                </th>
+                                <th>
+                                    操作
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="a : ${userStageList.list}">
+                                <td th:text="${a.id}">
+                                    1
+                                </td>
+                                <td th:text="${a.name}">
+                                    15060606060
+                                </td>
+                                <td th:text="${a.userName}">
+                                    15060606060
+                                </td>
+                                <td th:text="${a.telephone}">
+                                    15060606060
+                                </td>
+                                <td th:text="${a.mail}">
+                                    15060606060
+                                </td>
+                                <td th:text="${a.processStatus}">
+                                    15060606060
+                                </td>
+
+                                <td>
+                                    <button class="btn btn-primary" type="button" th:onclick="'getAdminDetailForUpdate('+${a.id}+')'" data-toggle="modal" data-target="#myModal">详情</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row clearfix">
+                        <input type="hidden" id="pageNum" th:value="${userStageList.pageNum}"/>
+                        <input type="hidden" id="pageSize" th:value="${userStageList.pageSize}"/>
+                        <input type="hidden" id="pages" th:value="${userStageList.pages}"/>
+                        <div class="col-md-4 column">
+                            <span style="height: inherit;">共   <span th:text="${userStageList.total}">5</span>    条记录</span>
+                        </div>
+                        <div class="col-md-8 column" th:if="${userStageList.total > 0}">
+                            <ul class="pagination" style="margin: 0 0;">
+                                <th:block th:if="${userStageList.pageNum > 1}">
+                                    <li>
+                                        <a th:href="'getUserStageList?pageSize='+${userStageList.pageSize}+'&pageNum='+${userStageList.pageNum-1}+'&idOrName='+${idOrName}+'&userId='+${userId}">上一页</a>
+                                    </li>
+                                </th:block>
+                                <th:block th:if="${userStageList.pages < 9}">
+                                    <li th:each="dayCyc : ${#numbers.sequence(1,userStageList.pages)}" th:class="${dayCyc == userStageList.pageNum}? 'active' : ''">
+                                        <a th:href="'getUserStageList?pageSize='+${userStageList.pageSize}+'&pageNum='+${dayCyc}+'&idOrName='+${idOrName}+'&userId='+${userId}" th:text="${dayCyc}">1</a>
+                                    </li>
+                                </th:block>
+                                <th:block th:if="${userStageList.pages >= 9}">
+                                    <li th:if="${userStageList.pageNum >= 4}" th:class="${1 == userStageList.pageNum}? 'active' : ''">
+                                        <a th:href="'getUserStageList?pageSize='+${userStageList.pageSize}+'&pageNum=1&idOrName='+${idOrName}+'&userId='+${userId}">1</a>
+                                    </li>
+                                    <li th:if="${userStageList.pageNum <= 3}" th:each="dayCyc : ${#numbers.sequence(1,5)}" th:class="${dayCyc == userStageList.pageNum}? 'active' : ''">
+                                        <a th:href="'getUserStageList?pageSize='+${userStageList.pageSize}+'&pageNum='+${dayCyc}+'&idOrName='+${idOrName}+'&userId='+${userId}" th:text="${dayCyc}">1</a>
+                                    </li>
+                                    <li th:if="${userStageList.pageNum >= 5}">
+                                        <span>...</span>
+                                    </li>
+                                    <th:block th:if="${userStageList.pageNum >= 4 and userStageList.pageNum <= userStageList.pages-3}">
+                                        <li th:each="dd : ${#numbers.sequence(-2,2)}" th:class="${userStageList.pageNum+dd == userStageList.pageNum}? 'active' : ''">
+                                            <a th:href="'getUserStageList?pageSize='+${userStageList.pageSize}+'&pageNum='+${userStageList.pageNum+dd}+'&idOrName='+${idOrName}+'&userId='+${userId}" th:text="${userStageList.pageNum+dd}">1</a>
+                                        </li>
+                                    </th:block>
+                                    <li th:if="${userStageList.pageNum <= userStageList.pages - 4}">
+                                        <span>...</span>
+                                    </li>
+                                    <li th:if="${userStageList.pageNum >= userStageList.pages - 2}" th:each="dayCyc : ${#numbers.sequence(-4,0)}" th:class="${userStageList.pages + dayCyc == userStageList.pageNum}? 'active' : ''">
+                                        <a th:href="'getUserStageList?pageSize='+${userStageList.pageSize}+'&pageNum='+${userStageList.pages + dayCyc}+'&idOrName='+${idOrName}+'&userId='+${userId}" th:text="${userStageList.pages + dayCyc}">1</a>
+                                    </li>
+                                    <li th:if="${userStageList.pageNum <= userStageList.pages - 3}" th:class="${userStageList.pages == userStageList.pageNum}? 'active' : ''">
+                                        <a th:href="'getUserStageList?pageSize='+${userStageList.pageSize}+'&pageNum='+${userStageList.pages}+'&idOrName='+${idOrName}+'&userId='+${userId}" th:text="${userStageList.pages}">1</a>
+                                    </li>
+                                </th:block>
+                                <th:block th:if="${userStageList.pageNum < userStageList.pages}">
+                                    <li>
+                                        <a th:href="'getUserStageList?pageSize='+${userStageList.pageSize}+'&pageNum='+${userStageList.pageNum+1}+'&idOrName='+${idOrName}+'&userId='+${userId}">下一页</a>
+                                    </li>
+                                </th:block>
+                                <li>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" th:text="${userStageList.pageSize}+'条/页'">10条/页
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li>
+                                                <a th:href="'getUserStageList?pageSize=10&idOrName='+${idOrName}+'&userId='+${userId}">10条/页</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="'getUserStageList?pageSize=20&idOrName='+${idOrName}+'&userId='+${userId}">20条/页</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="'getUserStageList?pageSize=30&idOrName='+${idOrName}+'&userId='+${userId}">30条/页</a>
+                                            </li>
+                                            <!--<li class="divider"></li>-->
+                                            <li>
+                                                <a th:href="'getUserStageList?pageSize=40&idOrName='+${idOrName}+'&userId='+${userId}">40条/页</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    跳至<input id="jumpPage" type="text" class="form-control" style="width: 50px;display: inline-block;"/>页
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/jquery/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+    $(document).keydown(function(event){
+        if(event.keyCode == 13){
+            if(isNumber($("#jumpPage").val())){//非数字不能跳转
+                window.location.href = 'getUserStageList?userId='+$("#userId").val()+'&idOrName='+$("#idOrName").val()+'&pageSize='+$("#pageSize").val()+'&pageNum='+$("#jumpPage").val();
+            }
+        }
+    });
+    //判断是否为数字方法
+    function isNumber(val){
+        var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+        var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+        if(regPos.test(val) || regNeg.test(val)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    function getUserStageList() {
+        window.location.href = 'getUserStageList?pageSize='+$("#pageSize").val()+'&idOrName='+$("#idOrName").val().trim()+'&userId='+$("#userId").val();
+    }
+
+</script>
+</body>
+</html>

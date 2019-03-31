@@ -35,4 +35,10 @@ public interface CategoryMapper {
 
     @SelectProvider(type = CategorySQLProvide.class,method = "findSubByNameLike")
     public List<Category> findSubByNameLike(String parentId, String name,int type);
+
+    @Select("select * from category c where c.`status` = 1 and c.level = 1 order by c.order ,c.create_time")
+    public List<Category> getStage1stCategory();
+
+    @Select("select * from category c where c.`status` = 1 and c.parent_id = #{id} order by c.order ,c.create_time")
+    public List<Category> getSubCategoryList(int id);
 }

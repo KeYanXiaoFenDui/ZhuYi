@@ -6,6 +6,8 @@ import com.zy.service.IResponseInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ResponseInfoServiceImpl implements IResponseInfoService {
     @Autowired
@@ -29,5 +31,10 @@ public class ResponseInfoServiceImpl implements IResponseInfoService {
     @Override
     public ResponseInfo getResponseInfo(int id) {
         return responseInfoMapper.getResponseInfo(id);
+    }
+
+    @Override
+    public List<ResponseInfo> getResponseInfoList() {
+        return responseInfoMapper.getResponseInfoList();
     }
 }

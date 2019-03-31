@@ -2,70 +2,105 @@ package com.zy.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.zy.domain.Category;
+import com.zy.domain.Menu;
 import com.zy.domain.Stage;
-import com.zy.enums.CategoryType;
-import com.zy.service.ICategoryService;
-import com.zy.service.IStageService;
+import com.zy.domain.User;
+import com.zy.domain.vo.StageRequestVo;
+import com.zy.service.*;
 import com.zy.util.CommonUtil;
 import com.zy.util.PageBean;
+import com.zy.util.RedisComponentUtil;
 import com.zy.util.constant.MessageConstant;
-import com.zy.vo.StageQueryListVo;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @Controller
 @RequestMapping("/stage")
 public class StageController {
+
+    @Autowired
+    private IMenuService menuService;
+    @Autowired
+    private IUserService userService;
+    @Autowired
+    private IUserRequestService userRequestService;
     @Autowired
     private IStageService stageService;
+    @Autowired
+    private ICategoryService categoryService;
+    @Autowired
+    public RedisComponentUtil redisComponentUtil;
+
 
     /**
-     * 场景列表
-     * @param request
-     * @return
+     *获取场景列表
+     *管理后台查询场景列表
      */
     @RequestMapping(value = "/getStageList")
-    public String getStageList(Model model, StageQueryListVo listVo ,HttpServletRequest request) {
+    public String getStageList(StageRequestVo vo,Model m, HttpServletRequest request, HttpSession session) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
         PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
-        String name = CommonUtil.getStr(request.getParameter("name"),"");
-        List resultList = stageService.findByQueryVo(listVo);
-        PageBean<Map> list = new PageBean<Map>(resultList);
-//        return CommonUtil.ToResultHashMap(status,message,list);
-        model.addAttribute("stageList",list);
-        model.addAttribute("orderList",getOrderList());
-        model.addAttribute("name",name);
-        return "stageList";
+        if(vo.getProcessStatus() == 0){vo.setProcessStatus(-500);}
+        List<Stage> resultList = stageService.getStageList(vo);
+        List<Category> category1stList = categoryService.getStage1stCategory();
+        if(resultList != null){
+            status = MessageConstant.SUCCESS_CODE;
+            message = MessageConstant.SUCCESS_INFO;
+        }
+        PageBean<Stage> list = new PageBean<Stage>(resultList);
+        m.addAttribute("stageList",list);
+        m.addAttribute("stageRequestVo",vo);
+        m.addAttribute("category1stList",category1stList);
+        m.addAttribute("pageTitle","场景管理");
+        setAdminMsg(m, request, session);
+        return "stageListPage";
+    }
+    /**
+     *管理后台新增场景
+     */
+    @RequestMapping(value = "/newStage")
+    public String newStage(Model m,HttpServletRequest request,HttpSession session) {
+        List<Category> category1stList = categoryService.getStage1stCategory();
+        m.addAttribute("category1stList",category1stList);
+        m.addAttribute("pageTitle","场景管理");
+        setAdminMsg(m, request, session);
+        return "newStagePage";
     }
 
-
     /**
-     *新增分类数据
+     *新增场景
      */
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "/insertCategory")
+    @RequestMapping(value = "/insertStage")
     @ResponseBody
-    public HashMap<String,Object> insertCategory(Stage c, HttpServletRequest request) {
+    public HashMap<String,Object> insertStage(Stage s, HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
         HashMap<String,Object> data = new HashMap<>();
 
         try {
-            if(c!=null){
-                c.setCreateTime(new Date());
-                c.setStatus(1);
-                int result = stageService.insertStage(c);
+            if(s!=null){
+                Date d = new Date();
+                s.setCreateTime(d);
+//                s.setUpdateTime(d);
+//                exists.setOperaterId();=======================================================
+                s.setStatus(1);
+                int result = stageService.insertStage(s);
                 if (result == 1){
                     status = MessageConstant.SUCCESS_CODE;
                     message = MessageConstant.SUCCESS_INFO;
@@ -80,69 +115,15 @@ public class StageController {
         }
         return CommonUtil.ToResultHashMap(status,message,data);
     }
-    /**
-     *更新分类数据
-     */
-    @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "/updateCategory")
-    @ResponseBody
-    public HashMap<String,Object> updateCategory(Category c, HttpServletRequest request) {
-        int status = MessageConstant.ERROR_CODE;
-        String message = MessageConstant.ERROR_INFO_DEMO;
-        HashMap<String,Object> data = new HashMap<>();
-
-        try {
-            Stage exists = stageService.getStage(c.getId());
-            if(c!=null && exists!=null){
-                exists.setName(c.getName());
-                exists.setNameEn(c.getNameEn());
-                int result = stageService.updateStage(exists);
-                if (result == 1){
-                    status = MessageConstant.SUCCESS_CODE;
-                    message = MessageConstant.SUCCESS_INFO;
-                }else{
-                    throw new RuntimeException();
-                }
-            }
-
-        } catch (Exception e){
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return CommonUtil.ToResultHashMap(status,message,data);
-    }
-    /**
-     *删除分类数据
-     */
-    @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "/deleteCategory/{categoryId}")
-    @ResponseBody
-    public HashMap<String,Object> deleteCategory(@PathVariable("categoryId")int categoryId, HttpServletRequest request) {
-        int status = MessageConstant.ERROR_CODE;
-        String message = MessageConstant.ERROR_INFO_DEMO;
-        HashMap<String,Object> data = new HashMap<>();
-        try {
-            int result = stageService.deleteStage(categoryId);
-            if (result >= 1){
-                status = MessageConstant.SUCCESS_CODE;
-                message = MessageConstant.SUCCESS_INFO;
-            }else{
-                throw new RuntimeException();
-            }
-
-        } catch (Exception e){
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return CommonUtil.ToResultHashMap(status,message,data);
-    }
-
-
-    private List<String> getOrderList(){
-        List<String> result = new ArrayList<>();
-        for(int i=0;i<=10;i++){
-            result.add(String.valueOf(i));
-        }
-        return result;
+    public void setAdminMsg(Model m, HttpServletRequest request,HttpSession session){
+        HashMap<String,Object> adminMsg = (HashMap<String,Object>)redisComponentUtil.get(session.getId());
+        m.addAttribute("menu",adminMsg.get("menu"));
+//        Cookie[] cookies = request.getCookies();
+//        String cookieValue = null;
+//        if (null != cookies) {
+//            for (Cookie cookie : cookies) {
+//                System.out.println("cookie::"+cookie.getName()+"::::"+cookie.getValue());
+//            }
+//        }
     }
 }
