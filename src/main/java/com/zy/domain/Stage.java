@@ -15,7 +15,7 @@ public class Stage implements Serializable {
     private int filmTypeId;//影视类型ID
     private int stageMainTypeId;//场景一级类型ID
     private int stageSubTypeId;//场景二级类型ID
-    private int filmStyleId;//影视风格ID
+    private int stageStyleId;//影视风格ID
     private int stageArea;//场景面积（1：0-100㎡；2：100-300㎡:3：300-500㎡；4：500-1000㎡:5：1000㎡以上）
     private int workTime;//可拍摄时间（1：工作日；2：周末；3：不限）
     private int parking;//停车位
@@ -76,9 +76,13 @@ public class Stage implements Serializable {
 
     public void setStageSubTypeId(int stageSubTypeId) { this.stageSubTypeId = stageSubTypeId; }
 
-    public int getFilmStyleId() { return filmStyleId; }
+    public int getStageStyleId() {
+        return stageStyleId;
+    }
 
-    public void setFilmStyleId(int filmStyleId) { this.filmStyleId = filmStyleId; }
+    public void setStageStyleId(int stageStyleId) {
+        this.stageStyleId = stageStyleId;
+    }
 
     public int getStageArea() { return stageArea; }
 
