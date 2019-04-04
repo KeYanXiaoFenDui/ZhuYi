@@ -5,6 +5,7 @@ import com.zy.domain.Category;
 import com.zy.domain.Menu;
 import com.zy.domain.Stage;
 import com.zy.domain.User;
+import com.zy.domain.vo.StageAuditVo;
 import com.zy.domain.vo.StageRequestVo;
 import com.zy.service.*;
 import com.zy.util.CommonUtil;
@@ -114,6 +115,74 @@ public class StageController {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return CommonUtil.ToResultHashMap(status,message,data);
+    }
+
+    /**
+     *获取场景详情
+     *管理后台查询场景详情
+     */
+    @RequestMapping(value = "/getStageDetail")
+    public String getStageDetail(Model m,HttpServletRequest request,HttpSession session) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
+        Stage stage = stageService.getStage(id);
+        if(stage != null){
+            status = MessageConstant.SUCCESS_CODE;
+            message = MessageConstant.SUCCESS_INFO;
+        }
+        m.addAttribute("stageDetail",stage);
+        m.addAttribute("pageTitle","场景管理");
+        setAdminMsg(m, request, session);
+        return "stageDetailPage";
+    }
+    /**
+     *获取场景审核详情
+     *管理后台查询场景审核详情
+     */
+    @RequestMapping(value = "/getStageAuditDetail")
+    public String getStageAuditDetail(Model m,HttpServletRequest request,HttpSession session) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        int id = Integer.parseInt(CommonUtil.getStr(request.getParameter("id"),"-500"));
+        StageAuditVo stage = stageService.getStageAudit(id);
+        if(stage != null){
+            status = MessageConstant.SUCCESS_CODE;
+            message = MessageConstant.SUCCESS_INFO;
+        }
+        m.addAttribute("stageAuditDetail",stage);
+        m.addAttribute("pageTitle","场景管理");
+        setAdminMsg(m, request, session);
+        return "stageAuditDetailPage";
+    }
+
+
+    /**
+     *获取场景审核列表
+     *管理后台查询场景审核列表
+     */
+    @RequestMapping(value = "/getStageAuditList")
+    public String getStageAuditList(Model m,HttpServletRequest request,HttpSession session) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+        PageHelper.startPage(Integer.parseInt(CommonUtil.getStr(request.getParameter("pageNum"), "1")), Integer.parseInt(CommonUtil.getStr(request.getParameter("pageSize"), "10")));//第几页,,,每页多少条记录
+        int processStatus = Integer.parseInt(CommonUtil.getStr(request.getParameter("processStatus"),"-500"));
+        String idOrName = CommonUtil.getStr(request.getParameter("idOrName"),"");
+        List<Map> resultList = stageService.getUserStageList(-500,processStatus,idOrName);
+        if(resultList != null){
+            status = MessageConstant.SUCCESS_CODE;
+            message = MessageConstant.SUCCESS_INFO;
+        }
+        PageBean<Map> list = new PageBean<Map>(resultList);
+        m.addAttribute("stageAuditList",list);
+        m.addAttribute("processStatus",processStatus);
+        m.addAttribute("idOrName",idOrName);
+        m.addAttribute("pageTitle","场景管理");
+        setAdminMsg(m, request, session);
+        return "stageAuditListPage";
     }
     public void setAdminMsg(Model m, HttpServletRequest request,HttpSession session){
         HashMap<String,Object> adminMsg = (HashMap<String,Object>)redisComponentUtil.get(session.getId());

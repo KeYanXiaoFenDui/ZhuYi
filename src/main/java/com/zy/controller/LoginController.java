@@ -14,6 +14,10 @@ import com.zy.service.IMenuService;
 import com.zy.util.CommonUtil;
 import com.zy.util.RedisComponentUtil;
 import com.zy.util.constant.MessageConstant;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
+@Api("登录相关接口controller")
 public class LoginController {
 
     @Autowired
@@ -38,15 +43,22 @@ public class LoginController {
 //    }
 
     @GetMapping("/login")
+    @ApiOperation(value = "管理后台登录界面", notes = "返回管理后台登录界面")
     public String login() {
         return "login";
     }
     @GetMapping("/wellcome")
+    @ApiOperation(value = "管理后台首页界面", notes = "返回管理后台首页界面")
     public String wellcome(Model m, HttpServletRequest request, HttpSession session) {
         setAdminMsg(m, request, session);
         return "wellcome";
     }
     @PostMapping("/loginPost")
+    @ApiOperation(value = "管理后台登录接口", notes = "提交账号密码进行管理后台登录验证")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "account", value = "管理员账号", paramType = "query", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "管理员密码", paramType = "query", required = true, dataType = "String")
+    })
     public @ResponseBody HashMap<String,Object> loginPost(String account, String password, HttpSession session, HttpServletResponse response) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;

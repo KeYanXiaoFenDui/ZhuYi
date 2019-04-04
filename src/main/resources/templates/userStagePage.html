@@ -172,7 +172,7 @@
                                 </td>
 
                                 <td>
-                                    <button class="btn btn-primary" type="button" th:onclick="'getAdminDetailForUpdate('+${a.id}+')'" data-toggle="modal" data-target="#myModal">详情</button>
+                                    <button class="btn btn-primary" type="button" th:onclick="'getStageDetail('+${a.id}+')'">详情</button>
                                 </td>
                             </tr>
                             </tbody>
@@ -284,6 +284,9 @@
     }
     function getUserStageList() {
         window.location.href = 'getUserStageList?pageSize='+$("#pageSize").val()+'&idOrName='+$("#idOrName").val().trim()+'&userId='+$("#userId").val();
+    }
+    function getStageDetail(id) {
+        window.location.href = '/stage/getStageDetail?id='+id;
     }
 
 </script>

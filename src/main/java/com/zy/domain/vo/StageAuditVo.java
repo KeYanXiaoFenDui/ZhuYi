@@ -1,9 +1,9 @@
-package com.zy.domain;
+package com.zy.domain.vo;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class Stage implements Serializable {
+public class StageAuditVo implements Serializable {
     private int id;//唯一标识
     private Date createTime;//创建时间
     private int status;//状态(1有效,,,0无效)
@@ -32,6 +32,9 @@ public class Stage implements Serializable {
     private String addressEn;//详细地址（英文）
     private String otherNoteEn;//其他配套（英文）
     private String stageDescEn;//场景描述（英文）
+    private String userName;
+    private String telephone;
+    private String mail;
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }
@@ -162,5 +165,29 @@ public class Stage implements Serializable {
 
     public void setStageDescEn(String stageDescEn) {
         this.stageDescEn = stageDescEn;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 }

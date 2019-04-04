@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+    <style>
+        .fileinput-button {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .fileinput-button input{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            opacity: 0;
+            -ms-filter: 'alpha(opacity=0)';
+        }
+        .imgDiv {
+            display: inline-block;
+            position: relative;
+        }
+
+        .imgDiv .delete {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+
+        .msgHide{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/wellcome">注艺租赁管理后台</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" th:each="cookie :${#httpServletRequest.getCookies()}"
+                                  th:if="${cookie.getName().equals('name')}"
+                                  th:text="${cookie.getValue()}+'，您好'"></a>
+                        </li>
+                        <li>
+                            <a href="/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;登出</a>
+                        </li>
+                        <li>
+                            <a href="/changePwd">修改密码</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+            <div class="row clearfix">
+                <div class="col-md-2 column">
+                    <div class="panel-group" id="panel-594187">
+                        <div class="panel panel-default" th:each="m : ${menu}">
+                            <div class="panel-heading" th:if="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-826081'+${m.id}">用 户 管 理</a>
+                            </div>
+                            <div  th:if="${m.title} ne ${pageTitle}" th:id="'panel-element-826081'+${m.id}" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+
+                            <div class="panel-heading" th:unless="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-792346'+${m.id}" aria-expanded="true">权 限 管 理</a>
+                            </div>
+                            <div th:unless="${m.title} ne ${pageTitle}" th:id="'panel-element-792346'+${m.id}" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 column">
+                    <ul class="breadcrumb">
+                        <li>
+                            需求管理
+                        </li>
+                        <li>
+                            需求列表
+                        </li>
+                        <li class="active">
+                            新增推荐
+                        </li>
+                    </ul>
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <div style="border: 1px solid #aaaaaa;border-radius: 5px;">
+                                <div style="padding: 20px 5px 5px 5px;">
+                                    <form class="form-horizontal" role="form" id="rotationMsgForm" enctype="multipart/form-data">
+                                        <input type="hidden" id="rotationPicId"/>
+                                        <input type="hidden" id="picUrl"/>
+                                        <input type="hidden" id="picType"/>
+                                        <input type="file" name="file" style="display:none" id="selectFile" onchange="fileUpload();"/>
+                                        <div class="form-group">
+                                            <label for="name" class="col-sm-2 control-label" style="padding-left: 0px;">*剧组名称(中文)：</label>
+                                            <div class="col-sm-3" style="padding: 0px;">
+                                                <input type="text" class="form-control" id="name" placeholder="">
+                                            </div>
+                                            <label for="nameEn" class="col-sm-2 control-label" style="padding-left: 0px;">*剧组名称(英文)：</label>
+                                            <div class="col-sm-3" style="padding: 0px;">
+                                                <input type="text" class="form-control" id="nameEn" placeholder="">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-primary" onclick="insertCrewService();">新增场景分类</button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name" class="col-sm-2 control-label" style="padding-left: 0px;">*场景分类1(中文)：</label>
+                                            <div class="col-sm-3" style="padding: 0px;">
+                                                <input type="text" class="form-control" id="name" placeholder="">
+                                            </div>
+                                            <label for="nameEn" class="col-sm-2 control-label" style="padding-left: 0px;">*场景分类1(英文)：</label>
+                                            <div class="col-sm-3" style="padding: 0px;">
+                                                <input type="text" class="form-control" id="nameEn" placeholder="">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="col-sm-4 control-label" style="padding-left: 0px;">
+                                                    <button type="button" style="width: 20px;height: 20px;border:2px solid #666;border-radius: 3px;background-color: #fff;padding: 0px;"><span class="glyphicon glyphicon-minus"></span></button>
+                                                </div>
+                                                <div class="col-sm-8" style="padding: 0px;">
+                                                    <button type="button" class="btn btn-primary" onclick="addStage();">添加场景</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <b>基本信息：</b><span class="glyphicon glyphicon-chevron-down" style="float: right;" onclick="showOrHideMsg(1);"></span>
+                                        </div>
+                                        <hr style="margin: 3px 0;border-color: #000000;"/>
+                                        <div id="requestMsg1">
+                                            <div>
+                                                <span>影视剧名：</span><span>我爱我家</span>
+                                            </div>
+                                            <div>
+                                                <span>影片类型：</span><span>电视剧/网台剧</span>
+                                            </div>
+                                            <div>
+                                                <span>播放平台：</span><span>湖南卫视</span>
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/jquery/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+
+    $(document).on('click',".glyphicon-chevron-right",function () {
+        $(this).toggleClass("glyphicon-chevron-right");
+        $(this).toggleClass("glyphicon-chevron-down");
+    });
+    $(document).on('click',".glyphicon-chevron-down",function () {
+        $(this).toggleClass("glyphicon-chevron-down");
+        $(this).toggleClass("glyphicon-chevron-right");
+    });
+
+    function showOrHideMsg(id) {
+        $("#requestMsg"+id).toggleClass("msgHide");
+    }
+
+    function back() {
+        window.location.href = 'getCrewServiceList';
+    }
+    $(document).on('click',".delete",function () {
+        var uld = $(this).parent().parent().parent();
+        var btn = $(uld).parent().parent().find(".btn");
+        $(btn).css("display","");
+        var num = $(uld).parent().parent().parent().find("input");
+        $(num).val(parseInt($(num).val())-1);
+        $(uld).remove();
+    });
+    function clickUpload(type) {
+        $("#picType").val(type);
+        $("#selectFile").click();
+    }
+    function addStage() {
+        
+    }
+    function fileUpload() {
+//        data.append("file",$('#picUrl'));
+        $("#picUrl").val("");
+//        var data = new FormData();
+        $.ajax({
+            url: "http://www.breaa.cn/api/image/uploadFile",
+            method: "post",
+            data: new FormData($("#rotationMsgForm")[0]),
+            dataType: 'JSON',
+            cache: false,
+            processData: false,
+            contentType: false,
+//            async:false,
+            success: function(result){
+                if(result.code == 1){
+                    alert("图片上传成功");
+                    var prePath = "http://breaa-pic-1255419371.pictj.myqcloud.com";
+                    $("#picUrl").val(prePath+result.data.picPath);
+//                    $("#picName").val(result.data.picName);
+//                    $("#requestUrl").val(result.data.requestUrl);
+//                    $("#order").val(result.data.order);
+//                    $("#picUrl").val(result.data.picUrl);
+                }else{
+                    alert(result.message);
+                    $("#picUrl").val("");
+                }
+                if($("#picUrl").val()!=""){
+                    if($("#picType").val()==1){
+                        var str = "<div class='col-sm-3'><input type='hidden' name='serviceLogoUrl' value='"+$("#picUrl").val()+"'/><div class='imgDiv'><img src='"+$("#picUrl").val()+"' width='100%'/><a href='#'><span class='glyphicon glyphicon-remove delete'></span></a></div></div>";
+                        $("#showPic").html($("#showPic").html()+str);
+                        $("#picNum").val(1+parseInt($("#picNum").val()));
+                        if($("#picNum").val()== 1){
+                            $("#uploadBtn").css("display","none");
+                        }
+                    }else if($("#picType").val()==2){
+                        var str = "<div class='col-sm-3'><input type='hidden' name='servicePicUrl' value='"+$("#picUrl").val()+"'/><div class='imgDiv'><img src='"+$("#picUrl").val()+"' width='100%'/><a href='#'><span class='glyphicon glyphicon-remove delete'></span></a></div></div>";
+                        $("#showPic2").html($("#showPic2").html()+str);
+                        $("#picNum2").val(1+parseInt($("#picNum2").val()));
+                        if($("#picNum2").val()== 4){
+                            $("#uploadBtn2").css("display","none");
+                        }
+                    }
+                }
+            }
+        });
+    }
+    function clearCrewServiceMsg() {
+        $("#rotationPicId").val("");
+        $("#picName").val("");
+        $("#requestUrl").val("");
+        $("#order").val("");
+        $("#picUrl").val("");
+        $("#showPic").html("");
+//        var str = "<option value=''>选择身份</option>";
+    }
+    function getCrewServiceForUpdate(id){
+        $("#rotationPicId").val(id);
+        $.ajax({
+            url: "/content/getCrewServiceById",
+            method: "get",
+            data: {
+                id:id
+            },
+            success: function(result){
+                if(result.status == 1){
+                    $("#picName").val(result.data.picName);
+                    $("#requestUrl").val(result.data.requestUrl);
+                    $("#order").val(result.data.order);
+                    $("#picUrl").val(result.data.picUrl);
+                }else{
+                    alert(result.message);
+                }
+                if($("#picUrl").val()!=""){
+                    var str = "<img src='"+$("#picUrl").val()+"' width='200px'/>";
+                    $("#showPic").html(str);
+                }else{
+                    $("#showPic").html("");
+                }
+            }
+        });
+    }
+    function insertCrewService(){
+//        if($("#rotationPicId").val() != ""){
+        var pics = [];
+        $("input[name='servicePicUrl']").each(function(j,item){
+            console.log("下标:"+j);
+            console.log("value值:"+item.value);
+            pics.push(item.value);
+        });
+            $.ajax({
+                url: "/content/insertCrewService",
+                method: "post",
+                data: {
+                    name:$("#name").val(),
+                    order:$("#order").val(),
+                    nameEn:$("#nameEn").val(),
+                    picUrl:$("#picUrl").val(),
+                    serviceLogoUrl:$("input[name='serviceLogoUrl']").val(),
+                    servicePicUrl:pics.toString(),
+                    description:$("#description").val(),
+                    descriptionEn:$("#descriptionEn").val()
+                },
+                success: function(result){
+                    if(result.status == 1){
+                        alert(result.message);
+                        window.location.href = 'getCrewServiceList';
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+//        }else{
+//            $.ajax({
+//                url: "/content/insertCrewService",
+//                method: "post",
+//                data: {
+//                    picName:$("#picName").val(),
+//                    order:$("#order").val(),
+//                    requestUrl:$("#requestUrl").val(),
+//                    picUrl:$("#picUrl").val()
+//                },
+//                success: function(result){
+//                    if(result.status == 1){
+//                        alert(result.message);
+//                        window.location.href = 'getCrewServiceList';
+//                    }else{
+//                        alert(result.message);
+//                    }
+//                }
+//            });
+//        }
+
+    }
+
+    function deleteCrewService(id) {
+        var result = confirm("确认删除该剧组服务?");
+        if(result){
+            $.ajax({
+                url: "/content/deleteCrewService",
+                method: "get",
+                data:{
+                    rotationPicId:id
+                },
+                success: function(result){
+                    if(result.status == 1){
+                        alert(result.message);
+                        window.location.href = 'getCrewServiceList';
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+</body>
+</html>

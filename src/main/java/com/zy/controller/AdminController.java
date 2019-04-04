@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,7 +50,7 @@ public class AdminController {
      */
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "/insertMenu")
+    @RequestMapping(value = "/insertMenu", method = RequestMethod.POST)
     public HashMap<String,Object> insertMenu(HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -96,7 +97,7 @@ public class AdminController {
      */
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "/deleteAdmin")
+    @RequestMapping(value = "/deleteAdmin", method = RequestMethod.POST)
     public HashMap<String,Object> deleteAdmin(HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -123,7 +124,7 @@ public class AdminController {
      *身份列表查询
      *管理后台获取管理员身份列表接口
      */
-    @RequestMapping(value = "/getRoleList")
+    @RequestMapping(value = "/getRoleList", method = RequestMethod.GET)
     public String getRoleList(Model m,HttpServletRequest request,HttpSession session) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -149,7 +150,7 @@ public class AdminController {
      *获取身份键值对信息
      */
     @ResponseBody
-    @RequestMapping(value = "/getRoleDataMsg")
+    @RequestMapping(value = "/getRoleDataMsg", method = RequestMethod.GET)
     public HashMap<String,Object> getRoleDataMsg(Model m,HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -166,7 +167,7 @@ public class AdminController {
      *管理后台获取管理员身份列表接口
      */
     @ResponseBody
-    @RequestMapping(value = "/getAdminMenu")
+    @RequestMapping(value = "/getAdminMenu", method = RequestMethod.GET)
     public HashMap<String,Object> getAdminMenu(HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -256,7 +257,7 @@ public class AdminController {
      *管理后台获取管理员身份列表接口
      */
     @ResponseBody
-    @RequestMapping(value = "/getModelList")
+    @RequestMapping(value = "/getModelList", method = RequestMethod.GET)
     public HashMap<String,Object> getModelList(HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -341,7 +342,7 @@ public class AdminController {
      */
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "/createAndUpdateRole")
+    @RequestMapping(value = "/createAndUpdateRole", method = RequestMethod.POST)
     public HashMap<String,Object> createAndUpdateRole(HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -402,7 +403,7 @@ public class AdminController {
      *获取身份信息(编辑用)
      */
     @ResponseBody
-    @RequestMapping(value = "/getRoleMsgById")
+    @RequestMapping(value = "/getRoleMsgById", method = RequestMethod.GET)
     public HashMap<String,Object> getRoleMsgById(HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -423,7 +424,7 @@ public class AdminController {
      */
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "/deleteRoleById")
+    @RequestMapping(value = "/deleteRoleById", method = RequestMethod.GET)
     public HashMap<String,Object> deleteRoleById(HttpServletRequest request) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;
@@ -450,7 +451,7 @@ public class AdminController {
      *操作日志查询
      *管理后台查询操作记录接口
      */
-    @RequestMapping(value = "/getOperateLogList")
+    @RequestMapping(value = "/getOperateLogList", method = RequestMethod.GET)
     public String getOperateLogList(Model m,HttpServletRequest request,HttpSession session) {
         int status = MessageConstant.ERROR_CODE;
         String message = MessageConstant.ERROR_INFO_DEMO;

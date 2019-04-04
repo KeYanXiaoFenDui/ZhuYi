@@ -6,6 +6,9 @@ import com.zy.service.IRecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class RecommendationServiceImpl implements IRecommendationService {
     @Autowired
@@ -29,5 +32,20 @@ public class RecommendationServiceImpl implements IRecommendationService {
     @Override
     public Recommendation getRecommendation(int id) {
         return recommendationMapper.getRecommendation(id);
+    }
+
+    @Override
+    public List<Map> getRecommendListById(int reqId) {
+        return recommendationMapper.getRecommendListById(reqId);
+    }
+
+    @Override
+    public List<Map> getRecommendationDetail(int reqId) {
+        return recommendationMapper.getRecommendationDetail(reqId);
+    }
+
+    @Override
+    public List<Map> getRecommendStageList(int id) {
+        return recommendationMapper.getRecommendStageList(id);
     }
 }

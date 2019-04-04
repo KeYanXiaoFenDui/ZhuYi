@@ -15,7 +15,7 @@ public class StageSQLProvider {
 
     public String getUserStageList(int userId,int processStatus,String idOrName){
         StringBuffer sql = new StringBuffer();
-        sql.append("select s.id,s.name,u.user_name as userName,u.telephone,u.mail,case when s.process_status = 0 then '已驳回' when s.process_status = 1 then '待审核' when s.process_status = 2 then '已通过' else '未知状态' end as  from stage s,user u where s.user_id = u.id and 1=1 and s.`status` = 1");
+        sql.append("select s.id,s.name,u.user_name as userName,u.telephone,u.mail,case when s.process_status = 0 then '已驳回' when s.process_status = 1 then '待审核' when s.process_status = 2 then '已通过' else '未知状态' end as processStatus from stage s,user u where s.user_id = u.id and 1=1 and s.`status` = 1");
         if(userId != -500){
             sql.append(" and s.user_id = "+userId);
         }
@@ -31,7 +31,7 @@ public class StageSQLProvider {
     public String getStageList(StageRequestVo vo){
         System.out.println("vo::"+vo.toString());
         StringBuffer sql = new StringBuffer();
-        sql.append("select s.id,s.`name`,s.nameEn,s.country,s.province,s.city,s.film_type_id,s.stage_main_type_id,s.stage_sub_type_id,s.film_style_id from stage s where s.`status` = 1");
+        sql.append("select s.id,s.`name`,s.nameEn,s.country,s.province,s.city,s.film_type_id,s.stage_main_type_id,s.stage_sub_type_id,s.stage_style_id from stage s where s.`status` = 1");
         if(vo.getCountry() != 0){
             sql.append(" and s.country = "+vo.getCountry());
         }
@@ -50,8 +50,8 @@ public class StageSQLProvider {
         if(vo.getStageSubTypeId() != 0){
             sql.append(" and s.stage_sub_type_id = "+vo.getStageSubTypeId());
         }
-        if(vo.getFilmStyleId() != 0){
-            sql.append(" and s.film_style_id = "+vo.getFilmStyleId());
+        if(vo.getStageStyleId() != 0){
+            sql.append(" and s.stage_style_id = "+vo.getStageStyleId());
         }
         if(vo.getIdOrName() != null && !vo.getIdOrName().equals("")){
             sql.append(" and (s.id = '"+vo.getIdOrName()+"' or s.`name` like '%"+vo.getIdOrName()+"%')");

@@ -8,10 +8,8 @@ public class Recommendation implements Serializable {
     private int userId;//用户Id
     private int reqId;//需求Id
     private int recommendStatus;//推荐状态(0未推荐,,,,1已推荐)
-    private int stageType;//场景分类
     private String stageTitleCh;//场景分类中文名称
     private String stageTitleEn;//场景分类英文名称
-    private int stageId;//场景Id
     private Date createTime;//创建时间
     private Date updateTime;//修改时间
     private int operateAdminId;//操作管理员Id
@@ -24,6 +22,7 @@ public class Recommendation implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+
 
     public int getUserId() {
         return userId;
@@ -49,14 +48,6 @@ public class Recommendation implements Serializable {
         this.recommendStatus = recommendStatus;
     }
 
-    public int getStageType() {
-        return stageType;
-    }
-
-    public void setStageType(int stageType) {
-        this.stageType = stageType;
-    }
-
     public String getStageTitleCh() {
         return stageTitleCh;
     }
@@ -71,14 +62,6 @@ public class Recommendation implements Serializable {
 
     public void setStageTitleEn(String stageTitleEn) {
         this.stageTitleEn = stageTitleEn;
-    }
-
-    public int getStageId() {
-        return stageId;
-    }
-
-    public void setStageId(int stageId) {
-        this.stageId = stageId;
     }
 
     public Date getCreateTime() {

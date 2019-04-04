@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/bootstrap-theme.min.css}" rel="stylesheet"/>
+</head>
+<style>
+    .msgHide{
+        display: none;
+    }
+</style>
+<body>
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/wellcome">注艺租赁管理后台</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" th:each="cookie :${#httpServletRequest.getCookies()}"
+                               th:if="${cookie.getName().equals('name')}"
+                               th:text="${cookie.getValue()}+'，您好'"></a>
+                        </li>
+                        <li>
+                            <a href="/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;登出</a>
+                        </li>
+                        <li>
+                            <a href="/changePwd">修改密码</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+            <div class="row clearfix">
+                <div class="col-md-2 column">
+                    <div class="panel-group" id="panel-594187">
+                        <div class="panel panel-default" th:each="m : ${menu}">
+                            <div class="panel-heading" th:if="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-826081'+${m.id}">用 户 管 理</a>
+                            </div>
+                            <div  th:if="${m.title} ne ${pageTitle}" th:id="'panel-element-826081'+${m.id}" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+
+                            <div class="panel-heading" th:unless="${m.title} ne ${pageTitle}">
+                                <a th:text="${m.title}" class="panel-title" data-toggle="collapse" data-parent="#panel-594187" th:href="'#panel-element-792346'+${m.id}" aria-expanded="true">权 限 管 理</a>
+                            </div>
+                            <div th:unless="${m.title} ne ${pageTitle}" th:id="'panel-element-792346'+${m.id}" class="panel-collapse collapse in" aria-expanded="true">
+                                <div class="panel-body">
+                                    <div th:each="c : ${m.children}"><a th:href="${c.urlPath}" th:text="${c.title}">用户列表</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 column">
+                    <ul class="breadcrumb">
+                        <li>
+                            场景管理
+                        </li>
+                        <li>
+                            场景审核列表
+                        </li>
+                        <li class="active">
+                            场景详情
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-10 column">
+                    <div style="border: 1px solid #aaaaaa;border-radius: 5px;">
+                        <div style="padding: 10px 10px 10px 10px;">
+
+                            <div>
+                                <div>
+                                    <table>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>审核状态：</strong></td><td th:text="${stageAuditDetail.processStatus}"></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <td align="right" width="150px"><strong>发布者信息：</strong></td><span class="glyphicon glyphicon-chevron-down" style="float: right;" onclick="showOrHideMsg(1);"></span>
+                                    </table>
+                                </div>
+                                <hr style="margin: 3px 0;border-color: #000000;"/>
+                                <div id="requestMsg1">
+                                    <table>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>姓名：</strong></td><td th:text="${stageAuditDetail.userName}">路人甲</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>手机号码：</strong></td><td th:text="${stageAuditDetail.telephone}">12345678901</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>邮箱：</strong></td><td th:text="${stageAuditDetail.mail}">12345678@163.com</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div>
+                                    <table>
+                                        <td align="right" width="150px"><strong>场景信息：</strong></td><span class="glyphicon glyphicon-chevron-down" style="float: right;" onclick="showOrHideMsg(2);"></span>
+                                    </table>
+                                </div>
+                                <hr style="margin: 3px 0;border-color: #000000;"/>
+                                <div id="requestMsg2">
+                                    <table>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>场景名称（中文）：</strong></td><td th:text="${stageAuditDetail.name}">路人甲</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>场景名称（英文）：</strong></td><td th:text="${stageAuditDetail.nameEn}">12345678901</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>场景地区：</strong></td><td th:text="${stageAuditDetail.country+'/'+stageAuditDetail.province+'/'+stageAuditDetail.city}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>详细地址（中文）：</strong></td><td th:text="${stageAuditDetail.address}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>详细地址（英文）：</strong></td><td th:text="${stageAuditDetail.addressEn}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>影视剧类型：</strong></td><td th:text="${stageAuditDetail.filmTypeId}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>场景类型：</strong></td><td th:text="${stageAuditDetail.stageMainTypeId+'/'+stageAuditDetail.stageSubTypeId}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>场景面积：</strong></td><td th:text="${stageAuditDetail.stageArea}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>可拍设时间：</strong></td><td th:text="${stageAuditDetail.workTime}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>停车位：</strong></td><td th:text="${stageAuditDetail.parking}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>电压：</strong></td><td th:text="${stageAuditDetail.voltage}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>其他配套（中文）：</strong></td><td th:text="${stageAuditDetail.otherNote}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>其他配套（英文）：</strong></td><td th:text="${stageAuditDetail.otherNoteEn}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>场景描述（中文）：</strong></td><td th:text="${stageAuditDetail.stageDesc}">12345678@163.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>场景描述（中文）：</strong></td><td th:text="${stageAuditDetail.stageDescEn}">12345678@163.com</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div>
+                                    <table>
+                                        <td align="right" width="150px"><strong>场景相关文件：</strong></td><span class="glyphicon glyphicon-chevron-down" style="float: right;" onclick="showOrHideMsg(3);"></span>
+                                    </table>
+                                </div>
+                                <hr style="margin: 3px 0;border-color: #000000;"/>
+                                <div id="requestMsg3">
+                                    <table>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>图片：</strong></td>
+                                            <td th:if="${#lists.size(#strings.arraySplit(stageAuditDetail.picUrl,',')) > 0}" th:each="picUrl : ${#strings.arraySplit(stageAuditDetail.picUrl,',')}">
+                                                <img width="100px" th:src="${picUrl}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>视频：</strong></td>
+                                            <td th:if="${#lists.size(#strings.arraySplit(stageAuditDetail.videoUrl,',')) > 0}" th:each="videoUrl : ${#strings.arraySplit(stageAuditDetail.videoUrl,',')}">
+                                                <img width="100px" th:src="${videoUrl}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" width="150px"><strong>文件：</strong></td>
+                                            <td th:if="${#lists.size(#strings.arraySplit(stageAuditDetail.fileUrl,',')) > 0}" th:each="fileUrl : ${#strings.arraySplit(stageAuditDetail.fileUrl,',')}">
+                                                <img width="100px" th:src="${fileUrl}"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/jquery/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+
+    $(document).on('click',".glyphicon-chevron-right",function () {
+        $(this).toggleClass("glyphicon-chevron-right");
+        $(this).toggleClass("glyphicon-chevron-down");
+    });
+    $(document).on('click',".glyphicon-chevron-down",function () {
+        $(this).toggleClass("glyphicon-chevron-down");
+        $(this).toggleClass("glyphicon-chevron-right");
+    });
+    function showOrHideMsg(id) {
+        $("#requestMsg"+id).toggleClass("msgHide");
+    }
+    //判断是否为数字方法
+    function isNumber(val){
+        var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+        var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+        if(regPos.test(val) || regNeg.test(val)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    function getRequestList() {
+        window.location.href = 'getRequestList?pageSize='+$("#pageSize").val()+'&filmName='+$("#filmName").val().trim()+'&startTime='+$("#startTime").val()+'&endTime='+$("#endTime").val();
+    }
+
+</script>
+</body>
+</html>

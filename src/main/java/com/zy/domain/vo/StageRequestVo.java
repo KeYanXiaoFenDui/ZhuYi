@@ -11,7 +11,7 @@ public class StageRequestVo implements Serializable {
     private int filmTypeId;//影视类型ID
     private int stageMainTypeId;//场景一级类型ID
     private int stageSubTypeId;//场景二级类型ID
-    private int filmStyleId;//影视风格ID
+    private int stageStyleId;//场景风格ID
     private int processStatus;//流程状态
 
     public String getIdOrName() {
@@ -70,12 +70,12 @@ public class StageRequestVo implements Serializable {
         this.stageSubTypeId = stageSubTypeId;
     }
 
-    public int getFilmStyleId() {
-        return filmStyleId;
+    public int getStageStyleId() {
+        return stageStyleId;
     }
 
-    public void setFilmStyleId(int filmStyleId) {
-        this.filmStyleId = filmStyleId;
+    public void setStageStyleId(int stageStyleId) {
+        this.stageStyleId = stageStyleId;
     }
 
     public int getProcessStatus() {
@@ -96,7 +96,7 @@ public class StageRequestVo implements Serializable {
                 ", filmTypeId=" + filmTypeId +
                 ", stageMainTypeId=" + stageMainTypeId +
                 ", stageSubTypeId=" + stageSubTypeId +
-                ", filmStyleId=" + filmStyleId +
+                ", stageStyleId=" + stageStyleId +
                 ", processStatus=" + processStatus +
                 '}';
     }

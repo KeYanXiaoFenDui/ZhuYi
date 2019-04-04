@@ -60,36 +60,30 @@
                 <div class="col-md-10 column">
                     <ul class="breadcrumb">
                         <li>
-                            需求管理
+                            场景管理
                         </li>
                         <li class="active">
-                            需求列表
+                            场景审核列表
                         </li>
                         <!--<li class="active">-->
                         <!--Data-->
                         <!--</li>-->
                     </ul>
+
                     <div class="row clearfix">
                         <div class="col-md-12 column">
-                            <div class="col-sm-3" style="padding-left: 0px;">
+                            <div class="col-sm-4" style="padding-left: 0px;">
                                 <div class="input-group">
-                                    <input id="filmName" type="text" class="form-control" placeholder="请输入影视剧名称进行搜索" th:value="${filmName}">
+                                    <input id="idOrName" type="text" class="form-control" placeholder="请输入编号/场景名称进行搜索" th:value="${idOrName}">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="button" onclick="getRequestList();"><span class="glyphicon glyphicon-search"></span></button>
+                                        <button class="btn btn-primary" type="button" onclick="getStageAuditList();"><span class="glyphicon glyphicon-search"></span></button>
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-sm-2"></div>
-                            <div class="col-sm-7">
-                                <span>发布时间</span>
-                                <input id="startTime" type="date" class="form-control" style="display: inline-block;width: 150px;" th:value="${startTime}"/>
-                                <span>至</span>
-                                <input id="endTime" type="date" class="form-control" style="display: inline-block;width: 150px;" th:value="${endTime}"/>
-                                <button type="button" class="btn btn-primary" onclick="getRequestList();">筛选</button>
-                            </div>
+                            <div class="col-sm-8"></div>
                         </div>
                         <!--<div class="col-md-2 column">-->
-                            <!---->
+                        <!---->
                         <!--</div>-->
                     </div>
                     <div class="row clearfix" style="height: 20px;"></div>
@@ -97,29 +91,29 @@
                         <div class="col-md-12 column">
                             <div class="tabbable">
                                 <ul class="nav nav-tabs">
-                                    <li th:if="${reqStatus == -500}" th:class="active">
-                                        <a th:href="'getRequestList'">全部</a>
+                                    <li th:if="${processStatus == -500}" th:class="active">
+                                        <a th:href="'getStageAuditList'">全部</a>
                                     </li>
-                                    <li th:unless="${reqStatus == -500}">
-                                        <a th:href="'getRequestList'">全部</a>
+                                    <li th:unless="${processStatus == -500}">
+                                        <a th:href="'getStageAuditList'">全部</a>
                                     </li>
-                                    <li th:if="${reqStatus == 1}" th:class="active">
-                                        <a th:href="'getRequestList?reqStatus=1'">待推荐</a>
+                                    <li th:if="${processStatus == 1}" th:class="active">
+                                        <a th:href="'getStageAuditList?processStatus=1'">待审核</a>
                                     </li>
-                                    <li th:unless="${reqStatus == 1}">
-                                        <a th:href="'getRequestList?reqStatus=1'">待推荐</a>
+                                    <li th:unless="${processStatus == 1}">
+                                        <a th:href="'getStageAuditList?processStatus=1'">待审核</a>
                                     </li>
-                                    <li th:if="${reqStatus == 2}" th:class="active">
-                                        <a th:href="'getRequestList?reqStatus=2'">推荐中</a>
+                                    <li th:if="${processStatus == 2}" th:class="active">
+                                        <a th:href="'getStageAuditList?processStatus=2'">已通过</a>
                                     </li>
-                                    <li th:unless="${reqStatus == 2}">
-                                        <a th:href="'getRequestList?reqStatus=2'">推荐中</a>
+                                    <li th:unless="${processStatus == 2}">
+                                        <a th:href="'getStageAuditList?processStatus=2'">已通过</a>
                                     </li>
-                                    <li th:if="${reqStatus == 0}" th:class="active">
-                                        <a th:href="'getRequestList?reqStatus=0'">已终止</a>
+                                    <li th:if="${processStatus == 0}" th:class="active">
+                                        <a th:href="'getStageAuditList?processStatus=0'">已驳回</a>
                                     </li>
-                                    <li th:unless="${reqStatus == 0}">
-                                        <a th:href="'getRequestList?reqStatus=0'">已终止</a>
+                                    <li th:unless="${processStatus == 0}">
+                                        <a th:href="'getStageAuditList?processStatus=0'">已驳回</a>
                                     </li>
                                 </ul>
                             </div>
@@ -133,16 +127,16 @@
                                     编号
                                 </th>
                                 <th>
-                                    影视剧名
+                                    场景名称
                                 </th>
                                 <th>
-                                    剧组对接人
+                                    发布者姓名
                                 </th>
                                 <th>
                                     手机号码
                                 </th>
                                 <th>
-                                    发布时间
+                                    邮箱
                                 </th>
                                 <th>
                                     状态
@@ -153,101 +147,100 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="a : ${userRequestList.list}">
+                            <tr th:each="a : ${stageAuditList.list}">
                                 <td th:text="${a.id}">
                                     1
                                 </td>
-                                <td th:text="${a.filmName}">
+                                <td th:text="${a.name}">
                                     15060606060
                                 </td>
-                                <td th:text="${a.contactPeople}">
+                                <td th:text="${a.userName}">
                                     15060606060
                                 </td>
                                 <td th:text="${a.telephone}">
                                     15060606060
                                 </td>
-                                <td>
-                                    <div th:text="${#dates.format(a.createTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
-                                </td>
-                                <td th:text="${a.reqStatus}">
+                                <td th:text="${a.mail}">
                                     15060606060
                                 </td>
+                                <td th:text="${a.processStatus}">
+                                    15060606060
+                                </td>
+
                                 <td>
-                                    <button class="btn btn-primary" type="button"  th:onclick="'getRequestDetail('+${a.id}+')'">详情</button>
-                                    <button class="btn btn-primary" type="button"  th:onclick="'deleteAdmin('+${a.id}+')'">编辑推荐</button>
-                                    <button class="btn btn-primary" type="button"  th:onclick="'getRecommendationList('+${a.id}+')'">推荐记录</button>
+                                    <button class="btn btn-primary" type="button" th:onclick="'getStageAuditDetail('+${a.id}+')'">详情</button>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="row clearfix">
-                        <input type="hidden" id="pageNum" th:value="${userRequestList.pageNum}"/>
-                        <input type="hidden" id="pageSize" th:value="${userRequestList.pageSize}"/>
-                        <input type="hidden" id="pages" th:value="${userRequestList.pages}"/>
+                        <input type="hidden" id="pageNum" th:value="${stageAuditList.pageNum}"/>
+                        <input type="hidden" id="pageSize" th:value="${stageAuditList.pageSize}"/>
+                        <input type="hidden" id="pages" th:value="${stageAuditList.pages}"/>
                         <div class="col-md-4 column">
-                            <span style="height: inherit;">共   <span th:text="${userRequestList.total}">5</span>    条记录</span>
+                            <span style="height: inherit;">共   <span th:text="${stageAuditList.total}">5</span>    条记录</span>
                         </div>
-                        <div class="col-md-8 column" th:if="${userRequestList.total > 0}">
+                        <div class="col-md-8 column" th:if="${stageAuditList.total > 0}">
                             <ul class="pagination" style="margin: 0 0;">
-                                <th:block th:if="${userRequestList.pageNum > 1}">
+                                <th:block th:if="${stageAuditList.pageNum > 1}">
                                     <li>
-                                        <a th:href="'getRequestList?pageSize='+${userRequestList.pageSize}+'&pageNum='+${userRequestList.pageNum-1}+'&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}">上一页</a>
+                                        <a th:href="'getStageAuditList?pageSize='+${stageAuditList.pageSize}+'&pageNum='+${stageAuditList.pageNum-1}+'&idOrName='+${idOrName}">上一页</a>
                                     </li>
                                 </th:block>
-                                <th:block th:if="${userRequestList.pages < 9}">
-                                    <li th:each="dayCyc : ${#numbers.sequence(1,userRequestList.pages)}" th:class="${dayCyc == userRequestList.pageNum}? 'active' : ''">
-                                        <a th:href="'getRequestList?pageSize='+${userRequestList.pageSize}+'&pageNum='+${dayCyc}+'&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${dayCyc}">1</a>
+                                <th:block th:if="${stageAuditList.pages < 9}">
+                                    <li th:each="dayCyc : ${#numbers.sequence(1,stageAuditList.pages)}" th:class="${dayCyc == stageAuditList.pageNum}? 'active' : ''">
+                                        <a th:href="'getStageAuditList?pageSize='+${stageAuditList.pageSize}+'&pageNum='+${dayCyc}+'&idOrName='+${idOrName}" th:text="${dayCyc}">1</a>
                                     </li>
                                 </th:block>
-                                <th:block th:if="${userRequestList.pages >= 9}">
-                                    <li th:if="${userRequestList.pageNum >= 4}" th:class="${1 == userRequestList.pageNum}? 'active' : ''">
-                                        <a th:href="'getRequestList?pageSize='+${userRequestList.pageSize}+'&pageNum=1&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}">1</a>
+                                <th:block th:if="${stageAuditList.pages >= 9}">
+                                    <li th:if="${stageAuditList.pageNum >= 4}" th:class="${1 == stageAuditList.pageNum}? 'active' : ''">
+                                        <a th:href="'getStageAuditList?pageSize='+${stageAuditList.pageSize}+'&pageNum=1&idOrName='+${idOrName}">1</a>
                                     </li>
-                                    <li th:if="${userRequestList.pageNum <= 3}" th:each="dayCyc : ${#numbers.sequence(1,5)}" th:class="${dayCyc == userRequestList.pageNum}? 'active' : ''">
-                                        <a th:href="'getRequestList?pageSize='+${userRequestList.pageSize}+'&pageNum='+${dayCyc}+'&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${dayCyc}">1</a>
+                                    <li th:if="${stageAuditList.pageNum <= 3}" th:each="dayCyc : ${#numbers.sequence(1,5)}" th:class="${dayCyc == stageAuditList.pageNum}? 'active' : ''">
+                                        <a th:href="'getStageAuditList?pageSize='+${stageAuditList.pageSize}+'&pageNum='+${dayCyc}+'&idOrName='+${idOrName}" th:text="${dayCyc}">1</a>
                                     </li>
-                                    <li th:if="${userRequestList.pageNum >= 5}">
+                                    <li th:if="${stageAuditList.pageNum >= 5}">
                                         <span>...</span>
                                     </li>
-                                    <th:block th:if="${userRequestList.pageNum >= 4 and userRequestList.pageNum <= userRequestList.pages-3}">
-                                        <li th:each="dd : ${#numbers.sequence(-2,2)}" th:class="${userRequestList.pageNum+dd == userRequestList.pageNum}? 'active' : ''">
-                                            <a th:href="'getRequestList?pageSize='+${userRequestList.pageSize}+'&pageNum='+${userRequestList.pageNum+dd}+'&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${userRequestList.pageNum+dd}">1</a>
+                                    <th:block th:if="${stageAuditList.pageNum >= 4 and stageAuditList.pageNum <= stageAuditList.pages-3}">
+                                        <li th:each="dd : ${#numbers.sequence(-2,2)}" th:class="${stageAuditList.pageNum+dd == stageAuditList.pageNum}? 'active' : ''">
+                                            <a th:href="'getStageAuditList?pageSize='+${stageAuditList.pageSize}+'&pageNum='+${stageAuditList.pageNum+dd}+'&idOrName='+${idOrName}" th:text="${stageAuditList.pageNum+dd}">1</a>
                                         </li>
                                     </th:block>
-                                    <li th:if="${userRequestList.pageNum <= userRequestList.pages - 4}">
+                                    <li th:if="${stageAuditList.pageNum <= stageAuditList.pages - 4}">
                                         <span>...</span>
                                     </li>
-                                    <li th:if="${userRequestList.pageNum >= userRequestList.pages - 2}" th:each="dayCyc : ${#numbers.sequence(-4,0)}" th:class="${userRequestList.pages + dayCyc == userRequestList.pageNum}? 'active' : ''">
-                                        <a th:href="'getRequestList?pageSize='+${userRequestList.pageSize}+'&pageNum='+${userRequestList.pages + dayCyc}+'&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${userRequestList.pages + dayCyc}">1</a>
+                                    <li th:if="${stageAuditList.pageNum >= stageAuditList.pages - 2}" th:each="dayCyc : ${#numbers.sequence(-4,0)}" th:class="${stageAuditList.pages + dayCyc == stageAuditList.pageNum}? 'active' : ''">
+                                        <a th:href="'getStageAuditList?pageSize='+${stageAuditList.pageSize}+'&pageNum='+${stageAuditList.pages + dayCyc}+'&idOrName='+${idOrName}" th:text="${stageAuditList.pages + dayCyc}">1</a>
                                     </li>
-                                    <li th:if="${userRequestList.pageNum <= userRequestList.pages - 3}" th:class="${userRequestList.pages == userRequestList.pageNum}? 'active' : ''">
-                                        <a th:href="'getRequestList?pageSize='+${userRequestList.pageSize}+'&pageNum='+${userRequestList.pages}+'&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}" th:text="${userRequestList.pages}">1</a>
+                                    <li th:if="${stageAuditList.pageNum <= stageAuditList.pages - 3}" th:class="${stageAuditList.pages == stageAuditList.pageNum}? 'active' : ''">
+                                        <a th:href="'getStageAuditList?pageSize='+${stageAuditList.pageSize}+'&pageNum='+${stageAuditList.pages}+'&idOrName='+${idOrName}" th:text="${stageAuditList.pages}">1</a>
                                     </li>
                                 </th:block>
-                                <th:block th:if="${userRequestList.pageNum < userRequestList.pages}">
+                                <th:block th:if="${stageAuditList.pageNum < stageAuditList.pages}">
                                     <li>
-                                        <a th:href="'getRequestList?pageSize='+${userRequestList.pageSize}+'&pageNum='+${userRequestList.pageNum+1}+'&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}">下一页</a>
+                                        <a th:href="'getStageAuditList?pageSize='+${stageAuditList.pageSize}+'&pageNum='+${stageAuditList.pageNum+1}+'&idOrName='+${idOrName}">下一页</a>
                                     </li>
                                 </th:block>
                                 <li>
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" th:text="${userRequestList.pageSize}+'条/页'">10条/页
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" th:text="${stageAuditList.pageSize}+'条/页'">10条/页
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
                                             <li>
-                                                <a th:href="'getRequestList?pageSize=10&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}">10条/页</a>
+                                                <a th:href="'getStageAuditList?pageSize=10&idOrName='+${idOrName}">10条/页</a>
                                             </li>
                                             <li>
-                                                <a th:href="'getRequestList?pageSize=20&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}">20条/页</a>
+                                                <a th:href="'getStageAuditList?pageSize=20&idOrName='+${idOrName}">20条/页</a>
                                             </li>
                                             <li>
-                                                <a th:href="'getRequestList?pageSize=30&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}">30条/页</a>
+                                                <a th:href="'getStageAuditList?pageSize=30&idOrName='+${idOrName}">30条/页</a>
                                             </li>
                                             <!--<li class="divider"></li>-->
                                             <li>
-                                                <a th:href="'getRequestList?pageSize=40&filmName='+${filmName}+'&startTime='+${startTime}+'&endTime='+${endTime}">40条/页</a>
+                                                <a th:href="'getStageAuditList?pageSize=40&idOrName='+${idOrName}">40条/页</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -258,8 +251,8 @@
                             </ul>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>
@@ -271,7 +264,7 @@
     $(document).keydown(function(event){
         if(event.keyCode == 13){
             if(isNumber($("#jumpPage").val())){//非数字不能跳转
-                window.location.href = 'getRequestList?startTime='+$("#startTime").val()+'&endTime='+$("#endTime").val()+'&filmName='+$("#filmName").val()+'&pageSize='+$("#pageSize").val()+'&pageNum='+$("#jumpPage").val();
+                window.location.href = 'getStageAuditList?idOrName='+$("#idOrName").val()+'&pageSize='+$("#pageSize").val()+'&pageNum='+$("#jumpPage").val();
             }
         }
     });
@@ -285,16 +278,11 @@
             return false;
         }
     }
-    function getRequestList() {
-        window.location.href = 'getRequestList?pageSize='+$("#pageSize").val()+'&filmName='+$("#filmName").val().trim()+'&startTime='+$("#startTime").val()+'&endTime='+$("#endTime").val();
+    function getStageAuditList() {
+        window.location.href = 'getStageAuditList?pageSize='+$("#pageSize").val()+'&idOrName='+$("#idOrName").val().trim();
     }
-
-    function getRequestDetail(id) {
-        window.location.href = 'getRequestDetail?id='+id;
-
-    }
-    function getRecommendationList(id) {
-        window.location.href = 'getRecommendationListByReqId?reqId='+id;
+    function getStageAuditDetail(id) {
+        window.location.href = '/stage/getStageAuditDetail?id='+id;
     }
 
 </script>

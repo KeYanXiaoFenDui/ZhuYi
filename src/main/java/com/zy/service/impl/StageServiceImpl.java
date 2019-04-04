@@ -1,6 +1,7 @@
 package com.zy.service.impl;
 
 import com.zy.domain.Stage;
+import com.zy.domain.vo.StageAuditVo;
 import com.zy.domain.vo.StageRequestVo;
 import com.zy.mapper.StageMapper;
 import com.zy.service.IStageService;
@@ -33,6 +34,11 @@ public class StageServiceImpl implements IStageService {
     @Override
     public Stage getStage(int id) {
         return stageMapper.getStage(id);
+    }
+
+    @Override
+    public StageAuditVo getStageAudit(int id) {
+        return stageMapper.getStageAudit(id);
     }
 
     @Override

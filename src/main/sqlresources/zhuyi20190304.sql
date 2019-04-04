@@ -2,7 +2,8 @@
 SQLyog Ultimate v8.32 
 MySQL - 5.5.36 : Database - zhuyi
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -85,7 +86,7 @@ CREATE TABLE `stage` (
   `film_type_id` int(11) DEFAULT NULL COMMENT '影视类型ID',
   `stage_main_type_id` int(11) DEFAULT NULL COMMENT '场景一级类型ID',
   `stage_sub_type_id` int(11) DEFAULT NULL COMMENT '场景二级类型ID',
-  `film_style_id` int(11) DEFAULT NULL COMMENT '影视风格ID',
+  `stage_style_id` int(11) DEFAULT NULL COMMENT '场景风格ID',
   `stage_area` int(4) DEFAULT NULL COMMENT '场景面积（1：0-100㎡；2：100-300㎡:3：300-500㎡；4：500-1000㎡:5：1000㎡以上）',
   `work_time` int(4) DEFAULT NULL COMMENT '可拍摄时间（1：工作日；2：周末；3：不限）',
   `parking` int(4) DEFAULT NULL COMMENT '停车位',

@@ -177,7 +177,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">*场景风格：</label>
                                             <div class="col-sm-2">
-                                                <select id="filmStyleId" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                                <select id="stageStyleId" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
                                                     　　<option value="">场景风格</option>
                                                     　　<option th:each="c : ${category1stList}" th:value="${c.id}" th:text="${c.name}" th:if="${c.type == 2}">0</option>
                                                 </select>
@@ -509,22 +509,21 @@
         $("input[name='fileUrl']").each(function(j,item){
             pics3.push(item.value);
         });
-
             $.ajax({
                 url: "/stage/insertStage",
                 method: "post",
                 data: {
                     name:$("#name").val(),
                     nameEn:$("#nameEn").val(),
-                    country:$("#country").val(),
-                    province:$("#province").val(),
-                    city:$("#city").val(),
+                    country:$("#country").val() == null?0:$("#country").val(),
+                    province:$("#province").val() == null?0:$("#province").val(),
+                    city:$("#city").val() == null?0:$("#city").val(),
                     address:$("#address").val(),
                     addressEn:$("#addressEn").val(),
-                    filmTypeId:$("#filmTypeId").val(),
-                    stageMainTypeId:$("#stageMainTypeId").val(),
-                    stageSubTypeId:$("#stageSubTypeId").val(),
-                    filmStyleId:$("#filmStyleId").val(),
+                    filmTypeId:$("#filmTypeId").val() == null?0:$("#filmTypeId").val(),
+                    stageMainTypeId:$("#stageMainTypeId").val() == null?0:$("#stageMainTypeId").val(),
+                    stageSubTypeId:$("#stageSubTypeId").val() == null?0:$("#stageSubTypeId").val(),
+                    stageStyleId:$("#stageStyleId").val() == null?0:$("#stageStyleId").val(),
                     stageArea:$("#stageArea").val(),
                     workTime:$("#workTime").val(),
                     parking:$("#parking").val(),

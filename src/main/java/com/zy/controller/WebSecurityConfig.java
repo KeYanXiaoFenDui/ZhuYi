@@ -39,6 +39,10 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
         addInterceptor.excludePathPatterns("/error");
         addInterceptor.excludePathPatterns("/login");
         addInterceptor.excludePathPatterns("/loginPost");
+        addInterceptor.excludePathPatterns("/configuration/ui");
+        addInterceptor.excludePathPatterns("/swagger-resources");
+        addInterceptor.excludePathPatterns("/v2/api-docs");
+        addInterceptor.excludePathPatterns("/configuration/security");
 //        addInterceptor.excludePathPatterns("/admin/**");
 //        addInterceptor.excludePathPatterns("/zhuYi/**");
 
@@ -52,6 +56,9 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
         public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
                 throws Exception {
             HttpSession session = request.getSession();
+            System.out.println(request.getRequestURI());
+            System.out.println(request.getRequestURL().toString());
+            System.out.println(request.getServletPath());
             if (session.getAttribute(SESSION_KEY) != null)
                 return true;
 

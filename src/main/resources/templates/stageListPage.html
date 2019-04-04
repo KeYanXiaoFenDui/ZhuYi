@@ -87,7 +87,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-2 noPaddingLeft">
-                                <select id="filmStyleId" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+                                <select id="stageStyleId" name="select" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
                                     　　<option value="">场景风格</option>
                                     　　<option th:each="c : ${category1stList}" th:value="${c.id}" th:text="${c.name}" th:if="${c.type == 2}">0</option>
                                 </select>
@@ -220,12 +220,12 @@
                                 <td th:text="${a.stageMainTypeId+'/'+a.stageSubTypeId}">
                                     15060606060
                                 </td>
-                                <td th:text="${a.filmStyleId}">
+                                <td th:text="${a.stageStyleId}">
                                     15060606060
                                 </td>
 
                                 <td>
-                                    <button class="btn btn-primary" type="button" th:onclick="'getAdminDetailForUpdate('+${a.id}+')'" data-toggle="modal" data-target="#myModal">详情</button>
+                                    <button class="btn btn-primary" type="button" th:onclick="'getStageDetail('+${a.id}+')'">详情</button>
                                 </td>
                             </tr>
                             </tbody>
@@ -419,6 +419,9 @@
     }
     function getStageList() {
         window.location.href = 'getStageList?pageSize='+$("#pageSize").val()+'&idOrName='+$("#idOrName").val().trim()+'&userId='+$("#userId").val();
+    }
+    function getStageDetail(id) {
+        window.location.href = 'getStageDetail?id='+id;
     }
 
 </script>
