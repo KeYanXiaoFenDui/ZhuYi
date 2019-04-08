@@ -29,4 +29,7 @@ public interface UserMapper {
     @SelectProvider(type = UserSQLProvider.class,method = "getUserList")
     public List<User> getUserList(String nameOrAccount,String startTime,String endTime);
 
+    @Update("update user set update_time = sysdate(),`status` = 0 where id = #{id}")
+    public int disableUser(int id);
+
 }

@@ -16,4 +16,6 @@ public interface IUserService {
     public User getUser(int id);
 
     public List<User> getUserList(String nameOrAccount, String startTime, String endTime);
+
+    public int disableUser(int id);
 }

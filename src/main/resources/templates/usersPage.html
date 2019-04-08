@@ -71,7 +71,7 @@
                     </ul>
                     <div class="row clearfix">
                         <div class="col-md-12 column">
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                                 <div class="input-group">
                                     <input id="nameOrAccount" type="text" class="form-control" placeholder="请输入用户昵称/账号进行搜索" th:value="${nameOrAccount}">
                                     <span class="input-group-btn">
@@ -79,7 +79,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-sm-2"></div>
+                            <div class="col-sm-1"></div>
                             <div class="col-sm-7">
                                 <span>操作时间</span>
                                 <input id="startTime" type="date" class="form-control" style="display: inline-block;width: 150px;" th:value="${startTime}"/>
@@ -128,7 +128,7 @@
                                     <div th:text="${#dates.format(a.createTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary" type="button" th:onclick="'getAdminDetailForUpdate('+${a.id}+')'">禁用</button>
+                                    <button class="btn btn-primary" type="button" th:onclick="'disableUser('+${a.id}+')'">禁用</button>
                                     <button class="btn btn-primary" type="button" th:onclick="'getUserRequestList('+${a.id}+')'">用户需求</button>
                                     <button class="btn btn-primary" type="button"  th:onclick="'getUserStageList('+${a.id}+')'">用户场景</button>
                                 </td>
@@ -230,6 +230,26 @@
             }
         }
     });
+    function disableUser(id) {
+        var result = confirm("确认禁用该用户?");
+        if(result){
+            $.ajax({
+                url: "/user/disableUser",
+                method: "post",
+                data:{
+                    id:id
+                },
+                success: function(result){
+                    if(result.status == 1){
+                        alert(result.message);
+                        window.location.href = 'getUserList?startTime='+$("#startTime").val()+'&endTime='+$("#endTime").val()+'&nameOrAccount='+$("#nameOrAccount").val()+'&pageSize='+$("#pageSize").val();
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+    }
     //判断是否为数字方法
     function isNumber(val){
         var regPos = /^\d+(\.\d+)?$/; //非负浮点数

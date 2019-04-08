@@ -6,6 +6,7 @@ import com.zy.mapper.sqlProvide.CategorySQLProvide;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface CategoryMapper {
@@ -41,4 +42,7 @@ public interface CategoryMapper {
 
     @Select("select * from category c where c.`status` = 1 and c.parent_id = #{id} order by c.order ,c.create_time")
     public List<Category> getSubCategoryList(int id);
+
+    @Select("select c.id,c.`name` as dataName from category c where c.`status` = 1")
+    public List<Map> getCategoryMsg();
 }

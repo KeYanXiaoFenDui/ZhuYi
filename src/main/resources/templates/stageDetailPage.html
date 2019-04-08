@@ -92,7 +92,7 @@
                                             <td align="right"><strong>场景名称（英文）：</strong></td><td th:text="${stageDetail.nameEn}">12345678901</td>
                                         </tr>
                                         <tr>
-                                            <td align="right"><strong>场景地区：</strong></td><td th:text="${stageDetail.country+'/'+stageDetail.province+'/'+stageDetail.city}">12345678@163.com</td>
+                                            <td align="right"><strong>场景地区：</strong></td><td th:text="${categoryMsg[stageDetail.country]+'/'+categoryMsg[stageDetail.province]+'/'+categoryMsg[stageDetail.city]}">12345678@163.com</td>
                                         </tr>
                                         <tr>
                                             <td align="right"><strong>详细地址（中文）：</strong></td><td th:text="${stageDetail.address}">12345678@163.com</td>
@@ -101,10 +101,10 @@
                                             <td align="right"><strong>详细地址（英文）：</strong></td><td th:text="${stageDetail.addressEn}">12345678@163.com</td>
                                         </tr>
                                         <tr>
-                                            <td align="right"><strong>影视剧类型：</strong></td><td th:text="${stageDetail.filmTypeId}">12345678@163.com</td>
+                                            <td align="right"><strong>影视剧类型：</strong></td><td th:text="${categoryMsg[stageDetail.filmTypeId]}">12345678@163.com</td>
                                         </tr>
                                         <tr>
-                                            <td align="right"><strong>场景类型：</strong></td><td th:text="${stageDetail.stageMainTypeId+'/'+stageDetail.stageSubTypeId}">12345678@163.com</td>
+                                            <td align="right"><strong>场景类型：</strong></td><td th:text="${categoryMsg[stageDetail.stageMainTypeId]+'/'+categoryMsg[stageDetail.stageSubTypeId]}">12345678@163.com</td>
                                         </tr>
                                         <tr>
                                             <td align="right"><strong>场景面积：</strong></td><td th:text="${stageDetail.stageArea}">12345678@163.com</td>

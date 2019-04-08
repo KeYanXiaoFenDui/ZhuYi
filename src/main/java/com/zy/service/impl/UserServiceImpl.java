@@ -37,4 +37,9 @@ public class UserServiceImpl implements IUserService {
     public List<User> getUserList(String nameOrAccount, String startTime, String endTime) {
         return userMapper.getUserList(nameOrAccount, startTime, endTime);
     }
+
+    @Override
+    public int disableUser(int id) {
+        return userMapper.disableUser(id);
+    }
 }

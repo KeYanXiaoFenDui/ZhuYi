@@ -13,7 +13,7 @@ public class UserSQLProvider {
 
     public String getUserList(String nameOrAccount,String startTime,String endTime){
         StringBuffer sql = new StringBuffer();
-        sql.append("select * from user u where 1=1 ");
+        sql.append("select * from user u where 1=1 and u.`status` = 1 ");
         if(!nameOrAccount.equals("")){
             sql.append(" and (u.user_name like '%"+nameOrAccount+"%' or u.account like '%"+nameOrAccount+"%')");
         }

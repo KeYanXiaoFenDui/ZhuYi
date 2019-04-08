@@ -5,6 +5,7 @@ import com.zy.domain.Category;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface ICategoryService {
@@ -27,4 +28,6 @@ public interface ICategoryService {
     public List<Category> getStage1stCategory();
 
     public List<Category> getSubCategoryList(int id);
+
+    public List<Map> getCategoryMsg();
 }

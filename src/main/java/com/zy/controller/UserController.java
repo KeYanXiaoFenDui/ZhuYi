@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpServletRequest;
@@ -175,6 +177,34 @@ public class UserController {
         setAdminMsg(m, request, session);
         return "userStagePage";
     }
+
+    /**
+     *禁用用户
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping(value = "/disableUser",method = RequestMethod.POST)
+    @ResponseBody
+    public HashMap<String,Object> disableUser(int id, HttpServletRequest request) {
+        int status = MessageConstant.ERROR_CODE;
+        String message = MessageConstant.ERROR_INFO_DEMO;
+        HashMap<String,Object> data = new HashMap<>();
+
+        try {
+                int result = userService.disableUser(id);
+                if (result == 1){
+                    status = MessageConstant.SUCCESS_CODE;
+                    message = MessageConstant.SUCCESS_INFO;
+                }else{
+                    throw new RuntimeException();
+                }
+
+        } catch (Exception e){
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return CommonUtil.ToResultHashMap(status,message,data);
+    }
+
     public void setAdminMsg(Model m, HttpServletRequest request,HttpSession session){
         HashMap<String,Object> adminMsg = (HashMap<String,Object>)redisComponentUtil.get(session.getId());
         m.addAttribute("menu",adminMsg.get("menu"));

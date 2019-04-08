@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CategoryServiceImpl implements ICategoryService {
@@ -60,5 +61,10 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public List<Category> getSubCategoryList(int id) {
         return categoryMapper.getSubCategoryList(id);
+    }
+
+    @Override
+    public List<Map> getCategoryMsg() {
+        return categoryMapper.getCategoryMsg();
     }
 }

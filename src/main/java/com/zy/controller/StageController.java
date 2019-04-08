@@ -133,6 +133,7 @@ public class StageController {
             message = MessageConstant.SUCCESS_INFO;
         }
         m.addAttribute("stageDetail",stage);
+        m.addAttribute("categoryMsg",getCategoryMsg());
         m.addAttribute("pageTitle","场景管理");
         setAdminMsg(m, request, session);
         return "stageDetailPage";
@@ -194,5 +195,18 @@ public class StageController {
 //                System.out.println("cookie::"+cookie.getName()+"::::"+cookie.getValue());
 //            }
 //        }
+    }
+    public HashMap<Integer,String> getCategoryMsg(){
+        if(redisComponentUtil.get("categoryMsg") == null || redisComponentUtil.get("categoryMsg").equals("")){
+            HashMap<Integer,String> map = new HashMap<Integer,String>();
+            List<Map> categoryMsg = categoryService.getCategoryMsg();
+            for(Map category : categoryMsg){
+                map.put(Integer.parseInt(CommonUtil.getStr(category.get("id"),"0")),CommonUtil.getStr(category.get("dataName"),""));
+            }
+            redisComponentUtil.set("categoryMsg",map);
+            return map;
+        }else{
+            return (HashMap<Integer,String>)redisComponentUtil.get("categoryMsg");
+        }
     }
 }
