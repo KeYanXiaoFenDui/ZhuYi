@@ -19,7 +19,7 @@ public class Scenario implements Serializable {
     /**
      * 剧本名称
      */
-    private String scenarioNmae;
+    private String scenarioName;
 
     public int getId() {
         return id;
@@ -69,11 +69,11 @@ public class Scenario implements Serializable {
         this.userId = userId;
     }
 
-    public String getScenarioNmae() {
-        return scenarioNmae;
+    public String getScenarioName() {
+        return scenarioName;
     }
 
-    public void setScenarioNmae(String scenarioNmae) {
-        this.scenarioNmae = scenarioNmae;
+    public void setScenarioName(String scenarioName) {
+        this.scenarioName = scenarioName;
     }
 }
