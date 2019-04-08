@@ -32,4 +32,6 @@ public interface UserMapper {
     @Update("update user set update_time = sysdate(),`status` = 0 where id = #{id}")
     public int disableUser(int id);
 
+    @Select("select * from user u where u.account = #{account} and u.`password` = #{password} and u.acc_status = 2 and u.`status` = 1")
+    public User loginForC(@Param("account") String account,@Param("password") String password);
 }

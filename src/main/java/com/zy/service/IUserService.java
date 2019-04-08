@@ -18,4 +18,6 @@ public interface IUserService {
     public List<User> getUserList(String nameOrAccount, String startTime, String endTime);
 
     public int disableUser(int id);
+
+    public User loginForC(String account,String password);
 }

@@ -42,4 +42,9 @@ public class UserServiceImpl implements IUserService {
     public int disableUser(int id) {
         return userMapper.disableUser(id);
     }
+
+    @Override
+    public User loginForC(String account, String password) {
+        return userMapper.loginForC(account,password);
+    }
 }

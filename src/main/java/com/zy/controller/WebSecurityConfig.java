@@ -43,6 +43,7 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
         addInterceptor.excludePathPatterns("/swagger-resources");
         addInterceptor.excludePathPatterns("/v2/api-docs");
         addInterceptor.excludePathPatterns("/configuration/security");
+        addInterceptor.excludePathPatterns("/api/**");
 //        addInterceptor.excludePathPatterns("/admin/**");
 //        addInterceptor.excludePathPatterns("/zhuYi/**");
 
