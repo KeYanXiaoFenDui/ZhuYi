@@ -193,7 +193,7 @@ function insertCategory(){
             success: function(result){
                 if(result.status == 1){
                     alert(result.message);
-                    window.location.href = 'stageLocaledList';
+                    window.location.href = 'getStageLocaledList';
                 }else{
                     alert(result.message);
                 }
@@ -217,7 +217,7 @@ function updateCategory(){
         success: function(result){
             if(result.status == 1){
                 alert(result.message);
-                window.location.href = 'stageLocaledList';
+                window.location.href = 'getStageLocaledList';
             }else{
                 alert(result.message);
             }
@@ -231,7 +231,7 @@ function deleteCategory(id){
         success: function(result){
             if(result.status == 1){
                 alert(result.message);
-                window.location.href = 'stageLocaledList';
+                window.location.href = 'getStageLocaledList';
             }else{
                 alert(result.message);
             }

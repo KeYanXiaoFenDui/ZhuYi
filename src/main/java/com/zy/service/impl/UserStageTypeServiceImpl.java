@@ -6,6 +6,8 @@ import com.zy.service.IUserStageTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserStageTypeServiceImpl implements IUserStageTypeService {
     @Autowired
@@ -29,5 +31,14 @@ public class UserStageTypeServiceImpl implements IUserStageTypeService {
     @Override
     public UserStageType getUserStageType(int id) {
         return userStageTypeMapper.getUserStageType(id);
+    }
+    @Override
+    public List<UserStageType> getUserStageTypeByScenarioId(int scenarioId) {
+        return userStageTypeMapper.getUserStageTypeByScenarioId(scenarioId);
+    }
+
+    @Override
+    public int deleteUserStageType(int userId, int scenarioId) {
+        return userStageTypeMapper.deleteUserStageType(userId,scenarioId);
     }
 }

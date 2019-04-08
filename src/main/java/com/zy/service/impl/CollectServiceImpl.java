@@ -30,4 +30,9 @@ public class CollectServiceImpl implements ICollectService {
     public Collect getCollect(int id) {
         return collectMapper.getCollect(id);
     }
+
+    @Override
+    public int deleteCollect(int userId, int scenarioId, int userStageTypeId, int stageId) {
+        return collectMapper.deleteCollect(userId,scenarioId,userStageTypeId,stageId);
+    }
 }

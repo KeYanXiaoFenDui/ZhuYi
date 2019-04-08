@@ -3,6 +3,8 @@ package com.zy.mapper;
 import com.zy.domain.UserStageType;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface UserStageTypeMapper {
 
@@ -19,4 +21,9 @@ public interface UserStageTypeMapper {
     @Select("select * from user_stage_type where id=#{id}")
     public UserStageType getUserStageType(int id);
 
+    @Select("select * from user_stage_type where scenario_id=#{scenarioId}")
+    public List<UserStageType> getUserStageTypeByScenarioId(int scenarioId);
+
+    @Delete("delete from user_stage_type where scenario_id=#{scenarioId} and user_id=#{userId}")
+    public int deleteUserStageType(int userId, int scenarioId);
 }

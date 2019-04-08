@@ -6,6 +6,8 @@ import com.zy.service.IScenarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ScenarioServiceImpl implements IScenarioService {
     @Autowired
@@ -29,5 +31,10 @@ public class ScenarioServiceImpl implements IScenarioService {
     @Override
     public Scenario getScenario(int id) {
         return scenarioMapper.getScenario(id);
+    }
+
+    @Override
+    public List<Scenario> getScenarioByUserId(int userId) {
+        return scenarioMapper.getScenarioByUserId(userId);
     }
 }

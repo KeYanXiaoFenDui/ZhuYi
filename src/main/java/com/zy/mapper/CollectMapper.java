@@ -19,4 +19,12 @@ public interface CollectMapper {
     @Select("select * from collect where id=#{id}")
     public Collect getCollect(int id);
 
+    @Delete("delete from collect where user_id=#{userId} and scenario_id = #{scenarioId} and user_stage_type_id=#{userStageTypeId} and stage_id=#{stageId} ")
+    public int deleteCollect(int userId, int scenarioId, int userStageTypeId, int stageId);
+
+    @Delete("delete from collect where user_id=#{userId} and scenario_id = #{scenarioId} and user_stage_type_id=#{userStageTypeId} ")
+    public int deleteCollect(int userId, int scenarioId, int userStageTypeId);
+
+    @Delete("delete from collect where user_id=#{userId} and scenario_id = #{scenarioId} ")
+    public int deleteCollect(int userId, int scenarioId);
 }

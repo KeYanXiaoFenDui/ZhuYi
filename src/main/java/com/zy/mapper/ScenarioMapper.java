@@ -3,6 +3,8 @@ package com.zy.mapper;
 import com.zy.domain.Scenario;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface ScenarioMapper {
 
@@ -19,4 +21,6 @@ public interface ScenarioMapper {
     @Select("select * from scenario where id=#{id}")
     public Scenario getScenario(int id);
 
+    @Select("select * from scenario where user_id=#{userId}")
+    public List<Scenario> getScenarioByUserId(int userId);
 }
