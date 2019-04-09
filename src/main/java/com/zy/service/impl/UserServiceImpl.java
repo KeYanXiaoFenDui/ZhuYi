@@ -47,4 +47,9 @@ public class UserServiceImpl implements IUserService {
     public User loginForC(String account, String password) {
         return userMapper.loginForC(account,password);
     }
+
+    @Override
+    public User getUserByAccount(String account) {
+        return userMapper.getUserByAccount(account);
+    }
 }

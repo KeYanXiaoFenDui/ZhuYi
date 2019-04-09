@@ -51,4 +51,9 @@ public class StageServiceImpl implements IStageService {
         return stageMapper.getStageList(vo);
     }
 
+    @Override
+    public List<Stage> myStage(int userId,int processStatus) {
+        return stageMapper.myStage(userId,processStatus);
+    }
+
 }

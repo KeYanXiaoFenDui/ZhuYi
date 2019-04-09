@@ -11,6 +11,7 @@ public class User implements Serializable {
     private String userName;//用户昵称
     private String telephone;//手机号码
     private String mail;//邮箱
+    private String openId;//微信Id
     private Date createTime;//注册时间
     private Date updateTime;//更新时间
     private int status;//状态(1有效,,,0无效)
@@ -69,6 +70,14 @@ public class User implements Serializable {
 
     public void setMail(String mail) {
         this.mail = mail;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 
     public Date getCreateTime() {

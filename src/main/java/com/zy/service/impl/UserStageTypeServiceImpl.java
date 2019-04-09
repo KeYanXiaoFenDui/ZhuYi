@@ -38,7 +38,7 @@ public class UserStageTypeServiceImpl implements IUserStageTypeService {
     }
 
     @Override
-    public int deleteUserStageType(int userId, int scenarioId) {
-        return userStageTypeMapper.deleteUserStageType(userId,scenarioId);
+    public int deleteUserStageTypeByScenarioId(int userId, int scenarioId) {
+        return userStageTypeMapper.deleteUserStageTypeByScenarioId(userId,scenarioId);
     }
 }

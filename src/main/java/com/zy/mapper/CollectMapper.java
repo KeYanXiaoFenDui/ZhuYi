@@ -1,7 +1,10 @@
 package com.zy.mapper;
 
 import com.zy.domain.Collect;
+import com.zy.domain.vo.CollectStageVo;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface CollectMapper {
@@ -20,11 +23,17 @@ public interface CollectMapper {
     public Collect getCollect(int id);
 
     @Delete("delete from collect where user_id=#{userId} and scenario_id = #{scenarioId} and user_stage_type_id=#{userStageTypeId} and stage_id=#{stageId} ")
-    public int deleteCollect(int userId, int scenarioId, int userStageTypeId, int stageId);
+    public int deleteCollectByStageId(int userId, int scenarioId, int userStageTypeId, int stageId);
 
     @Delete("delete from collect where user_id=#{userId} and scenario_id = #{scenarioId} and user_stage_type_id=#{userStageTypeId} ")
-    public int deleteCollect(int userId, int scenarioId, int userStageTypeId);
+    public int deleteCollectByStageTypeId(int userId, int scenarioId, int userStageTypeId);
 
     @Delete("delete from collect where user_id=#{userId} and scenario_id = #{scenarioId} ")
-    public int deleteCollect(int userId, int scenarioId);
+    public int deleteCollectByScenarioId(int userId, int scenarioId);
+
+    @Select("select s.*,c.scenario_id,c.user_stage_type_id from stage s ,(select c.user_id,c.scenario_id,c.user_stage_type_id,c.stage_id from collect c where c.user_id = #{userId} and c.scenario_id = #{scenarioId} and c.`status` = 1) c where s.id = c.stage_id")
+    public List<CollectStageVo> getStageForCollect(@Param("userId") int userId,@Param("scenarioId") int scenarioId);
+
+    @Update("update collect set user_stage_type_id = #{userStageTypeId},update_time = sysdate() where id = #{collectId}")
+    public int updateStageType(@Param("collectId") int collectId,@Param("userStageTypeId") int userStageTypeId);
 }

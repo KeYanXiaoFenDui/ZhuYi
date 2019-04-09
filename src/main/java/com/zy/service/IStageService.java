@@ -23,4 +23,6 @@ public interface IStageService {
     public List<Map> getUserStageList(int userId,int processStatus,String idOrName);
 
     public List<Stage> getStageList(StageRequestVo vo);
+
+    public List<Stage> myStage(int userId,int processStatus);
 }

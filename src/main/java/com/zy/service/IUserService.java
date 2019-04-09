@@ -20,4 +20,6 @@ public interface IUserService {
     public int disableUser(int id);
 
     public User loginForC(String account,String password);
+
+    public User getUserByAccount(String account);
 }

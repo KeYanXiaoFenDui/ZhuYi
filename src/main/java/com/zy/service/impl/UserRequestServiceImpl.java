@@ -1,6 +1,7 @@
 package com.zy.service.impl;
 
 import com.zy.domain.UserRequest;
+import com.zy.domain.vo.RecStageVo;
 import com.zy.mapper.UserRequestMapper;
 import com.zy.service.IUserRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,20 @@ public class UserRequestServiceImpl implements IUserRequestService {
     @Override
     public List<Map> getUserRequestList(int id,int reqStatus, String filmName, String startTime, String endTime) {
         return userRequestMapper.getUserRequestList(id,reqStatus, filmName, startTime, endTime);
+    }
+
+    @Override
+    public List<Map> getRecommendationForC(int userId) {
+        return userRequestMapper.getRecommendationForC(userId);
+    }
+
+    @Override
+    public List<RecStageVo> getStageListForRecommend(int reqId) {
+        return userRequestMapper.getStageListForRecommend(reqId);
+    }
+
+    @Override
+    public List<UserRequest> myRequest(int userId, int reqStatus) {
+        return userRequestMapper.myRequest(userId, reqStatus);
     }
 }

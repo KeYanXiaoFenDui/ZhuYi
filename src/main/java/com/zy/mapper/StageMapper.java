@@ -35,4 +35,7 @@ public interface StageMapper {
 
     @SelectProvider(type = StageSQLProvider.class,method = "getStageList")
     public List<Stage> getStageList(StageRequestVo vo);
+
+    @Select("select * from stage s where s.user_id = #{userId} and s.process_status = #{processStatus} and s.`status` = 1")
+    public List<Stage> myStage(@Param("userId") int userId,@Param("processStatus") int processStatus);
 }

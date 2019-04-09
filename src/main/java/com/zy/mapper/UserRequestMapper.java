@@ -2,6 +2,7 @@ package com.zy.mapper;
 
 import com.zy.domain.User;
 import com.zy.domain.UserRequest;
+import com.zy.domain.vo.RecStageVo;
 import com.zy.mapper.sqlProvide.UserRequestSQLProvider;
 import com.zy.mapper.sqlProvide.UserSQLProvider;
 import org.apache.ibatis.annotations.*;
@@ -27,5 +28,14 @@ public interface UserRequestMapper {
 
     @SelectProvider(type = UserRequestSQLProvider.class,method = "getUserRequestList")
     public List<Map> getUserRequestList(int id,int reqStatus, String filmName, String startTime, String endTime);
+
+    @Select("select r.req_id as reqId,ur.film_name as filmName from recommendation r,user_request ur where ur.id = r.req_id and r.user_id = #{userId} and r.`status` = 1 and r.recommend_status = 1 group by r.req_id order by r.update_time desc")
+    public List<Map> getRecommendationForC(int userId);
+
+    @Select("select r.*,s.* from stage s ,(select rs.stage_id,rs.rec_stage_type_id,r.stage_title_ch,r.stage_title_en from recommendation_stage rs,recommendation r where rs.rec_stage_type_id = r.id and rs.`status` = 1 and r.`status` = 1 and r.req_id = #{reqId}) r where s.id = r.stage_id order by r.rec_stage_type_id")
+    public List<RecStageVo> getStageListForRecommend(int reqId);
+
+    @Select("select * from user_request ur where ur.user_id = #{userId} and ur.`status` = 1 and ur.req_status = #{reqStatus}")
+    public List<UserRequest> myRequest(int userId,int reqStatus);
 
 }

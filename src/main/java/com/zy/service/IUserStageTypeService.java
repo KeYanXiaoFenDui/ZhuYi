@@ -17,6 +17,6 @@ public interface IUserStageTypeService {
 
     public List<UserStageType> getUserStageTypeByScenarioId(int scenarioId);
 
-    public int deleteUserStageType(int userId,int scenarioId);
+    public int deleteUserStageTypeByScenarioId(int userId,int scenarioId);
 
 }

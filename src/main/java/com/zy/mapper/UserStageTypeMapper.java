@@ -25,5 +25,5 @@ public interface UserStageTypeMapper {
     public List<UserStageType> getUserStageTypeByScenarioId(int scenarioId);
 
     @Delete("delete from user_stage_type where scenario_id=#{scenarioId} and user_id=#{userId}")
-    public int deleteUserStageType(int userId, int scenarioId);
+    public int deleteUserStageTypeByScenarioId(@Param("userId") int userId, @Param("scenarioId") int scenarioId);
 }

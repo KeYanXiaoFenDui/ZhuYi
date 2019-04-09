@@ -84,3 +84,4 @@ value：说明参数的意思
 
 defaultValue：参数的默认值
 
+@RequestBody @ApiParam(name="场景参数对象",value="传入json格式",required=false) StageRequestVo vo,
